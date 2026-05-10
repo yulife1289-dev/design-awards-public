@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>住宅得獎案日報</title>
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --bg-soft: #171717;
+      --panel: #121212;
+      --line: rgba(255,255,255,.1);
+      --text: #f0ebe3;
+      --muted: rgba(240,235,227,.68);
+      --gold: #e8d5a0;
+      --mint: #a0c8b0;
+      --shadow: 0 28px 80px rgba(0,0,0,.35);
+      --radius: 24px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
+        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
+      color: var(--text);
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    body.lb-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
+    .hero {
+      padding: 36px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      box-shadow: var(--shadow);
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(232,213,160,.25);
+      color: var(--gold);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    h1 {
+      margin: 18px 0 14px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.4rem, 5vw, 4.8rem);
+      line-height: .98;
+      max-width: 10ch;
+    }
+    .hero p {
+      margin: 0;
+      max-width: 56rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
+    .hero-meta {
+      margin-top: 22px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 22px;
+      margin-top: 26px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      background: rgba(15,15,15,.92);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+    .featured {
+      grid-column: 1 / -1;
+    }
+    .card-photo {
+      position: relative;
+      overflow: hidden;
+      min-height: 280px;
+      cursor: pointer;
+      background: #090909;
+    }
+    .featured .card-photo {
+      min-height: 440px;
+    }
+    .card-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform: scale(1.01);
+      transition: transform .45s ease;
+    }
+    .card:hover .card-photo img { transform: scale(1.05); }
+    .photo-num, .photo-tag, .photo-count {
+      position: absolute;
+      z-index: 2;
+    }
+    .photo-num {
+      top: 14px;
+      left: 14px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.5);
+      font-size: .8rem;
+      letter-spacing: .06em;
+    }
+    .photo-tag {
+      right: 14px;
+      top: 14px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .photo-tag-d { background: rgba(232,213,160,.16); color: var(--gold); }
+    .photo-tag-f { background: rgba(160,200,176,.18); color: var(--mint); }
+    .photo-count {
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(.92);
+      opacity: 0;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.62);
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .card:hover .photo-count {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .card-body {
+      padding: 22px;
+      display: grid;
+      gap: 14px;
+    }
+    .featured .card-body {
+      grid-template-columns: 1.35fr .9fr;
+      align-items: start;
+      gap: 24px;
+    }
+    .card-meta, .card-facts {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .card-meta span, .card-facts span {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      color: var(--muted);
+      font-size: .82rem;
+    }
+    .card-title {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.5rem, 2vw, 2.3rem);
+      line-height: 1.08;
+    }
+    .card-by {
+      margin: 0;
+      color: var(--gold);
+      letter-spacing: .03em;
+      font-size: .95rem;
+    }
+    .card-desc {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: .98rem;
+    }
+    .card-note {
+      margin: 0;
+      color: rgba(232,213,160,.88);
+      line-height: 1.75;
+      font-size: .9rem;
+      padding-left: 14px;
+      border-left: 1px solid rgba(232,213,160,.25);
+    }
+    .card-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .card-links a {
+      padding: 11px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.02);
+      font-size: .86rem;
+    }
+    #lb {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      display: none;
+      flex-direction: column;
+      background: rgba(5,5,5,.96);
+      padding: 20px;
+    }
+    #lb.open { display: flex; }
+    #lb-bar, #lb-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      color: var(--muted);
+    }
+    #lb-name {
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.1rem;
+    }
+    #lb-close {
+      border: 0;
+      color: var(--text);
+      background: transparent;
+      font-size: 2rem;
+      cursor: pointer;
+    }
+    #lb-stage {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 72px 1fr 72px;
+      align-items: center;
+      gap: 14px;
+      min-height: 0;
+    }
+    #lb-img-wrap {
+      min-height: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #lb-img {
+      max-width: 100%;
+      max-height: calc(100vh - 220px);
+      object-fit: contain;
+      transition: opacity .2s ease;
+    }
+    #lb-img.loading { opacity: 0; }
+    .lb-nav {
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-size: 2rem;
+      border-radius: 18px;
+      height: 72px;
+      cursor: pointer;
+    }
+    #lb-thumbs {
+      display: flex;
+      gap: .4rem;
+      overflow-x: auto;
+      padding: 12px 0;
+      scrollbar-width: thin;
+    }
+    .lb-thumb {
+      width: 60px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      opacity: .5;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+    .lb-thumb.active {
+      opacity: 1;
+      border-color: rgba(255,255,255,.55);
+    }
+    #lb-hint { font-size: .88rem; }
+    @media (max-width: 799px) {
+      .featured .card-body { grid-template-columns: 1fr; }
+      #lb-stage { grid-template-columns: 54px 1fr 54px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <span class="eyebrow">Residential Awards Digest</span>
+      <h1>每天 6 點更新的住宅得獎案選輯</h1>
+      <p>本頁收錄來自 Architizer、Dezeen 與 FRAME 的住宅得獎案，各選兩件，並以不重複原則逐日輪替。版面依 design-awards-html 規格製作，保留雜誌感層次、深色奢雅基調與燈箱相冊互動；內文與說明已轉為繁體中文。</p>
+      <div class="hero-meta">
+        <span>生成時間 2026-05-11 04:57</span>
+        <span>共 6 件作品</span>
+        <span>最多 20 張不重複圖片</span>
+      </div>
+      <div class="card-links" style="margin-top:18px;">
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-05-11.html" target="_blank" rel="noopener">查看今日 HTML</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+      </div>
+    </section>
+    <section class="grid">
+      
+            <article class="card featured">
+              <div class="card-photo" data-gid="p01">
+                <span class="photo-num">01 / 06</span>
+                <img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16821075992978899_Beverly_Boulevard_01_Nils_Timm.jpg?w=1680&amp;q=60&amp;auto=format" alt="8899 比佛利大道" loading="eager">
+                <span class="photo-tag photo-tag-d">Architizer</span>
+                <span class="photo-count">查看 4 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-meta">
+                  <span>2025 年 A+Awards 住宅評審團得獎者 &gt; 住宅適應性再利用項目</span>
+                  <span>2025</span>
+                  <span>美國加州西好萊塢</span>
+                </div>
+                <h3 class="card-title">8899 比佛利大道</h3>
+                <p class="card-by">奧爾森昆迪格</p>
+                <p class="card-desc">這座中世紀辦公大樓的更新設計保持了其原始的完整性，同時將其功能轉變為擁有 48 個單元的住宅綜合體。該建築最初由理查德·多爾曼 (Richard Dorman) 設計，建於 1964 年，新設計增強了內部和外部之間的聯繫。新的擴建部分在原有結構的基礎上進行了退縮，承認了原有建築的形式，同時回應了當代的城市環境。</p>
+                <p class="card-note">8899 比佛利大道 由 奧爾森昆迪格 操刀，位於 美國加州西好萊塢，屬於 2025 年 A+Awards 住宅評審團得獎者 &gt; 住宅適應性再利用項目。 這座中世紀辦公大樓的更新設計保持了其原始的完整性，同時將其功能轉變為擁有 48 個單元的住宅綜合體。該建築最初由理查德·多爾曼 (Richard Dorman) 設計，建於 1964 年，新設計增強了內部和外部之間的聯繫。新的擴建部分在原有結構的基礎上進行了退縮，承認了原有建築的形式，同時回應了當代的城市環境。 重點資訊：2025 年 A+Awards 住宅評審團得獎者 &gt; 住宅適應性再利用項目。</p>
+                <div class="card-facts"><span>2025 年 A+Awards 住宅評審團得獎者 &gt; 住宅適應性再利用項目</span><span>美國加州西好萊塢</span><span>資料來源：Architizer A+Awards 2025</span></div>
+                <div class="card-links"><a href="https://architizer.com/projects/8899-beverly-boulevard/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
+              </div>
+            </article>
+            
+            <article class="card">
+              <div class="card-photo" data-gid="p02">
+                <span class="photo-num">02 / 06</span>
+                <img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1746032720679GuerinGlass_Aspen_019_architizerweb.jpg?w=1680&amp;q=60&amp;auto=format" alt="阿斯本住宅" loading="lazy">
+                <span class="photo-tag photo-tag-d">Architizer</span>
+                <span class="photo-count">查看 4 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-meta">
+                  <span>大眾選擇獎得主，2025 年 A+ 獎，住宅 &gt; 住宅翻新與擴建</span>
+                  <span>2025</span>
+                  <span>美國科羅拉多州</span>
+                </div>
+                <h3 class="card-title">阿斯本住宅</h3>
+                <p class="card-by">蓋林玻璃建築師事務所</p>
+                <p class="card-desc">這個適應性再利用計畫將一座歷史悠久的維多利亞式小住宅改造成一座簡約的山區度假勝地，將新舊建築結合在一起，在阿斯彭歷史悠久的市中心和鄰近住宅區的交匯處創造出一座獨特的住宅。我們的工作始於對阿斯本山原索賠人之一建造的歷史住宅的精心修復。這個複雜的體量透過與極簡主義的兩層建築和連接的三層地下附加建築的搭配而擴展。</p>
+                <p class="card-note">阿斯本住宅 由 蓋林玻璃建築師事務所 操刀，位於 美國科羅拉多州，屬於 大眾選擇獎得主，2025 年 A+ 獎，住宅 &gt; 住宅翻新與擴建。 這個適應性再利用計畫將一座歷史悠久的維多利亞式小住宅改造成一座簡約的山區度假勝地，將新舊建築結合在一起，在阿斯彭歷史悠久的市中心和鄰近住宅區的交匯處創造出一座獨特的住宅。我們的工作始於對阿斯本山原索賠人之一建造的歷史住宅的精心修復。這個複雜的體量透過與極簡主義的兩層建築和連接的三層地下附加建築的搭配而擴展。 重點資訊：大眾選擇獎得主，2025 年 A+ 獎，住宅 &gt; 住宅翻新與擴建。</p>
+                <div class="card-facts"><span>大眾選擇獎得主，2025 年 A+ 獎，住宅 &gt; 住宅翻新與擴建</span><span>美國科羅拉多州</span><span>資料來源：Architizer A+Awards 2025</span></div>
+                <div class="card-links"><a href="https://architizer.com/projects/aspen-residence-01/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
+              </div>
+            </article>
+            
+            <article class="card">
+              <div class="card-photo" data-gid="p03">
+                <span class="photo-num">03 / 06</span>
+                <img src="https://static.dezeen.com/uploads/2024/11/YQSdI2SwazzovdBdKhlhhHksw6zvMRsH0vmvhnYM_Z33nsize_2048-1704x1704-1.jpg" alt="甘祖哲學" loading="lazy">
+                <span class="photo-tag photo-tag-d">Dezeen</span>
+                <span class="photo-count">查看 3 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-meta">
+                  <span>2024 年住宅室內設計</span>
+                  <span>2024</span>
+                  <span>西班牙巴塞隆納</span>
+                </div>
+                <h3 class="card-title">甘祖哲學</h3>
+                <p class="card-by">米里亞姆·巴里奧工作室</p>
+                <p class="card-desc">得獎者：2024 年住宅室內設計。 Miriam Barrio Studio 設計了位於西班牙巴塞隆納的 Kanso Philosophy 公寓室內設計。公寓遵循日本 Känso 哲學原則，注重簡約、空間靈活性和與自然的融合。</p>
+                <p class="card-note">甘祖哲學 由 米里亞姆·巴里奧工作室 操刀，位於 西班牙巴塞隆納，屬於 2024 年住宅室內設計。 得獎者：2024 年住宅室內設計。 Miriam Barrio Studio 設計了位於西班牙巴塞隆納的 Kanso Philosophy 公寓室內設計。公寓遵循日本 Känso 哲學原則，注重簡約、空間靈活性和與自然的融合。 重點資訊：2024 年住宅室內設計。</p>
+                <div class="card-facts"><span>2024 年住宅室內設計</span><span>西班牙巴塞隆納</span><span>資料來源：2024 年 Dezeen 獎</span></div>
+                <div class="card-links"><a href="https://www.dezeen.com/awards/2024/winners/kanso-philosophy/" target="_blank" rel="noopener">得獎頁面</a> <a href="https://www.dezeen.com/awards/2024/winners/" target="_blank" rel="noopener">獎項頁面</a></div>
+              </div>
+            </article>
+            
+            <article class="card">
+              <div class="card-photo" data-gid="p04">
+                <span class="photo-num">04 / 06</span>
+                <img src="https://static.dezeen.com/uploads/2024/10/XSSBr4ydgHd2Gq1uil5goOqE35CCuYzKFc2h7HsZ_Z33nsize_2048-1704x1704-1.jpg" alt="影子屋" loading="lazy">
+                <span class="photo-tag photo-tag-d">Dezeen</span>
+                <span class="photo-count">查看 3 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-meta">
+                  <span>2024年房屋裝修</span>
+                  <span>2024</span>
+                  <span>澳洲尼德蘭茲</span>
+                </div>
+                <h3 class="card-title">影子屋</h3>
+                <p class="card-by">石窟工作室</p>
+                <p class="card-desc">得獎者：2024 年房屋裝修。 Grotto Studio 設計了位於澳洲尼德蘭的 Shadow House。 Shadow House 巧妙地將遺產、生物多樣性和現代性交織在一起，透過巧妙地隱藏在陰影，尊重 1900 年代原始小屋和現有兩棵藍花楹樹的魅力。</p>
+                <p class="card-note">影子屋 由 石窟工作室 操刀，位於 澳洲尼德蘭茲，屬於 2024年房屋裝修。 得獎者：2024 年房屋裝修。 Grotto Studio 設計了位於澳洲尼德蘭的 Shadow House。 Shadow House 巧妙地將遺產、生物多樣性和現代性交織在一起，透過巧妙地隱藏在陰影，尊重 1900 年代原始小屋和現有兩棵藍花楹樹的魅力。 重點資訊：2024年房屋裝修。</p>
+                <div class="card-facts"><span>2024年房屋裝修</span><span>澳洲尼德蘭茲</span><span>資料來源：2024 年 Dezeen 獎</span></div>
+                <div class="card-links"><a href="https://www.dezeen.com/awards/2024/winners/shadow-house/" target="_blank" rel="noopener">得獎頁面</a> <a href="https://www.dezeen.com/awards/2024/winners/" target="_blank" rel="noopener">獎項頁面</a></div>
+              </div>
+            </article>
+            
+            <article class="card">
+              <div class="card-photo" data-gid="p05">
+                <span class="photo-num">05 / 06</span>
+                <img src="https://images.squarespace-cdn.com/content/v1/594d1abfd2b857d8bf9fc2e1/cc3e5429-0c25-4107-9e19-1a300f9f9fdf/AMA-Wordmark_Right+Black.png?format=1500w" alt="公園生活與村莊" loading="lazy">
+                <span class="photo-tag photo-tag-f">FRAME</span>
+                <span class="photo-count">查看 3 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-meta">
+                  <span>2023 年 FRAME 獎，年度共享居住綜合體</span>
+                  <span>2023</span>
+                  <span>澳洲墨爾本不倫瑞克</span>
+                </div>
+                <h3 class="card-title">公園生活與村莊</h3>
+                <p class="card-by">奧斯汀·梅納德建築師事務所</p>
+                <p class="card-desc">ParkLife 將公寓生活重新視為一個社會和環境系統，將公共花園、被動式設計和慷慨的共享設施與密集的城市住房模式相結合。</p>
+                <p class="card-note">公園生活與村莊 由 奧斯汀·梅納德建築師事務所 操刀，位於 澳洲墨爾本不倫瑞克，屬於 2023 年 FRAME 獎，年度共享居住綜合體。 ParkLife 將公寓生活重新視為一個社會和環境系統，將公共花園、被動式設計和慷慨的共享設施與密集的城市住房模式相結合。 重點資訊：2023 年 FRAME 獎，年度共享居住綜合體。</p>
+                <div class="card-facts"><span>2023 年 FRAME 獎，年度共享居住綜合體</span><span>澳洲墨爾本不倫瑞克</span><span>來源年份：2023</span></div>
+                <div class="card-links"><a href="https://maynardarchitects.com/parklife-by-austin-maynard-architects/" target="_blank" rel="noopener">專案頁面</a> <a href="https://maynardarchitects.com/awards" target="_blank" rel="noopener">獎項說明</a></div>
+              </div>
+            </article>
+            
+            <article class="card">
+              <div class="card-photo" data-gid="p06">
+                <span class="photo-num">06 / 06</span>
+                <img src="https://ohlab.net/wp-content/uploads/2026/03/ohlab-open-graph.webp" alt="坎·桑塔奇利亞" loading="lazy">
+                <span class="photo-tag photo-tag-f">FRAME</span>
+                <span class="photo-count">查看 3 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-meta">
+                  <span>FRAME 獎，11 月得獎者</span>
+                  <span>2022</span>
+                  <span>西班牙馬略卡島帕爾馬</span>
+                </div>
+                <h3 class="card-title">坎·桑塔奇利亞</h3>
+                <p class="card-by">OHLAB</p>
+                <p class="card-desc">Can Santacilia 將一座分層的歷史宮殿恢復為 15 間住宅和共享空間，平衡了考古敏感性與當代住宅的平靜。</p>
+                <p class="card-note">坎·桑塔奇利亞 由 OHLAB 操刀，位於 西班牙馬略卡島帕爾馬，屬於 FRAME 獎，11 月得獎者。 Can Santacilia 將一座分層的歷史宮殿恢復為 15 間住宅和共享空間，平衡了考古敏感性與當代住宅的平靜。 重點資訊：FRAME 獎，11 月得獎者。</p>
+                <div class="card-facts"><span>FRAME 獎，11 月得獎者</span><span>西班牙馬略卡島帕爾馬</span><span>來源年份：2022</span></div>
+                <div class="card-links"><a href="https://ohlab.net/en/project/can-santacilia/" target="_blank" rel="noopener">專案頁面</a> <a href="https://ohlab.net/en/frame-awards/" target="_blank" rel="noopener">獎項說明</a></div>
+              </div>
+            </article>
+            
+    </section>
+  </main>
+  <div id="lb" tabindex="-1" role="dialog" aria-modal="true">
+    <div id="lb-bar">
+      <span id="lb-name"></span>
+      <span id="lb-count"></span>
+      <button id="lb-close" aria-label="關閉">×</button>
+    </div>
+    <div id="lb-stage">
+      <button class="lb-nav" id="lb-prev" aria-label="上一張">‹</button>
+      <div id="lb-img-wrap"><img id="lb-img" alt=""></div>
+      <button class="lb-nav" id="lb-next" aria-label="下一張">›</button>
+    </div>
+    <div id="lb-thumbs"></div>
+    <div id="lb-footer">
+      <span id="lb-tag-wrap"><span id="lb-tag-text" class="photo-tag"></span></span>
+      <span id="lb-hint">← → 切換 · ESC 關閉</span>
+    </div>
+  </div>
+  <script>
+    const GALLERIES = {
+      p01: {title: "8899 \u6bd4\u4f5b\u5229\u5927\u9053", tag: "2025 \u5e74 A+Awards \u4f4f\u5b85\u8a55\u5be9\u5718\u5f97\u734e\u8005 > \u4f4f\u5b85\u9069\u61c9\u6027\u518d\u5229\u7528\u9805\u76ee", tagClass: "photo-tag-d", images: ["http://architizer-prod.imgix.net/media/mediadata/uploads/16821075992978899_Beverly_Boulevard_01_Nils_Timm.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/16821075993008899_Beverly_Boulevard_02_Joe_Fletcher.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/16821076004728899_Beverly_Boulevard_03_Julius_Shulman.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/16821076005758899_Beverly_Boulevard_04_Joe_Fletcher.jpg?w=1680&q=60&auto=format"]},p02: {title: "\u963f\u65af\u672c\u4f4f\u5b85", tag: "\u5927\u773e\u9078\u64c7\u734e\u5f97\u4e3b\uff0c2025 \u5e74 A+ \u734e\uff0c\u4f4f\u5b85 > \u4f4f\u5b85\u7ffb\u65b0\u8207\u64f4\u5efa", tagClass: "photo-tag-d", images: ["http://architizer-prod.imgix.net/media/mediadata/uploads/1746032720679GuerinGlass_Aspen_019_architizerweb.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174602779370501_GGA_Aspen.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174602779370602_GGA_Aspen.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174602779423903_GGA_Aspen.jpg?w=1680&q=60&auto=format"]},p03: {title: "\u7518\u7956\u54f2\u5b78", tag: "2024 \u5e74\u4f4f\u5b85\u5ba4\u5167\u8a2d\u8a08", tagClass: "photo-tag-d", images: ["https://static.dezeen.com/uploads/2024/11/YQSdI2SwazzovdBdKhlhhHksw6zvMRsH0vmvhnYM_Z33nsize_2048-1704x1704-1.jpg", "https://static.dezeen.com/uploads/2026/02/Dezeen-Awards-2026-masthead.png", "https://static.dezeen.com/uploads/2026/02/Britains-Brick-Specialists-Mono.png"]},p04: {title: "\u5f71\u5b50\u5c4b", tag: "2024\u5e74\u623f\u5c4b\u88dd\u4fee", tagClass: "photo-tag-d", images: ["https://static.dezeen.com/uploads/2024/10/XSSBr4ydgHd2Gq1uil5goOqE35CCuYzKFc2h7HsZ_Z33nsize_2048-1704x1704-1.jpg", "https://static.dezeen.com/uploads/2026/02/Sanderson-1.png", "https://static.dezeen.com/uploads/2026/02/about-yellow-tile_DEZEEN_AWARDS_2026_TOUCHPOINTS_YELLOW.png"]},p05: {title: "\u516c\u5712\u751f\u6d3b\u8207\u6751\u838a", tag: "2023 \u5e74 FRAME \u734e\uff0c\u5e74\u5ea6\u5171\u4eab\u5c45\u4f4f\u7d9c\u5408\u9ad4", tagClass: "photo-tag-f", images: ["https://images.squarespace-cdn.com/content/v1/594d1abfd2b857d8bf9fc2e1/cc3e5429-0c25-4107-9e19-1a300f9f9fdf/AMA-Wordmark_Right+Black.png?format=1500w", "https://images.squarespace-cdn.com/content/v1/594d1abfd2b857d8bf9fc2e1/1670309787459-MNDO4B4NULJLAPA79USB/NgV_AMA_023_fullres.jpg", "https://images.squarespace-cdn.com/content/v1/594d1abfd2b857d8bf9fc2e1/1670309847885-BNYA9BT3KUPATG3OGCJ3/NGVILLAGE_1051_fullres.jpg"]},p06: {title: "\u574e\u00b7\u6851\u5854\u5947\u5229\u4e9e", tag: "FRAME \u734e\uff0c11 \u6708\u5f97\u734e\u8005", tagClass: "photo-tag-f", images: ["https://ohlab.net/wp-content/uploads/2026/03/ohlab-open-graph.webp", "https://ohlab.net/wp-content/uploads/2025/12/Can-Santacilia_OHLAB_00-scaled.webp", "https://ohlab.net/wp-content/uploads/2025/12/Can-Santacilia_OHLAB_02-scaled.webp"]}
+    };
+
+    const body = document.body;
+    const lb = document.getElementById('lb');
+    const lbName = document.getElementById('lb-name');
+    const lbCount = document.getElementById('lb-count');
+    const lbTagText = document.getElementById('lb-tag-text');
+    const lbImg = document.getElementById('lb-img');
+    const lbThumbs = document.getElementById('lb-thumbs');
+    const closeBtn = document.getElementById('lb-close');
+    let active = null;
+    let index = 0;
+
+    function preload(src) {
+      return new Promise((resolve) => {
+        const image = new Image();
+        image.onload = () => resolve(src);
+        image.onerror = () => resolve(src);
+        image.src = src;
+      });
+    }
+
+    async function renderImage() {
+      const gallery = GALLERIES[active];
+      const src = gallery.images[index];
+      lbImg.classList.add('loading');
+      await preload(src);
+      lbImg.src = src;
+      lbImg.alt = gallery.title + ' 圖片 ' + (index + 1);
+      lbImg.classList.remove('loading');
+      lbCount.textContent = String(index + 1).padStart(2, '0') + ' / ' + String(gallery.images.length).padStart(2, '0');
+      [...lbThumbs.children].forEach((thumb, thumbIndex) => {
+        thumb.classList.toggle('active', thumbIndex === index);
+        if (thumbIndex === index) {
+          thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      });
+    }
+
+    function renderThumbs() {
+      const gallery = GALLERIES[active];
+      lbThumbs.innerHTML = '';
+      gallery.images.forEach((src, thumbIndex) => {
+        const thumb = document.createElement('img');
+        thumb.src = src;
+        thumb.className = 'lb-thumb' + (thumbIndex === index ? ' active' : '');
+        thumb.alt = gallery.title + ' 縮圖 ' + (thumbIndex + 1);
+        thumb.addEventListener('click', () => {
+          index = thumbIndex;
+          renderImage();
+        });
+        lbThumbs.appendChild(thumb);
+      });
+    }
+
+    function openLightbox(gid, start = 0) {
+      active = gid;
+      index = start;
+      const gallery = GALLERIES[gid];
+      lbName.textContent = gallery.title;
+      lbTagText.className = 'photo-tag ' + gallery.tagClass;
+      lbTagText.textContent = gallery.tag;
+      renderThumbs();
+      renderImage();
+      lb.classList.add('open');
+      body.classList.add('lb-open');
+      lb.focus();
+    }
+
+    function closeLightbox() {
+      lb.classList.remove('open');
+      body.classList.remove('lb-open');
+      active = null;
+      lbImg.removeAttribute('src');
+    }
+
+    function move(delta) {
+      if (!active) return;
+      const gallery = GALLERIES[active];
+      index = (index + delta + gallery.images.length) % gallery.images.length;
+      renderImage();
+    }
+
+    document.querySelectorAll('.card-photo[data-gid]').forEach((node) => {
+      node.addEventListener('click', () => openLightbox(node.dataset.gid, 0));
+    });
+
+    document.getElementById('lb-prev').addEventListener('click', () => move(-1));
+    document.getElementById('lb-next').addEventListener('click', () => move(1));
+    closeBtn.addEventListener('click', closeLightbox);
+    lb.addEventListener('click', (event) => {
+      if (event.target === lb) closeLightbox();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (!lb.classList.contains('open')) return;
+      if (event.key === 'Escape') closeLightbox();
+      if (event.key === 'ArrowLeft') move(-1);
+      if (event.key === 'ArrowRight') move(1);
+    });
+  </script>
+</body>
+</html>
