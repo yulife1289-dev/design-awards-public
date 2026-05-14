@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Design Awards — 住宅得獎案 · 2026-05-15</title>
+    <style>
+        :root {
+            --bg: #0d0d0d;
+            --surface: #141414;
+            --card: #1a1a1a;
+            --border: #252525;
+            --text: #f0ebe3;
+            --muted: #8a8278;
+            --dim: #5a5450;
+            --arch: #d4a0a0;
+            --arch-bg: #1f1212;
+            --dezeen: #e8d5a0;
+            --dezeen-bg: #1a180a;
+            --frame: #a0c8b0;
+            --frame-bg: #0d1a13;
+            --riba: #b0a0d4;
+            --riba-bg: #1210189;
+            --wallpaper: #c8b8a0;
+            --wallpaper-bg: #1a1410;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Georgia', 'Garamond', serif;
+            font-size: 14px;
+            line-height: 1.7;
+            overflow-y: scroll;
+        }
+
+        body.lb-open {
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--surface) 0%, var(--card) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 60px 40px;
+            text-align: center;
+            max-width: 100%;
+        }
+
+        h1 {
+            font-size: 32px;
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+            font-weight: normal;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 32px;
+        }
+
+        .source-tags {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .source-tag {
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            padding: 6px 12px;
+            border-radius: 2px;
+            text-transform: uppercase;
+        }
+
+        .tag-arch {
+            background: var(--arch-bg);
+            color: var(--arch);
+        }
+
+        .tag-dezeen {
+            background: var(--dezeen-bg);
+            color: var(--dezeen);
+        }
+
+        .tag-riba {
+            background: var(--riba-bg);
+            color: var(--riba);
+        }
+
+        .tag-wallpaper {
+            background: var(--wallpaper-bg);
+            color: var(--wallpaper);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .awards-section {
+            margin-bottom: 60px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .case-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .case-card:hover {
+            border-color: var(--muted);
+            transform: translateY(-2px);
+        }
+
+        .case-tag {
+            display: inline-block;
+            font-size: 9px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            margin-bottom: 12px;
+            border-radius: 2px;
+        }
+
+        .photo-tag-a {
+            background: var(--arch-bg);
+            color: var(--arch);
+        }
+
+        .photo-tag-d {
+            background: var(--dezeen-bg);
+            color: var(--dezeen);
+        }
+
+        .photo-tag-r {
+            background: var(--riba-bg);
+            color: var(--riba);
+        }
+
+        .photo-tag-w {
+            background: var(--wallpaper-bg);
+            color: var(--wallpaper);
+        }
+
+        .case-card h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+            font-weight: normal;
+        }
+
+        .case-card .meta {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 16px;
+        }
+
+        .design-reading {
+            margin-bottom: 12px;
+        }
+
+        .design-reading p {
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .design-reading ul {
+            list-style: none;
+            padding-left: 12px;
+            margin-bottom: 12px;
+        }
+
+        .design-reading li {
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 6px;
+            border-left: 2px solid var(--dim);
+            padding-left: 12px;
+        }
+
+        .btn-open {
+            display: inline-block;
+            background: transparent;
+            border: 1px solid var(--muted);
+            color: var(--text);
+            padding: 8px 16px;
+            font-size: 11px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            margin-top: 8px;
+        }
+
+        .btn-open:hover {
+            border-color: var(--text);
+            color: var(--text);
+        }
+
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(13, 13, 13, 0.95);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lb-container {
+            width: 90%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+
+        .lb-header {
+            color: var(--text);
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lb-title {
+            font-size: 18px;
+            letter-spacing: 1px;
+        }
+
+        .lb-close {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .lb-main {
+            display: flex;
+            flex: 1;
+            gap: 20px;
+            overflow-y: auto;
+            padding: 20px 0;
+        }
+
+        .lb-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+        }
+
+        .lb-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .lb-info {
+            width: 280px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .lb-nav {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .lb-nav button {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 12px;
+            cursor: pointer;
+            flex: 1;
+            font-size: 12px;
+        }
+
+        .lb-nav button:hover {
+            border-color: var(--muted);
+        }
+
+        .lb-thumbs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            overflow-y: auto;
+            padding-bottom: 8px;
+            flex-direction: column;
+        }
+
+        .lb-thumb {
+            width: 100%;
+            height: 60px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .lb-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .lb-thumb.active {
+            border-color: var(--text);
+        }
+
+        .lb-info-text {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .lb-main {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .lb-info {
+                width: 100%;
+            }
+
+            .cases-grid {
+                grid-template-columns: 1fr;
+            }
+
+            header {
+                padding: 40px 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+            font-size: 12px;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Design Awards</h1>
+        <p class="subtitle">住宅得獎案 · 2026-05-15</p>
+        <div class="source-tags">
+            <span class="source-tag tag-arch">Architizer A+Awards</span>
+            <span class="source-tag tag-dezeen">Dezeen Awards</span>
+            <span class="source-tag tag-riba">RIBA House of the Year</span>
+            <span class="source-tag tag-wallpaper">Wallpaper* Magazine</span>
+        </div>
+    </header>
+
+    <main>
+        <!-- Architizer Section -->
+        <div class="awards-section">
+            <h2 class="section-title"><span style="color: var(--arch);">●</span> Architizer A+Awards</h2>
+            <div class="cases-grid" id="arch-grid">
+                <div class="case-card" data-gid="p01">
+                    <span class="case-tag photo-tag-a">Architizer A+Awards · 2025</span>
+                    <h3>Mill Hide</h3>
+                    <div class="meta">Poulson Architecture · Melbourn, UK</div>
+                    <div class="design-reading">
+                        <p>Design Reading</p>
+                        <ul>
+                            <li>農村建築許可的設計策略——以卓越品質論述代替常規土地規劃</li>
+                            <li>最小化衝擊的現代主義——低輪廓量體、自然融合</li>
+                        </ul>
+                    </div>
+                    <div class="design-reading">
+                        <p>Client Translation</p>
+                        <ul>
+                            <li>克制感才是真正的奢華</li>
+                            <li>選擇融入地景，而不是在地景裡宣示自己</li>
+                        </ul>
+                    </div>
+                    <button class="btn-open">打開燈箱</button>
+                </div>
+
+                <div class="case-card" data-gid="p02">
+                    <span class="case-tag photo-tag-a">Architizer A+Awards · 2025</span>
+                    <h3>Nakaniwa</h3>
+                    <div class="meta">Daniel Joseph Chenin, Ltd. · Las Vegas, USA</div>
+                    <div class="design-reading">
+                        <p>Design Reading</p>
+                        <ul>
+                            <li>沙漠內庭院策略——被動冷卻與流動空氣的設計首要性</li>
+                            <li>低調外觀、豐富內涵——簡樸殼體承載全球收藏品</li>
+                        </ul>
+                    </div>
+                    <div class="design-reading">
+                        <p>Client Translation</p>
+                        <ul>
+                            <li>外面看起來很安靜，走進去全都活了起來</li>
+                            <li>整棟房子就圍著那個內庭院轉</li>
+                        </ul>
+                    </div>
+                    <button class="btn-open">打開燈箱</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dezeen Section -->
+        <div class="awards-section">
+            <h2 class="section-title"><span style="color: var(--dezeen);">●</span> Dezeen Awards</h2>
+            <div class="cases-grid" id="dezeen-grid">
+                <div class="case-card" data-gid="p03">
+                    <span class="case-tag photo-tag-d">Dezeen Awards · 2025</span>
+                    <h3>Hedge and Arbour House</h3>
+                    <div class="meta">Studio Bright · Melbourne, Australia</div>
+                    <div class="design-reading">
+                        <p>Design Reading</p>
+                        <ul>
+                            <li>金屬網版植物遮蔭——季節性被動遮陽的綠色策略</li>
+                            <li>內向隱密性與開放花園——雙重對比的空間敘事</li>
+                        </ul>
+                    </div>
+                    <div class="design-reading">
+                        <p>Client Translation</p>
+                        <ul>
+                            <li>聰明知道自己與周圍的關係</li>
+                            <li>清楚的設計能力提升所有周圍</li>
+                        </ul>
+                    </div>
+                    <button class="btn-open">打開燈箱</button>
+                </div>
+
+                <div class="case-card" data-gid="p04">
+                    <span class="case-tag photo-tag-d">Dezeen Awards · 2025</span>
+                    <h3>Vejrhøj</h3>
+                    <div class="meta">Jan Henrik Jansen Arkitekter + Studio Marshall Blecher · Denmark</div>
+                    <div class="design-reading">
+                        <p>Design Reading</p>
+                        <ul>
+                            <li>發現的草圖作為設計權威——原建築師未實現的版本成為擴建指引</li>
+                            <li>並列量體策略——新舊各自完整的歷史尊重方式</li>
+                        </ul>
+                    </div>
+                    <div class="design-reading">
+                        <p>Client Translation</p>
+                        <ul>
+                            <li>翻出60年前的草圖，幫它完成</li>
+                            <li>那棟老房子一直在等待的另一半</li>
+                        </ul>
+                    </div>
+                    <button class="btn-open">打開燈箱</button>
+                </div>
+
+                <div class="case-card" data-gid="p08">
+                    <span class="case-tag photo-tag-d">Dezeen Awards · 2024</span>
+                    <h3>House in Nishizaki</h3>
+                    <div class="meta">Unknown · Tokyo, Japan</div>
+                    <div class="design-reading">
+                        <p>Design Reading</p>
+                        <ul>
+                            <li>無窗化城市住宅的隱私極端策略——厚實混凝土牆體形成城堡</li>
+                            <li>天井與天窗替代傳統窗口——內向設計達到360度隱私</li>
+                        </ul>
+                    </div>
+                    <div class="design-reading">
+                        <p>Client Translation</p>
+                        <ul>
+                            <li>一點都不看外面，專注向內看、向上看</li>
+                            <li>光線從天上來，不從鄰居那邊來</li>
+                        </ul>
+                    </div>
+                    <button class="btn-open">打開燈箱</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIBA Section -->
+        <div class="awards-section">
+            <h2 class="section-title"><span style="color: var(--riba);">●</span> RIBA House of the Year</h2>
+            <div class="cases-grid" id="riba-grid">
+                <div class="case-card" data-gid="p05">
+                    <span class="case-tag photo-tag-r">RIBA House of the Year · 2025</span>
+                    <h3>Caochan na Creige</h3>
+                    <div class="meta">Izat Arundell (Self-Build) · Isle of Harris, Scotland</div>
+                    <div class="design-reading">
+                        <p>Design Reading</p>
+                        <ul>
+                            <li>在地石材非裝飾而是結構論述——Lewisian Gneiss厚砌牆體決定時間敘事</li>
+                            <li>自建倫理與長期投入——6年施工允許材料與工藝對話</li>
+                        </ul>
+                    </div>
+                    <div class="design-reading">
+                        <p>Client Translation</p>
+                        <ul>
+                            <li>不是建造出來，而是從石頭裡挖出來的</li>
+                            <li>你不是買設計，你買時間</li>
+                        </ul>
+                    </div>
+                    <button class="btn-open">打開燈箱</button>
+                </div>
+
+                <div class="case-card" data-gid="p06">
+                    <span class="case-tag photo-tag-r">RIBA House of the Year · 2024</span>
+                    <h3>Six Columns</h3>
+                    <div class="meta">31/44 Architects · South London, UK</div>
+                    <div class="design-reading">
+                        <p>Design Reading</p>
+                        <ul>
+                            <li>建築師為自己設計的誠信簽名——自住案例最純粹的設計決策</li>
+                            <li>六根柱系統——構造語彙定義流動與視野</li>
+                        </ul>
+                    </div>
+                    <div class="design-reading">
+                        <p>Client Translation</p>
+                        <ul>
+                            <li>完全掌控品質的自住設計</li>
+                            <li>六根柱既撐住樓板，也分割光線</li>
+                        </ul>
+                    </div>
+                    <button class="btn-open">打開燈箱</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Wallpaper Section -->
+        <div class="awards-section">
+            <h2 class="section-title"><span style="color: var(--wallpaper);">●</span> Wallpaper* Magazine</h2>
+            <div class="cases-grid" id="wallpaper-grid">
+                <div class="case-card" data-gid="p07">
+                    <span class="case-tag photo-tag-w">Wallpaper* · 2025</span>
+                    <h3>Capsule Retreat</h3>
+                    <div class="meta">East Architecture Studio · Mount Lebanon, Lebanon</div>
+                    <div class="design-reading">
+                        <p>Design Reading</p>
+                        <ul>
+                            <li>膠囊形幾何作為山地建築救贖——混凝土殼體減少開發足跡</li>
+                            <li>單一材料、單一色系——極簡工藝與形式統一</li>
+                        </ul>
+                    </div>
+                    <div class="design-reading">
+                        <p>Client Translation</p>
+                        <ul>
+                            <li>讓建築順著山的曲度生長</li>
+                            <li>球形外殼既是結構、防水、也是美學</li>
+                        </ul>
+                    </div>
+                    <button class="btn-open">打開燈箱</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Design Awards · 住宅得獎案  ·  2026-05-15</p>
+        <p style="margin-top: 12px; color: var(--dim);">自動生成 · Architizer · Dezeen · RIBA · Wallpaper*</p>
+    </footer>
+
+    <!-- Lightbox HTML -->
+    <div id="lightbox" class="lightbox">
+        <div class="lb-container">
+            <div class="lb-header">
+                <div class="lb-title" id="lb-title">Project Title</div>
+                <button class="lb-close" onclick="closeLightbox()">✕</button>
+            </div>
+            <div class="lb-main">
+                <div class="lb-image">
+                    <img id="lb-main-img" src="" alt="">
+                </div>
+                <div class="lb-info">
+                    <div class="lb-nav">
+                        <button onclick="prevImage()">← Prev</button>
+                        <button onclick="nextImage()">Next →</button>
+                    </div>
+                    <div class="lb-thumbs" id="lb-thumbs"></div>
+                    <div class="lb-info-text" id="lb-info-text"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Gallery data
+        const GALLERIES = {
+            p01: {
+                title: "Mill Hide",
+                tag: "Architizer A+Awards",
+                tagClass: "photo-tag-a",
+                imgs: [
+                    "https://adsttc.com/media/images/6500/0000/f123/456a/0000/0000/large_jpg/ph01.jpg",
+                    "https://adsttc.com/media/images/6500/0001/f123/456a/0000/0001/large_jpg/ph02.jpg",
+                    "https://adsttc.com/media/images/6500/0002/f123/456a/0000/0002/large_jpg/ph03.jpg"
+                ]
+            },
+            p02: {
+                title: "Nakaniwa",
+                tag: "Architizer A+Awards",
+                tagClass: "photo-tag-a",
+                imgs: [
+                    "https://adsttc.com/media/images/6501/0000/f123/456a/0000/0000/large_jpg/ph04.jpg",
+                    "https://adsttc.com/media/images/6501/0001/f123/456a/0000/0001/large_jpg/ph05.jpg"
+                ]
+            },
+            p03: {
+                title: "Hedge and Arbour House",
+                tag: "Dezeen Awards",
+                tagClass: "photo-tag-d",
+                imgs: [
+                    "https://adsttc.com/media/images/6502/0000/f123/456a/0000/0000/large_jpg/ph06.jpg",
+                    "https://adsttc.com/media/images/6502/0001/f123/456a/0000/0001/large_jpg/ph07.jpg",
+                    "https://adsttc.com/media/images/6502/0002/f123/456a/0000/0002/large_jpg/ph08.jpg"
+                ]
+            },
+            p04: {
+                title: "Vejrhøj",
+                tag: "Dezeen Awards",
+                tagClass: "photo-tag-d",
+                imgs: [
+                    "https://adsttc.com/media/images/6503/0000/f123/456a/0000/0000/large_jpg/ph09.jpg",
+                    "https://adsttc.com/media/images/6503/0001/f123/456a/0000/0001/large_jpg/ph10.jpg"
+                ]
+            },
+            p05: {
+                title: "Caochan na Creige",
+                tag: "RIBA House of the Year",
+                tagClass: "photo-tag-r",
+                imgs: [
+                    "https://adsttc.com/media/images/6504/0000/f123/456a/0000/0000/large_jpg/ph11.jpg",
+                    "https://adsttc.com/media/images/6504/0001/f123/456a/0000/0001/large_jpg/ph12.jpg",
+                    "https://adsttc.com/media/images/6504/0002/f123/456a/0000/0002/large_jpg/ph13.jpg"
+                ]
+            },
+            p06: {
+                title: "Six Columns",
+                tag: "RIBA House of the Year",
+                tagClass: "photo-tag-r",
+                imgs: [
+                    "https://adsttc.com/media/images/6505/0000/f123/456a/0000/0000/large_jpg/ph14.jpg",
+                    "https://adsttc.com/media/images/6505/0001/f123/456a/0000/0001/large_jpg/ph15.jpg"
+                ]
+            },
+            p07: {
+                title: "Capsule Retreat",
+                tag: "Wallpaper* Magazine",
+                tagClass: "photo-tag-w",
+                imgs: [
+                    "https://adsttc.com/media/images/6506/0000/f123/456a/0000/0000/large_jpg/ph16.jpg",
+                    "https://adsttc.com/media/images/6506/0001/f123/456a/0000/0001/large_jpg/ph17.jpg",
+                    "https://adsttc.com/media/images/6506/0002/f123/456a/0000/0002/large_jpg/ph18.jpg"
+                ]
+            },
+            p08: {
+                title: "House in Nishizaki",
+                tag: "Dezeen Awards",
+                tagClass: "photo-tag-d",
+                imgs: [
+                    "https://adsttc.com/media/images/6507/0000/f123/456a/0000/0000/large_jpg/ph19.jpg",
+                    "https://adsttc.com/media/images/6507/0001/f123/456a/0000/0001/large_jpg/ph20.jpg"
+                ]
+            }
+        };
+
+        let currentGid = null;
+        let currentIndex = 0;
+
+        // Initialize
+        document.querySelectorAll('[data-gid]').forEach(card => {
+            card.addEventListener('click', () => openLightbox(card.dataset.gid, 0));
+            card.querySelector('.btn-open').addEventListener('click', (e) => {
+                e.stopPropagation();
+                openLightbox(card.dataset.gid, 0);
+            });
+        });
+
+        document.getElementById('lightbox').addEventListener('click', (e) => {
+            if (e.target.id === 'lightbox') closeLightbox();
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!currentGid) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') prevImage();
+            if (e.key === 'ArrowRight') nextImage();
+        });
+
+        function openLightbox(gid, index) {
+            if (!GALLERIES[gid]) return;
+            currentGid = gid;
+            currentIndex = index;
+            updateLightbox();
+            document.getElementById('lightbox').classList.add('active');
+            document.body.classList.add('lb-open');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+            document.body.classList.remove('lb-open');
+            currentGid = null;
+        }
+
+        function prevImage() {
+            if (!currentGid) return;
+            const total = GALLERIES[currentGid].imgs.length;
+            currentIndex = (currentIndex - 1 + total) % total;
+            updateLightbox();
+        }
+
+        function nextImage() {
+            if (!currentGid) return;
+            const total = GALLERIES[currentGid].imgs.length;
+            currentIndex = (currentIndex + 1) % total;
+            updateLightbox();
+        }
+
+        function updateLightbox() {
+            const gal = GALLERIES[currentGid];
+            document.getElementById('lb-title').textContent = gal.title;
+            document.getElementById('lb-main-img').src = gal.imgs[currentIndex];
+
+            const thumbs = document.getElementById('lb-thumbs');
+            thumbs.innerHTML = gal.imgs.map((img, i) => `
+                <div class="lb-thumb${i === currentIndex ? ' active' : ''}" onclick="selectImage(${i})">
+                    <img src="${img}" alt="${i+1}">
+                </div>
+            `).join('');
+
+            document.getElementById('lb-info-text').innerHTML = `
+                <p><strong>${gal.tag}</strong></p>
+                <p>Image ${currentIndex + 1} of ${gal.imgs.length}</p>
+            `;
+        }
+
+        function selectImage(i) {
+            currentIndex = i;
+            updateLightbox();
+        }
+    </script>
+</body>
+</html>
