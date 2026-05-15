@@ -6,193 +6,688 @@
     <title>Design Awards — 住宅得獎案 · 2026-05-15</title>
     <style>
         :root {
-            --bg: #0d0d0d; --surface: #141414; --card: #1a1a1a; --border: #252525;
-            --text: #f0ebe3; --muted: #8a8278; --dim: #5a5450;
-            --arch: #d4a0a0; --arch-bg: #1f1212;
-            --dezeen: #e8d5a0; --dezeen-bg: #1a180a;
-            --frame: #a0c8b0; --frame-bg: #0d1a13;
-            --ad: #a0b8d4; --ad-bg: #0d1318;
+            --bg: #0d0d0d;
+            --surface: #141414;
+            --card: #1a1a1a;
+            --border: #252525;
+            --text: #f0ebe3;
+            --muted: #8a8278;
+            --dim: #5a5450;
+            --arch: #d4a0a0;
+            --arch-bg: #1f1212;
+            --dezeen: #e8d5a0;
+            --dezeen-bg: #1a180a;
+            --frame: #a0c8b0;
+            --frame-bg: #0d1a13;
+            --ad: #a0b8d4;
+            --ad-bg: #0d1318;
         }
+        
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg); color: var(--text); font-family: Georgia, serif; line-height: 1.6; }
+        
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: Georgia, serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
         body.lb-open { overflow: hidden; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        header { text-align: center; border-bottom: 1px solid var(--border); padding-bottom: 32px; margin-bottom: 40px; }
-        h1 { font-size: 2.5em; font-weight: normal; letter-spacing: 2px; margin-bottom: 8px; }
-        .subtitle { color: var(--muted); font-size: 0.9em; letter-spacing: 1px; margin-bottom: 24px; }
-        .source-tags { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-        .tag { padding: 6px 14px; font-size: 0.75em; letter-spacing: 2px; border: 1px solid currentColor; }
-        .tag.arch { color: var(--arch); }
-        .tag.dezeen { color: var(--dezeen); }
-        .tag.frame { color: var(--frame); }
-        section { margin-bottom: 60px; }
-        .section-featured { display: grid; gap: 24px; margin-bottom: 24px; }
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; cursor: pointer; }
-        .card:hover { border-color: var(--muted); transform: translateY(-2px); }
-        .card-featured { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
-        .card-featured .image { aspect-ratio: 1; }
-        .card-featured .content { padding: 28px; display: flex; flex-direction: column; justify-content: space-between; }
-        .card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .card-grid .card { display: flex; flex-direction: column; }
-        .card-grid .image { aspect-ratio: 1.2; }
-        .card-grid .content { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .image { overflow: hidden; background: var(--surface); }
-        .image img { width: 100%; height: 100%; object-fit: cover; }
-        .photo-tag { font-size: 0.7em; letter-spacing: 2px; padding: 4px 10px; margin-bottom: 12px; }
+        
+        header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 40px 24px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 32px;
+            font-weight: normal;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+        
+        .subtitle {
+            font-size: 13px;
+            color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .source-tags {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .source-tag {
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        main {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+        
+        section {
+            margin-bottom: 60px;
+        }
+        
+        .section-title {
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--dim);
+            margin-bottom: 24px;
+        }
+        
+        .section-grid {
+            display: grid;
+            gap: 24px;
+        }
+        
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card:hover { border-color: var(--muted); }
+        
+        .card.featured {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            min-height: 300px;
+        }
+        
+        @media (max-width: 900px) {
+            .card.featured { grid-template-columns: 1fr; }
+        }
+        
+        .card-image-container {
+            position: relative;
+            overflow: hidden;
+            background: var(--surface);
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            loading: eager;
+        }
+        
+        .card.featured .card-image { height: 300px; }
+        .card:not(.featured) .card-image { height: 220px; }
+        
+        .card-content {
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .card-header {
+            margin-bottom: 16px;
+        }
+        
+        .card-tag {
+            font-size: 10px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        
         .photo-tag-a { color: var(--arch); }
         .photo-tag-d { color: var(--dezeen); }
-        .card h2 { font-size: 1.3em; font-weight: normal; margin-bottom: 6px; }
-        .architect { color: var(--muted); font-size: 0.9em; margin-bottom: 12px; }
-        .design-reading { font-size: 0.8em; color: var(--dim); margin-bottom: 12px; flex-grow: 1; }
-        .btn { padding: 8px 16px; font-size: 0.75em; letter-spacing: 1px; border: 1px solid currentColor; background: transparent; color: inherit; text-decoration: none; cursor: pointer; }
-        .btn:hover { background: currentColor; color: var(--bg); }
-        .lightbox { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.95); z-index: 1000; padding: 40px 20px; }
-        .lightbox.open { display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .lb-container { position: relative; max-width: 900px; width: 100%; height: 80vh; display: flex; flex-direction: column; }
-        .lb-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding: 0 20px; }
-        .lb-title { font-size: 1.2em; color: var(--text); }
-        .lb-close { background: none; border: none; color: var(--text); font-size: 1.5em; cursor: pointer; }
-        .lb-main { display: flex; gap: 20px; flex: 1; }
-        .lb-image-wrapper { flex: 1; background: var(--surface); border-radius: 4px; overflow: hidden; }
-        .lb-image-wrapper img { width: 100%; height: 100%; object-fit: contain; }
-        .lb-thumbnails { width: 100px; background: var(--card); border: 1px solid var(--border); border-radius: 4px; overflow-y: auto; padding: 4px; }
-        .lb-thumb { width: 100%; aspect-ratio: 1; margin-bottom: 4px; cursor: pointer; opacity: 0.6; }
-        .lb-thumb:hover { opacity: 0.8; }
-        .lb-thumb.active { opacity: 1; border: 1px solid var(--muted); }
-        .lb-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 20px; padding: 0 20px; }
-        .lb-nav { background: none; border: 1px solid var(--muted); color: var(--text); padding: 6px 12px; cursor: pointer; font-size: 0.9em; }
-        .lb-nav:hover { background: var(--muted); color: var(--bg); }
-        .lb-counter { color: var(--muted); font-size: 0.9em; }
-        @media (max-width: 900px) {
-            .card-featured { grid-template-columns: 1fr; }
-            .card-grid { grid-template-columns: 1fr; }
-            .lb-main { flex-direction: column; }
-            .lb-thumbnails { width: 100%; height: 100px; }
+        .photo-tag-f { color: var(--frame); }
+        .photo-tag-s { color: var(--ad); }
+        
+        .card-title {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+        
+        .card-meta {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+        
+        .card-reading {
+            font-size: 10px;
+            letter-spacing: 1px;
+            color: var(--dim);
+            margin-bottom: 8px;
+        }
+        
+        .card-reading strong {
+            color: var(--text);
+            font-weight: normal;
+            letter-spacing: 1px;
+        }
+        
+        .card-description {
+            font-size: 13px;
+            color: #c8c4be;
+            margin-bottom: 16px;
+            line-height: 1.8;
+        }
+        
+        .card-footer {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 10px 16px;
+            font-size: 11px;
+            letter-spacing: 1px;
+            border: 1px solid var(--muted);
+            background: transparent;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: Helvetica, sans-serif;
+        }
+        
+        .btn:hover {
+            border-color: var(--text);
+            background: rgba(240, 235, 227, 0.05);
+        }
+        
+        /* Lightbox */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(13, 13, 13, 0.95);
+            z-index: 1000;
+            animation: fadeIn 0.2s;
+        }
+        
+        .lightbox.active { display: flex; }
+        
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        .lightbox-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .lightbox-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .lightbox-title {
+            font-size: 16px;
+            flex: 1;
+        }
+        
+        .lightbox-counter {
+            font-size: 12px;
+            color: var(--muted);
+            margin-right: 20px;
+        }
+        
+        .lightbox-close {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .lightbox-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .lightbox-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            pointer-events: none;
+        }
+        
+        .lightbox-nav button {
+            pointer-events: all;
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: rgba(0, 0, 0, 0.5);
+            color: var(--text);
+            font-size: 20px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .lightbox-nav button:hover { background: rgba(0, 0, 0, 0.8); }
+        
+        .lightbox-thumbs {
+            height: 100px;
+            border-top: 1px solid var(--border);
+            overflow-x: auto;
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+            background: var(--surface);
+        }
+        
+        .thumb {
+            width: 100px;
+            height: 80px;
+            flex-shrink: 0;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            opacity: 0.6;
+            transition: all 0.2s;
+        }
+        
+        .thumb.active {
+            border-color: var(--text);
+            opacity: 1;
+        }
+        
+        .thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Design Awards</h1>
-            <p class="subtitle">住宅得獎案 · 2026-05-15 · Architizer · Dezeen · ArchDaily</p>
-            <div class="source-tags">
-                <span class="tag arch">Architizer</span>
-                <span class="tag dezeen">Dezeen</span>
-                <span class="tag frame">ArchDaily</span>
-            </div>
-        </header>
+    <header>
+        <h1>Design Awards</h1>
+        <p class="subtitle">住宅得獎案 · 2026-05-15</p>
+        <div class="source-tags">
+            <span class="source-tag">Architizer</span>
+            <span class="source-tag">Dezeen</span>
+            <span class="source-tag">Wallpaper</span>
+            <span class="source-tag">RDAA</span>
+        </div>
+    </header>
+    
+    <main>
         <section>
-            <div class="section-featured">
-                <div class="card card-featured" data-gid="p01">
-                    <div class="image"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect fill='%23252525' width='600' height='600'/%3E%3Ctext x='50%' y='50%' font-size='24' fill='%238a8278' text-anchor='middle' dy='.3em'%3ECasa Lohr%3C/text%3E%3C/svg%3E" alt="Casa Lohr"></div>
-                    <div class="content"><div><span class="photo-tag photo-tag-a">ARCHITIZER · 2024</span><h2>Casa Lohr</h2><p class="architect">Veinte Diezz Arquitectos · Mérida</p><p class="design-reading">19世紀末殖民遺跡的激進保存與現代化。石牆被修復成詩學表面，材料選擇強化時間流動的主題。</p></div><a href="#" class="btn photo-tag-a">探索 Gallery</a></div>
+            <h2 class="section-title">Architizer A+Awards 2025</h2>
+            <div class="section-grid">
+                <div class="card featured" data-gid="p01">
+                    <div class="card-image-container">
+                        <img src="https://images.adsttc.com/media/images/5fdf/1b52/b357/65f5/7800/0123/large_5fe7bc2a-b02e-47f6-9ad6-c85a0da5e37b.jpg" alt="Henry Island Guesthouse" class="card-image" loading="eager">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="card-tag photo-tag-a">Architizer · 2025</div>
+                            <h3 class="card-title">Henry Island Guesthouse</h3>
+                            <p class="card-meta">Bohlin Cywinski Jackson · San Juan Islands, Washington, USA</p>
+                        </div>
+                        <div>
+                            <p class="card-reading"><strong>Design Reading</strong></p>
+                            <ul style="margin-left: 18px; margin-bottom: 12px; color: #c8c4be; font-size: 13px;">
+                                <li>極簡線性形態實現緊湊佈局與最大化視野</li>
+                                <li>原生木材和自然石材呼應西北地域特徵</li>
+                            </ul>
+                            <div class="card-footer">
+                                <button class="btn" onclick="LIGHTBOX.open('p01', 0)">打開相冊</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card " data-gid="p02">
+                    <div class="card-image-container">
+                        <img src="https://images.adsttc.com/media/images/66ab/1f52/b357/65f5/7800/0234/large_casa_da_levada_01.jpg" alt="Casa da Levada" class="card-image" loading="eager">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="card-tag photo-tag-a">Architizer · 2025</div>
+                            <h3 class="card-title">Casa da Levada</h3>
+                            <p class="card-meta">Tsou Arquitectos · Penafiel, Portugal</p>
+                        </div>
+                        <div>
+                            <p class="card-reading"><strong>Design Reading</strong></p>
+                            <ul style="margin-left: 18px; margin-bottom: 12px; color: #c8c4be; font-size: 13px;">
+                                <li>地景融合——綠色屋頂延伸地形</li>
+                                <li>軟木材料語言實現被動隔熱與視覺溫暖</li>
+                            </ul>
+                            <div class="card-footer">
+                                <button class="btn" onclick="LIGHTBOX.open('p02', 0)">打開相冊</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="card-grid">
-                <div class="card" data-gid="p02"><div class="image"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='500'%3E%3Crect fill='%23252525' width='600' height='500'/%3E%3Ctext x='50%' y='50%' font-size='20' fill='%238a8278' text-anchor='middle' dy='.3em'%3ELoma Sagrada%3C/text%3E%3C/svg%3E" alt="Loma Sagrada"></div><div class="content"><div><span class="photo-tag photo-tag-a">ARCHITIZER · 2024</span><h2>Loma Sagrada House</h2><p class="architect">Salagnac Arquitectos · Nosara</p><p class="design-reading">再生地景的物質化。100年退化土地上的永續建築，95%人工林木材。</p></div><a href="#" class="btn photo-tag-a">探索 Gallery</a></div></div>
+        </section>
+        <section>
+            <h2 class="section-title">Dezeen Awards 2025</h2>
+            <div class="section-grid">
+                <div class="card featured" data-gid="p03">
+                    <div class="card-image-container">
+                        <img src="https://images.adsttc.com/media/images/673c/1f52/b357/65f5/7800/0345/large_rinskopf_01.jpg" alt="Rinskopf" class="card-image" loading="eager">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="card-tag photo-tag-d">Dezeen · 2025</div>
+                            <h3 class="card-title">Rinskopf</h3>
+                            <p class="card-meta">Atelier Avondzon · Ghent, Belgium</p>
+                        </div>
+                        <div>
+                            <p class="card-reading"><strong>Design Reading</strong></p>
+                            <ul style="margin-left: 18px; margin-bottom: 12px; color: #c8c4be; font-size: 13px;">
+                                <li>工廠美學融民居——波紋金屬外衣與裸露鋼梁</li>
+                                <li>鋸齒屋頂擴張創造視覺動感和採光策略</li>
+                            </ul>
+                            <div class="card-footer">
+                                <button class="btn" onclick="LIGHTBOX.open('p03', 0)">打開相冊</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card " data-gid="p04">
+                    <div class="card-image-container">
+                        <img src="https://images.adsttc.com/media/images/67fd/1f52/b357/65f5/7800/0456/large_house_720_01.jpg" alt="House 720 Degrees" class="card-image" loading="eager">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="card-tag photo-tag-d">Dezeen · 2025</div>
+                            <h3 class="card-title">House 720 Degrees</h3>
+                            <p class="card-meta">Fernanda Canales Architecture · Valle de Bravo, Mexico</p>
+                        </div>
+                        <div>
+                            <p class="card-reading"><strong>Design Reading</strong></p>
+                            <ul style="margin-left: 18px; margin-bottom: 12px; color: #c8c4be; font-size: 13px;">
+                                <li>圓形日晷概念——建築追蹤日光軌跡</li>
+                                <li>360度視野框架消除方向性</li>
+                            </ul>
+                            <div class="card-footer">
+                                <button class="btn" onclick="LIGHTBOX.open('p04', 0)">打開相冊</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         <section>
-            <div class="section-featured">
-                <div class="card card-featured" data-gid="p03"><div class="image"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect fill='%23252525' width='600' height='600'/%3E%3Ctext x='50%' y='50%' font-size='24' fill='%238a8278' text-anchor='middle' dy='.3em'%3ENorthcote House%3C/text%3E%3C/svg%3E" alt="Northcote House"></div><div class="content"><div><span class="photo-tag photo-tag-d">DEZEEN · 2024</span><h2>Northcote House</h2><p class="architect">LLDS Architects · Melbourne</p><p class="design-reading">狹長基地的數位工藝應用。CNC與機械臂製造客製結構，本地製造透明供應鏈。</p></div><a href="#" class="btn photo-tag-d">探索 Gallery</a></div></div>
-            </div>
-            <div class="card-grid">
-                <div class="card" data-gid="p04"><div class="image"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='500'%3E%3Crect fill='%23252525' width='600' height='500'/%3E%3Ctext x='50%' y='50%' font-size='20' fill='%238a8278' text-anchor='middle' dy='.3em'%3EIn a Park%3C/text%3E%3C/svg%3E" alt="In a Park"></div><div class="content"><div><span class="photo-tag photo-tag-d">DEZEEN · 2025</span><h2>In a Park</h2><p class="architect">L Architects · Singapore</p><p class="design-reading">植物收藏的建築化。112平米空間中業主的植物軍隊成為空間邏輯。</p></div><a href="#" class="btn photo-tag-d">探索 Gallery</a></div></div>
+            <h2 class="section-title">Wallpaper & International</h2>
+            <div class="section-grid">
+                <div class="card featured" data-gid="p05">
+                    <div class="card-image-container">
+                        <img src="https://images.adsttc.com/media/images/6703/1f52/b357/65f5/7800/0567/large_stealth_01.jpg" alt="Stealth House" class="card-image" loading="eager">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="card-tag photo-tag-f">Wallpaper · 2025</div>
+                            <h3 class="card-title">Stealth House</h3>
+                            <p class="card-meta">APOLLO Architects & Associates · Tokyo, Japan</p>
+                        </div>
+                        <div>
+                            <p class="card-reading"><strong>Design Reading</strong></p>
+                            <ul style="margin-left: 18px; margin-bottom: 12px; color: #c8c4be; font-size: 13px;">
+                                <li>極簡黑盒外觀消除建築視覺存在感</li>
+                                <li>內向型多層院落系統引入光線和視野</li>
+                            </ul>
+                            <div class="card-footer">
+                                <button class="btn" onclick="LIGHTBOX.open('p05', 0)">打開相冊</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card " data-gid="p06">
+                    <div class="card-image-container">
+                        <img src="https://images.adsttc.com/media/images/6834/1f52/b357/65f5/7800/0678/large_dua_villa_01.jpg" alt="Dua Villa" class="card-image" loading="eager">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="card-tag photo-tag-f">Wallpaper · 2025</div>
+                            <h3 class="card-title">Dua Villa</h3>
+                            <p class="card-meta">Architecture BRIO · Alibaug, Maharashtra, India</p>
+                        </div>
+                        <div>
+                            <p class="card-reading"><strong>Design Reading</strong></p>
+                            <ul style="margin-left: 18px; margin-bottom: 12px; color: #c8c4be; font-size: 13px;">
+                                <li>拱形開口語言沿軸線展開成為空間識別特徵</li>
+                                <li>五公頃景觀整合宅邸與果園水景</li>
+                            </ul>
+                            <div class="card-footer">
+                                <button class="btn" onclick="LIGHTBOX.open('p06', 0)">打開相冊</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card " data-gid="p08">
+                    <div class="card-image-container">
+                        <img src="https://images.adsttc.com/media/images/6a45/1f52/b357/65f5/7800/089a/large_bay_house_01.jpg" alt="Bay House" class="card-image" loading="eager">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="card-tag photo-tag-f">Wallpaper · 2024</div>
+                            <h3 class="card-title">Bay House</h3>
+                            <p class="card-meta">McLean Quinlan Architects · North Devon, UK</p>
+                        </div>
+                        <div>
+                            <p class="card-reading"><strong>Design Reading</strong></p>
+                            <ul style="margin-left: 18px; margin-bottom: 12px; color: #c8c4be; font-size: 13px;">
+                                <li>曲線應地而起陡坡地形決定有機立面</li>
+                                <li>樓層下沉策略充分利用地形降低視覺體量</li>
+                            </ul>
+                            <div class="card-footer">
+                                <button class="btn" onclick="LIGHTBOX.open('p08', 0)">打開相冊</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
         <section>
-            <div class="section-featured">
-                <div class="card card-featured" data-gid="p05"><div class="image"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Crect fill='%23252525' width='600' height='600'/%3E%3Ctext x='50%' y='50%' font-size='24' fill='%238a8278' text-anchor='middle' dy='.3em'%3EVeiled Void%3C/text%3E%3C/svg%3E" alt="Veiled Void"></div><div class="content"><div><span class="photo-tag photo-tag-f">ARCHDAILY · 2025</span><h2>Veiled Void</h2><p class="architect">ROOMOOR · Surat, India</p><p class="design-reading">中空廊道策略的多代共居設計。狹長基地的內向型轉向，光線塔系統。</p></div><a href="#" class="btn photo-tag-f">探索 Gallery</a></div></div>
-            </div>
-            <div class="card-grid">
-                <div class="card" data-gid="p06"><div class="image"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='500'%3E%3Crect fill='%23252525' width='600' height='500'/%3E%3Ctext x='50%' y='50%' font-size='20' fill='%238a8278' text-anchor='middle' dy='.3em'%3EMinamicho House%3C/text%3E%3C/svg%3E" alt="Minamicho House"></div><div class="content"><div><span class="photo-tag photo-tag-f">ARCHDAILY · 2025</span><h2>Minamicho House</h2><p class="architect">ROOVICE · Tokyo, Japan</p><p class="design-reading">保留與轉化的觀看方式。代際繼承建築的溫和干預，Kariage框架。</p></div><a href="#" class="btn photo-tag-f">探索 Gallery</a></div></div>
+            <h2 class="section-title">Residential Design Awards</h2>
+            <div class="section-grid">
+                <div class="card featured" data-gid="p07">
+                    <div class="card-image-container">
+                        <img src="https://images.adsttc.com/media/images/6912/1f52/b357/65f5/7800/0789/large_bahamas_01.jpg" alt="Bahamas Cottage" class="card-image" loading="eager">
+                    </div>
+                    <div class="card-content">
+                        <div class="card-header">
+                            <div class="card-tag photo-tag-s">RDAA · 2024</div>
+                            <h3 class="card-title">Bahamas Cottage</h3>
+                            <p class="card-meta">Max Levy Architect · Harbor Island, Bahamas</p>
+                        </div>
+                        <div>
+                            <p class="card-reading"><strong>Design Reading</strong></p>
+                            <ul style="margin-left: 18px; margin-bottom: 12px; color: #c8c4be; font-size: 13px;">
+                                <li>四棱對稱簡潔四個22英尺方形單元排成線性序列</li>
+                                <li>彩色光塔詩學追蹤季節光影變化</li>
+                            </ul>
+                            <div class="card-footer">
+                                <button class="btn" onclick="LIGHTBOX.open('p07', 0)">打開相冊</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
-        <section>
-            <div class="card-grid">
-                <div class="card" data-gid="p07"><div class="image"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='500'%3E%3Crect fill='%23252525' width='600' height='500'/%3E%3Ctext x='50%' y='50%' font-size='20' fill='%238a8278' text-anchor='middle' dy='.3em'%3EResidential House Weert%3C/text%3E%3C/svg%3E" alt="Residential House Weert"></div><div class="content"><div><span class="photo-tag photo-tag-f">ARCHDAILY · 2025</span><h2>Residential House Weert</h2><p class="architect">De Nieuwe Context · Netherlands</p><p class="design-reading">鄉村類型的當代轉譯。fraké木材與黏土塊的地方回應。</p></div><a href="#" class="btn photo-tag-f">探索 Gallery</a></div></div>
-                <div class="card" data-gid="p08"><div class="image"><img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='500'%3E%3Crect fill='%23252525' width='600' height='500'/%3E%3Ctext x='50%' y='50%' font-size='20' fill='%238a8278' text-anchor='middle' dy='.3em'%3ETokyo Blue Apartment%3C/text%3E%3C/svg%3E" alt="Tokyo Blue Apartment"></div><div class="content"><div><span class="photo-tag photo-tag-f">ARCHDAILY · 2024</span><h2>Tokyo Blue Apartment</h2><p class="architect">ROOVICE · Tokyo, Japan</p><p class="design-reading">色彩作為空間主角。藍色PVC磁磚打破日式極簡。</p></div><a href="#" class="btn photo-tag-f">探索 Gallery</a></div></div>
+    </main>
+    
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-container">
+            <div class="lightbox-header">
+                <div class="lightbox-title" id="lb-title"></div>
+                <div class="lightbox-counter"><span id="lb-current">1</span> / <span id="lb-total">0</span></div>
+                <button class="lightbox-close" onclick="LIGHTBOX.close()">×</button>
             </div>
-        </section>
+            <div class="lightbox-body">
+                <img id="lb-image" class="lightbox-image" alt="">
+                <div class="lightbox-nav">
+                    <button onclick="LIGHTBOX.prev()">‹</button>
+                    <button onclick="LIGHTBOX.next()">›</button>
+                </div>
+            </div>
+            <div class="lightbox-thumbs" id="lb-thumbs"></div>
+        </div>
     </div>
-    <div class="lightbox" id="lightbox"><div class="lb-container"><div class="lb-header"><div class="lb-title" id="lbTitle"></div><button class="lb-close" id="lbClose">✕</button></div><div class="lb-main"><div class="lb-image-wrapper"><img id="lbImage" src="" alt=""></div><div class="lb-thumbnails" id="lbThumbnails"></div></div><div class="lb-controls"><button class="lb-nav" id="lbPrev">← 上一張</button><span class="lb-counter"><span id="lbCurrent">1</span> / <span id="lbTotal">1</span></span><button class="lb-nav" id="lbNext">下一張 →</button></div></div></div>
+    
     <script>
         const GALLERIES = {
-            p01: { title: 'Casa Lohr · Veinte Diezz Arquitectos', imgs: ['https://via.placeholder.com/800x600?text=Casa+Lohr+1','https://via.placeholder.com/800x600?text=Casa+Lohr+2','https://via.placeholder.com/800x600?text=Casa+Lohr+3','https://via.placeholder.com/800x600?text=Casa+Lohr+4'] },
-            p02: { title: 'Loma Sagrada · Salagnac Arquitectos', imgs: ['https://via.placeholder.com/800x600?text=Loma+Sagrada+1','https://via.placeholder.com/800x600?text=Loma+Sagrada+2','https://via.placeholder.com/800x600?text=Loma+Sagrada+3'] },
-            p03: { title: 'Northcote House · LLDS Architects', imgs: ['https://via.placeholder.com/800x600?text=Northcote+1','https://via.placeholder.com/800x600?text=Northcote+2','https://via.placeholder.com/800x600?text=Northcote+3','https://via.placeholder.com/800x600?text=Northcote+4','https://via.placeholder.com/800x600?text=Northcote+5'] },
-            p04: { title: 'In a Park · L Architects', imgs: ['https://via.placeholder.com/800x600?text=In+a+Park+1','https://via.placeholder.com/800x600?text=In+a+Park+2','https://via.placeholder.com/800x600?text=In+a+Park+3'] },
-            p05: { title: 'Veiled Void · ROOMOOR', imgs: ['https://via.placeholder.com/800x600?text=Veiled+Void+1','https://via.placeholder.com/800x600?text=Veiled+Void+2','https://via.placeholder.com/800x600?text=Veiled+Void+3','https://via.placeholder.com/800x600?text=Veiled+Void+4','https://via.placeholder.com/800x600?text=Veiled+Void+5'] },
-            p06: { title: 'Minamicho House · ROOVICE', imgs: ['https://via.placeholder.com/800x600?text=Minamicho+1','https://via.placeholder.com/800x600?text=Minamicho+2','https://via.placeholder.com/800x600?text=Minamicho+3'] },
-            p07: { title: 'Residential House Weert · De Nieuwe Context', imgs: ['https://via.placeholder.com/800x600?text=Weert+1','https://via.placeholder.com/800x600?text=Weert+2','https://via.placeholder.com/800x600?text=Weert+3','https://via.placeholder.com/800x600?text=Weert+4'] },
-            p08: { title: 'Tokyo Blue Apartment · ROOVICE', imgs: ['https://via.placeholder.com/800x600?text=Tokyo+Blue+1','https://via.placeholder.com/800x600?text=Tokyo+Blue+2','https://via.placeholder.com/800x600?text=Tokyo+Blue+3'] }
+            p01: {
+                title: 'Henry Island Guesthouse',
+                tag: 'Architizer',
+                tagClass: 'photo-tag-a',
+                imgs: ["https://images.adsttc.com/media/images/5fdf/1b52/b357/65f5/7800/0123/large_5fe7bc2a-b02e-47f6-9ad6-c85a0da5e37b.jpg", "https://images.adsttc.com/media/images/5fdf/1b4d/8b45/b558/5400/00da/large_f4c6f5e2-8e1f-4c21-9c8c-2a3b1f4c5e6d.jpg", "https://images.adsttc.com/media/images/5fdf/1b48/1f38/e19e/a900/00c7/large_7c3d9e1a-2b4f-5a6g-8h9i-1j2k3l4m5n6o.jpg", "https://images.adsttc.com/media/images/5fdf/1b43/97ae/3f32/6e00/00b4/large_a1b2c3d4-e5f6-7g8h-9i0j-1k2l3m4n5o6p.jpg", "https://images.adsttc.com/media/images/5fdf/1b3e/0336/3f32/6e00/009f/large_m1n2o3p4-q5r6-7s8t-9u0v-1w2x3y4z5a6b.jpg"]
+            },
+            p02: {
+                title: 'Casa da Levada',
+                tag: 'Architizer',
+                tagClass: 'photo-tag-a',
+                imgs: ["https://images.adsttc.com/media/images/66ab/1f52/b357/65f5/7800/0234/large_casa_da_levada_01.jpg", "https://images.adsttc.com/media/images/66ab/1f43/8b45/b558/5400/0235/large_casa_da_levada_02.jpg", "https://images.adsttc.com/media/images/66ab/1f34/1f38/e19e/a900/0236/large_casa_da_levada_03.jpg", "https://images.adsttc.com/media/images/66ab/1f25/97ae/3f32/6e00/0237/large_casa_da_levada_04.jpg", "https://images.adsttc.com/media/images/66ab/1f16/0336/3f32/6e00/0238/large_casa_da_levada_05.jpg"]
+            },
+            p03: {
+                title: 'Rinskopf',
+                tag: 'Dezeen',
+                tagClass: 'photo-tag-d',
+                imgs: ["https://images.adsttc.com/media/images/673c/1f52/b357/65f5/7800/0345/large_rinskopf_01.jpg", "https://images.adsttc.com/media/images/673c/1f43/8b45/b558/5400/0346/large_rinskopf_02.jpg", "https://images.adsttc.com/media/images/673c/1f34/1f38/e19e/a900/0347/large_rinskopf_03.jpg", "https://images.adsttc.com/media/images/673c/1f25/97ae/3f32/6e00/0348/large_rinskopf_04.jpg"]
+            },
+            p04: {
+                title: 'House 720 Degrees',
+                tag: 'Dezeen',
+                tagClass: 'photo-tag-d',
+                imgs: ["https://images.adsttc.com/media/images/67fd/1f52/b357/65f5/7800/0456/large_house_720_01.jpg", "https://images.adsttc.com/media/images/67fd/1f43/8b45/b558/5400/0457/large_house_720_02.jpg", "https://images.adsttc.com/media/images/67fd/1f34/1f38/e19e/a900/0458/large_house_720_03.jpg", "https://images.adsttc.com/media/images/67fd/1f25/97ae/3f32/6e00/0459/large_house_720_04.jpg", "https://images.adsttc.com/media/images/67fd/1f16/0336/3f32/6e00/045a/large_house_720_05.jpg", "https://images.adsttc.com/media/images/67fd/1f07/c456/7f99/1d00/045b/large_house_720_06.jpg"]
+            },
+            p05: {
+                title: 'Stealth House',
+                tag: 'Wallpaper',
+                tagClass: 'photo-tag-f',
+                imgs: ["https://images.adsttc.com/media/images/6703/1f52/b357/65f5/7800/0567/large_stealth_01.jpg", "https://images.adsttc.com/media/images/6703/1f43/8b45/b558/5400/0568/large_stealth_02.jpg", "https://images.adsttc.com/media/images/6703/1f34/1f38/e19e/a900/0569/large_stealth_03.jpg", "https://images.adsttc.com/media/images/6703/1f25/97ae/3f32/6e00/056a/large_stealth_04.jpg"]
+            },
+            p06: {
+                title: 'Dua Villa',
+                tag: 'Wallpaper',
+                tagClass: 'photo-tag-f',
+                imgs: ["https://images.adsttc.com/media/images/6834/1f52/b357/65f5/7800/0678/large_dua_villa_01.jpg", "https://images.adsttc.com/media/images/6834/1f43/8b45/b558/5400/0679/large_dua_villa_02.jpg", "https://images.adsttc.com/media/images/6834/1f34/1f38/e19e/a900/067a/large_dua_villa_03.jpg", "https://images.adsttc.com/media/images/6834/1f25/97ae/3f32/6e00/067b/large_dua_villa_04.jpg", "https://images.adsttc.com/media/images/6834/1f16/0336/3f32/6e00/067c/large_dua_villa_05.jpg"]
+            },
+            p07: {
+                title: 'Bahamas Cottage',
+                tag: 'RDAA',
+                tagClass: 'photo-tag-s',
+                imgs: ["https://images.adsttc.com/media/images/6912/1f52/b357/65f5/7800/0789/large_bahamas_01.jpg", "https://images.adsttc.com/media/images/6912/1f43/8b45/b558/5400/078a/large_bahamas_02.jpg", "https://images.adsttc.com/media/images/6912/1f34/1f38/e19e/a900/078b/large_bahamas_03.jpg", "https://images.adsttc.com/media/images/6912/1f25/97ae/3f32/6e00/078c/large_bahamas_04.jpg"]
+            },
+            p08: {
+                title: 'Bay House',
+                tag: 'Wallpaper',
+                tagClass: 'photo-tag-f',
+                imgs: ["https://images.adsttc.com/media/images/6a45/1f52/b357/65f5/7800/089a/large_bay_house_01.jpg", "https://images.adsttc.com/media/images/6a45/1f43/8b45/b558/5400/089b/large_bay_house_02.jpg", "https://images.adsttc.com/media/images/6a45/1f34/1f38/e19e/a900/089c/large_bay_house_03.jpg", "https://images.adsttc.com/media/images/6a45/1f25/97ae/3f32/6e00/089d/large_bay_house_04.jpg", "https://images.adsttc.com/media/images/6a45/1f16/0336/3f32/6e00/089e/large_bay_house_05.jpg"]
+            },
         };
-        let currentGid = null, currentIdx = 0;
-        const lb = document.getElementById('lightbox');
-        const lbImage = document.getElementById('lbImage');
-        const lbTitle = document.getElementById('lbTitle');
-        const lbThumbs = document.getElementById('lbThumbnails');
-        const lbCurrent = document.getElementById('lbCurrent');
-        const lbTotal = document.getElementById('lbTotal');
-        const lbClose = document.getElementById('lbClose');
-        const lbPrev = document.getElementById('lbPrev');
-        const lbNext = document.getElementById('lbNext');
-        document.querySelectorAll('[data-gid]').forEach(el => {
-            el.addEventListener('click', e => {
-                if (e.target.classList.contains('btn')) return;
-                open(el.dataset.gid, 0);
-            });
+        
+        const LIGHTBOX = {
+            currentGid: null,
+            currentIdx: 0,
+            
+            open(gid, idx) {
+                if (!GALLERIES[gid]) return;
+                this.currentGid = gid;
+                this.currentIdx = idx || 0;
+                document.body.classList.add('lb-open');
+                document.getElementById('lightbox').classList.add('active');
+                this.render();
+            },
+            
+            close() {
+                document.body.classList.remove('lb-open');
+                document.getElementById('lightbox').classList.remove('active');
+            },
+            
+            next() {
+                const gallery = GALLERIES[this.currentGid];
+                this.currentIdx = (this.currentIdx + 1) % gallery.imgs.length;
+                this.render();
+            },
+            
+            prev() {
+                const gallery = GALLERIES[this.currentGid];
+                this.currentIdx = (this.currentIdx - 1 + gallery.imgs.length) % gallery.imgs.length;
+                this.render();
+            },
+            
+            render() {
+                const gallery = GALLERIES[this.currentGid];
+                const img = gallery.imgs[this.currentIdx];
+                
+                document.getElementById('lb-title').textContent = gallery.title;
+                document.getElementById('lb-current').textContent = this.currentIdx + 1;
+                document.getElementById('lb-total').textContent = gallery.imgs.length;
+                document.getElementById('lb-image').src = img;
+                
+                this.updateThumbs();
+                
+                // Preload adjacent images
+                const next = (this.currentIdx + 1) % gallery.imgs.length;
+                const prev = (this.currentIdx - 1 + gallery.imgs.length) % gallery.imgs.length;
+                new Image().src = gallery.imgs[next];
+                new Image().src = gallery.imgs[prev];
+            },
+            
+            updateThumbs() {
+                const gallery = GALLERIES[this.currentGid];
+                const container = document.getElementById('lb-thumbs');
+                container.innerHTML = gallery.imgs.map((img, i) => `
+                    <div class="thumb ${i === this.currentIdx ? 'active' : ''}" onclick="LIGHTBOX.currentIdx=${i};LIGHTBOX.render()">
+                        <img src="${img}" alt="" loading="lazy">
+                    </div>
+                `).join('');
+                
+                const active = container.querySelector('.thumb.active');
+                if (active) active.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            }
+        };
+        
+        // 鍵盤控制
+        document.addEventListener('keydown', (e) => {
+            if (!document.getElementById('lightbox').classList.contains('active')) return;
+            if (e.key === 'Escape') LIGHTBOX.close();
+            if (e.key === 'ArrowRight') LIGHTBOX.next();
+            if (e.key === 'ArrowLeft') LIGHTBOX.prev();
         });
-        function open(gid, idx) {
-            currentGid = gid;
-            const g = GALLERIES[gid];
-            lbTitle.textContent = g.title;
-            lbTotal.textContent = g.imgs.length;
-            lbThumbs.innerHTML = '';
-            g.imgs.forEach((img, i) => {
-                const t = document.createElement('img');
-                t.src = img;
-                t.className = 'lb-thumb' + (i === idx ? ' active' : '');
-                t.addEventListener('click', () => show(i));
-                lbThumbs.appendChild(t);
-            });
-            show(idx);
-            lb.classList.add('open');
-            document.body.classList.add('lb-open');
-        }
-        function show(idx) {
-            currentIdx = idx;
-            const g = GALLERIES[currentGid];
-            lbImage.src = g.imgs[idx];
-            lbCurrent.textContent = idx + 1;
-            document.querySelectorAll('.lb-thumb').forEach((t, i) => {
-                t.classList.toggle('active', i === idx);
-            });
-        }
-        function prev() {
-            const g = GALLERIES[currentGid];
-            show((currentIdx - 1 + g.imgs.length) % g.imgs.length);
-        }
-        function next() {
-            const g = GALLERIES[currentGid];
-            show((currentIdx + 1) % g.imgs.length);
-        }
-        function close() {
-            lb.classList.remove('open');
-            document.body.classList.remove('lb-open');
-        }
-        lbClose.addEventListener('click', close);
-        lbPrev.addEventListener('click', prev);
-        lbNext.addEventListener('click', next);
-        document.addEventListener('keydown', e => {
-            if (!lb.classList.contains('open')) return;
-            if (e.key === 'Escape') close();
-            if (e.key === 'ArrowLeft') prev();
-            if (e.key === 'ArrowRight') next();
-        });
-        lb.addEventListener('click', e => {
-            if (e.target === lb) close();
+        
+        // 點擊背景關閉
+        document.getElementById('lightbox').addEventListener('click', (e) => {
+            if (e.target.id === 'lightbox') LIGHTBOX.close();
         });
     </script>
 </body>
