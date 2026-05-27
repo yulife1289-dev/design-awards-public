@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>住宅得獎案日報 2026-05-28</title>
+  <style>
+    :root {
+      --bg: #111111;
+      --card: #1a1a1a;
+      --line: rgba(255,255,255,.1);
+      --text: #f0ebe3;
+      --muted: rgba(240,235,227,.68);
+      --gold: #d4af8a;
+      --mint: #a0c8b0;
+      --shadow: 0 28px 80px rgba(0,0,0,.35);
+      --radius: 24px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(212,175,138,.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
+        linear-gradient(180deg, #080808 0%, #111111 100%);
+      color: var(--text);
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    a { color: inherit; text-decoration: none; }
+    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
+    .hero {
+      padding: 36px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      box-shadow: var(--shadow);
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(212,175,138,.25);
+      color: var(--gold);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    h1 {
+      margin: 18px 0 14px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.4rem, 5vw, 4.8rem);
+      line-height: .98;
+      max-width: 14ch;
+    }
+    .hero p {
+      margin: 0;
+      max-width: 56rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
+    .hero-meta {
+      margin-top: 22px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+    .grid {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+      margin-top: 32px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      background: var(--card);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .slider {
+      position: relative;
+      width: 100%;
+      height: min(70vh, 820px);
+      background: #090909;
+      overflow: hidden;
+      outline: none;
+    }
+    .slides { position: relative; width: 100%; height: 100%; }
+    .slide {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity .4s ease;
+      display: block;
+    }
+    .slide.active { opacity: 1; }
+    .sl-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 3;
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(0,0,0,.48);
+      color: var(--text);
+      font-size: 2.4rem;
+      line-height: 1;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background .2s, opacity .2s;
+    }
+    .sl-btn:hover { background: rgba(0,0,0,.75); }
+    .sl-prev { left: 20px; }
+    .sl-next { right: 20px; }
+    .sl-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 3;
+      padding: 20px 24px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      background: linear-gradient(transparent, rgba(0,0,0,.6));
+      pointer-events: none;
+    }
+    .sl-count { font-size: .85rem; color: rgba(255,255,255,.72); letter-spacing: .06em; }
+    .photo-tag {
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .photo-tag-a { background: rgba(212,175,138,.2); color: var(--gold); }
+    .photo-tag-d { background: rgba(160,200,176,.22); color: var(--mint); }
+    .photo-tag-f { background: rgba(180,160,220,.22); color: #b4a0dc; }
+    .photo-tag-w { background: rgba(220,180,120,.22); color: #dcb478; }
+    .card-body {
+      padding: 28px 32px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
+      align-items: start;
+      gap: 32px;
+    }
+    .card-main { display: grid; gap: 14px; min-width: 0; }
+    .card-side { display: grid; gap: 14px; align-content: start; }
+    .card-meta, .card-facts {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .card-meta span, .card-facts span {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      color: var(--muted);
+      font-size: .82rem;
+    }
+    .card-title {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
+      line-height: 1.08;
+    }
+    .card-by { margin: 0; color: var(--gold); letter-spacing: .03em; font-size: .95rem; }
+    .card-desc { margin: 0; color: var(--muted); line-height: 1.8; font-size: .98rem; }
+    .card-note {
+      margin: 0;
+      color: rgba(212,175,138,.88);
+      line-height: 1.75;
+      font-size: .9rem;
+      padding-left: 14px;
+      border-left: 1px solid rgba(212,175,138,.25);
+    }
+    .card-links { display: flex; gap: 10px; flex-wrap: wrap; }
+    .card-links a {
+      padding: 11px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.02);
+      font-size: .86rem;
+    }
+    .cta-bar {
+      margin-top: 60px;
+      padding: 32px;
+      border: 1px solid rgba(212,175,138,.2);
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(212,175,138,.06), rgba(160,200,176,.04));
+      text-align: center;
+    }
+    .cta-bar h2 { margin: 0 0 12px; font-family: Georgia, serif; font-size: 1.6rem; color: var(--gold); }
+    .cta-bar p { margin: 0 0 20px; color: var(--muted); font-size: .98rem; }
+    .cta-btn {
+      display: inline-block;
+      padding: 14px 28px;
+      border-radius: 999px;
+      background: var(--gold);
+      color: #111;
+      font-weight: 700;
+      font-size: .95rem;
+      letter-spacing: .05em;
+      transition: opacity .2s;
+    }
+    .cta-btn:hover { opacity: .85; }
+    @media (max-width: 799px) {
+      .slider { height: min(50vh, 500px); }
+      .card-body { grid-template-columns: 1fr; padding: 20px; }
+      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <span class="eyebrow">Residential Awards Digest</span>
+      <h1>住宅得獎案日報</h1>
+      <p>本頁收錄來自 Architizer A+Awards、Dezeen Awards、FRAME Magazine、Wallpaper* Design Awards 的住宅案例，精選最新 8 件代表性得獎作品，提供空間設計閱讀與客戶溝通語句參考。</p>
+      <div class="hero-meta">
+        <span>生成時間 2026-05-28 06:00</span>
+        <span>共 8 件作品</span>
+        <span>Architizer 2 案、Dezeen 4 案、FRAME 1 案、Wallpaper 1 案</span>
+      </div>
+      <div class="card-links" style="margin-top:18px;">
+        <a href="https://yulife1289-dev.github.io/design-awards-public/2026-05-28.html" target="_blank" rel="noopener">今日 HTML 日報</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/latest.html" target="_blank" rel="noopener">最新版本</a>
+      </div>
+    </section>
+
+    <section class="grid">
+
+      <!-- Case 1: Meander Housing -->
+      <article class="card" id="case-architizer-2025-meander-housing">
+        <div class="slider" tabindex="0">
+          <div class="slides">
+            <img src="https://static.dezeen.com/uploads/2024/09/meander-housing-steven-holl-architects-helsinki-finland_dezeen_2364_col_0.jpg" class="slide active" alt="Meander Housing 圖片 1" loading="eager">
+            <img src="https://static.dezeen.com/uploads/2024/09/meander-housing-steven-holl-architects-helsinki-finland_dezeen_2364_col_1.jpg" class="slide" alt="Meander Housing 圖片 2" loading="eager">
+            <img src="https://static.dezeen.com/uploads/2024/09/meander-housing-steven-holl-architects-helsinki-finland_dezeen_2364_sq_3.jpg" class="slide" alt="Meander Housing 圖片 3" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2024/09/meander-housing-steven-holl-architects-helsinki-finland_dezeen_2364_col_4.jpg" class="slide" alt="Meander Housing 圖片 4" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2024/09/meander-housing-steven-holl-architects-helsinki-finland_dezeen_2364_col_5.jpg" class="slide" alt="Meander Housing 圖片 5" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2024/09/meander-housing-steven-holl-architects-helsinki-finland_dezeen_2364_col_6.jpg" class="slide" alt="Meander Housing 圖片 6" loading="lazy">
+          </div>
+          <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
+          <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
+          <div class="sl-overlay">
+            <span class="sl-count">1 / 6</span>
+            <span class="photo-tag photo-tag-a">Architizer</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Architizer A+Awards 2025</span>
+              <span>2024</span>
+              <span>Helsinki, Finland</span>
+            </div>
+            <h3 class="card-title">Meander Housing<br><small style="font-size:.6em;font-weight:400;color:var(--gold);">米恩德集合住宅</small></h3>
+            <p class="card-by">Steven Holl Architects</p>
+            <p class="card-desc">位於赫爾辛基 Taka-Töölö 文化區沿 Taivallahti 灣，180 公尺長的建築體以 2 至 7 層樓的高度蜿蜒穿越方形基地，為 115 戶公寓最大化採光與灣景。50 口地熱井供暖製冷、輻射地板、廣闊綠化屋頂與太陽能板，使整棟建築碳排放量僅為傳統公寓的 50%。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">以蜿蜒形體操控採光與視野，讓每戶公寓同時面向私密庭院與城市灣景，永續性不只是技術指標而是空間體驗的生成條件。</p>
+            <div class="card-facts">
+              <span>Popular Choice Winner</span>
+              <span>Sustainable Multi-Unit Residential</span>
+              <span>115 戶，180m 長</span>
+            </div>
+            <div class="card-links">
+              <a href="https://architizer.com/projects/meander-housing/" target="_blank" rel="noopener">專案頁面</a>
+              <a href="https://www.dezeen.com/2024/09/13/steven-holl-meander-housing-helsinki/" target="_blank" rel="noopener">Dezeen 報導</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Case 2: Into the Wall -->
+      <article class="card" id="case-architizer-2025-into-the-wall">
+        <div class="slider" tabindex="0">
+          <div class="slides">
+            <img src="https://images.adsttc.com/media/images/641b/c0d9/d99e/d101/2500/08a9/large_jpg/into-the-wall-house-bergmeisterwolf-architekten_1.jpg" class="slide active" alt="Into the Wall 圖片 1" loading="eager">
+            <img src="https://images.adsttc.com/media/images/641b/c0d9/d99e/d101/2500/08a9/large_jpg/into-the-wall-house-bergmeisterwolf-architekten_2.jpg" class="slide" alt="Into the Wall 圖片 2" loading="eager">
+            <img src="https://images.adsttc.com/media/images/641b/c0f3/d99e/d101/2500/08ab/large_jpg/into-the-wall-house-bergmeisterwolf-architekten_3.jpg" class="slide" alt="Into the Wall 圖片 3" loading="lazy">
+            <img src="https://images.adsttc.com/media/images/641b/c10e/d99e/d101/2500/08ac/large_jpg/into-the-wall-house-bergmeisterwolf-architekten_4.jpg" class="slide" alt="Into the Wall 圖片 4" loading="lazy">
+            <img src="https://images.adsttc.com/media/images/641b/c124/d99e/d101/2500/08ad/large_jpg/into-the-wall-house-bergmeisterwolf-architekten_5.jpg" class="slide" alt="Into the Wall 圖片 5" loading="lazy">
+          </div>
+          <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
+          <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
+          <div class="sl-overlay">
+            <span class="sl-count">1 / 5</span>
+            <span class="photo-tag photo-tag-a">Architizer</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Architizer A+Awards 2025</span>
+              <span>2024</span>
+              <span>Brixen, Italy</span>
+            </div>
+            <h3 class="card-title">Into the Wall<br><small style="font-size:.6em;font-weight:400;color:var(--gold);">入牆之屋</small></h3>
+            <p class="card-by">bergmeisterwolf architekten</p>
+            <p class="card-desc">位於義大利南提洛爾 Milland 村中心，一座歷史農場雞舍的改造。所有新元素均為手工製作，保留石牆與灰泥的觸感歷史痕跡，僅在缺口與過渡處以黑色混凝土補足。混凝土圓形庭院延伸至未受處理的自然環境，創造冥想與退居的極致空間語境。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">把雞舍轉化為冥想退居，不以新材料掩蓋歷史石牆，而是讓新舊元素之間的「空隙」本身成為空間詩學。</p>
+            <div class="card-facts">
+              <span>Jury Winner</span>
+              <span>Private House (XS &lt;1000 sq ft)</span>
+              <span>歷史農舍改造</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.archdaily.com/1010849/into-the-wall-house-bergmeisterwolf-architekten" target="_blank" rel="noopener">專案頁面</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Case 3: La Comunidad Habitacional -->
+      <article class="card" id="case-dezeen-2025-la-comunidad-habitacional">
+        <div class="slider" tabindex="0">
+          <div class="slides">
+            <img src="https://static.dezeen.com/uploads/2025/09/la-comunidad-habitacional-cierto-estudio_dezeen_2364_col_0.jpg" class="slide active" alt="La Comunidad Habitacional 圖片 1" loading="eager">
+            <img src="https://static.dezeen.com/uploads/2025/09/la-comunidad-habitacional-cierto-estudio_dezeen_2364_col_1.jpg" class="slide" alt="La Comunidad Habitacional 圖片 2" loading="eager">
+            <img src="https://static.dezeen.com/uploads/2025/09/la-comunidad-habitacional-cierto-estudio_dezeen_2364_col_2.jpg" class="slide" alt="La Comunidad Habitacional 圖片 3" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2025/09/la-comunidad-habitacional-cierto-estudio_dezeen_2364_col_3.jpg" class="slide" alt="La Comunidad Habitacional 圖片 4" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2025/09/la-comunidad-habitacional-cierto-estudio_dezeen_2364_sq_0.jpg" class="slide" alt="La Comunidad Habitacional 圖片 5" loading="lazy">
+          </div>
+          <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
+          <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
+          <div class="sl-overlay">
+            <span class="sl-count">1 / 5</span>
+            <span class="photo-tag photo-tag-d">Dezeen</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Dezeen Awards 2025</span>
+              <span>2024</span>
+              <span>Barcelona, Spain</span>
+            </div>
+            <h3 class="card-title">La Comunidad Habitacional<br><small style="font-size:.6em;font-weight:400;color:var(--gold);">集合社區住宅</small></h3>
+            <p class="card-by">Cierto Estudio</p>
+            <p class="card-desc">巴塞隆納 22@ 城市更新區 Illa Glòries 開發案的 51 戶社會住宅。每戶以正方形平面被均等切分為四個相同面積的房間，無任何預設功能分配，由居民自行決定每個空間的意義，質疑了傳統住宅對性別角色與家庭結構的空間預設。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">以「無階層性平面」質疑傳統核家庭空間分配，將 51 戶公寓的每個房間設計成等面積、無預設功能，讓居民自行定義生活秩序。</p>
+            <div class="card-facts">
+              <span>Housing project of the year</span>
+              <span>51 戶社會住宅</span>
+              <span>22@ 城市更新區</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.dezeen.com/2025/09/23/la-comunidad-habitacional-cierto-estudio/" target="_blank" rel="noopener">專案頁面</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Case 4: Studio Asaï Apartment Paris -->
+      <article class="card" id="case-dezeen-2025-studio-asai-neuilly-apartment">
+        <div class="slider" tabindex="0">
+          <div class="slides">
+            <img src="https://static.dezeen.com/uploads/2025/11/studio-asai-parisian-apartment-neuilly_dezeen_2364_col_0.jpg" class="slide active" alt="Studio Asaï Apartment 圖片 1" loading="eager">
+            <img src="https://static.dezeen.com/uploads/2025/11/studio-asai-parisian-apartment-neuilly_dezeen_2364_col_1.jpg" class="slide" alt="Studio Asaï Apartment 圖片 2" loading="eager">
+            <img src="https://static.dezeen.com/uploads/2025/11/studio-asai-parisian-apartment-neuilly_dezeen_2364_col_2.jpg" class="slide" alt="Studio Asaï Apartment 圖片 3" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2025/11/studio-asai-parisian-apartment-neuilly_dezeen_2364_col_3.jpg" class="slide" alt="Studio Asaï Apartment 圖片 4" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2025/11/studio-asai-parisian-apartment-neuilly_dezeen_2364_col_4.jpg" class="slide" alt="Studio Asaï Apartment 圖片 5" loading="lazy">
+          </div>
+          <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
+          <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
+          <div class="sl-overlay">
+            <span class="sl-count">1 / 5</span>
+            <span class="photo-tag photo-tag-d">Dezeen</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Dezeen Awards 2025</span>
+              <span>2025</span>
+              <span>Neuilly-sur-Seine, France</span>
+            </div>
+            <h3 class="card-title">Studio Asaï Apartment Paris<br><small style="font-size:.6em;font-weight:400;color:var(--gold);">巴黎布洛涅森林公寓</small></h3>
+            <p class="card-by">Studio Asaï</p>
+            <p class="card-desc">320 平方公尺的六樓公寓俯瞰布洛涅森林，為一個從倫敦遷居巴黎的年輕家庭設計。Studio Asaï 以法式古典主義為骨架，融入 1960 年代倫敦私人俱樂部的裝飾精神，修復木鑲板與凡爾賽拼花地板，搭配 Foresso 再生木水磨石、大理石與漆面，創造跨時代的感官對話。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">以「法式古典 × 1960年代倫敦夜店」的跨時代混搭，透過光澤與啞光的交互使用，讓 320 平方公尺的公寓同時擁有典雅的歷史感與活潑的當代俱樂部氣質。</p>
+            <div class="card-facts">
+              <span>Residential interior (large) of the year</span>
+              <span>320 sqm</span>
+              <span>俯瞰布洛涅森林</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.dezeen.com/2025/11/10/studio-asai-parisian-apartment/" target="_blank" rel="noopener">專案頁面</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Case 5: Village House -->
+      <article class="card" id="case-frame-2025-village-house-mk27">
+        <div class="slider" tabindex="0">
+          <div class="slides">
+            <img src="https://d3e1m60ptf1oym.cloudfront.net/b0a81c64-fe33-4e27-ac07-0e99e4f9d31a/village-house-mk27_xgaplus.jpg" class="slide active" alt="Village House 圖片 1" loading="eager">
+            <img src="https://d3e1m60ptf1oym.cloudfront.net/b0a81c64-fe33-4e27-ac07-0e99e4f9d31a/village-house-mk27-interior_xgaplus.jpg" class="slide" alt="Village House 圖片 2" loading="eager">
+            <img src="https://mk27.com/wp-content/uploads/2023/village-house-01.jpg" class="slide" alt="Village House 圖片 3" loading="lazy">
+            <img src="https://mk27.com/wp-content/uploads/2023/village-house-02.jpg" class="slide" alt="Village House 圖片 4" loading="lazy">
+            <img src="https://mk27.com/wp-content/uploads/2023/village-house-03.jpg" class="slide" alt="Village House 圖片 5" loading="lazy">
+            <img src="https://mk27.com/wp-content/uploads/2023/village-house-04.jpg" class="slide" alt="Village House 圖片 6" loading="lazy">
+          </div>
+          <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
+          <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
+          <div class="sl-overlay">
+            <span class="sl-count">1 / 6</span>
+            <span class="photo-tag photo-tag-f">FRAME</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>FRAME Magazine</span>
+              <span>2022</span>
+              <span>Porto Feliz, São Paulo, Brazil</span>
+            </div>
+            <h3 class="card-title">Village House<br><small style="font-size:.6em;font-weight:400;color:var(--gold);">村落住宅</small></h3>
+            <p class="card-by">Studio MK27 (Marcio Kogan + Lair Reis)</p>
+            <p class="card-desc">聖保羅郊外 Fazenda Boa Vista 莊園的週末別墅，以「中世紀村落」空間組織為設計靈感。40 米方形混凝土平台上佈置了 8 個石材覆面的體量，由 2.75 米遮蓬統一覆蓋。厚實石牆、小巷與廣場的佈局讓家庭成員既有私密領域，又能在共享空間相遇，室內以 Freijo 柚木覆面帶來溫暖氣質。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">以「中世紀村落」的空間組織邏輯——石砌體量、小巷與廣場——將一座巨大的鄉間別墅解構為可漫遊的集合形體，讓私密與共享的邊界保持流動。</p>
+            <div class="card-facts">
+              <span>FRAME Magazine Featured</span>
+              <span>2,385 sqm</span>
+              <span>GBC Gold 綠建築</span>
+            </div>
+            <div class="card-links">
+              <a href="https://frameweb.com/project/village-house" target="_blank" rel="noopener">FRAME 頁面</a>
+              <a href="https://mk27.com/vila/" target="_blank" rel="noopener">Studio MK27</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Case 6: Frame House Algarve -->
+      <article class="card" id="case-dezeen-rss-2025-frame-house-pedro-domingos">
+        <div class="slider" tabindex="0">
+          <div class="slides">
+            <img src="https://static.dezeen.com/uploads/2025/03/frame-house-pedro-domingos-arquitectos_dezeen_2364_col_0.jpg" class="slide active" alt="Frame House Algarve 圖片 1" loading="eager">
+            <img src="https://static.dezeen.com/uploads/2025/03/frame-house-pedro-domingos-arquitectos_dezeen_2364_col_1.jpg" class="slide" alt="Frame House Algarve 圖片 2" loading="eager">
+            <img src="https://static.dezeen.com/uploads/2025/03/frame-house-pedro-domingos-arquitectos_dezeen_2364_col_2.jpg" class="slide" alt="Frame House Algarve 圖片 3" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2025/03/frame-house-pedro-domingos-arquitectos_dezeen_2364_col_3.jpg" class="slide" alt="Frame House Algarve 圖片 4" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2025/03/frame-house-pedro-domingos-arquitectos_dezeen_2364_col_4.jpg" class="slide" alt="Frame House Algarve 圖片 5" loading="lazy">
+          </div>
+          <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
+          <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
+          <div class="sl-overlay">
+            <span class="sl-count">1 / 5</span>
+            <span class="photo-tag photo-tag-d">Dezeen</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Dezeen Top Houses 2025</span>
+              <span>2025</span>
+              <span>Algarve, Portugal</span>
+            </div>
+            <h3 class="card-title">Frame House<br><small style="font-size:.6em;font-weight:400;color:var(--gold);">葡萄牙阿爾加維框架之家</small></h3>
+            <p class="card-by">Pedro Domingos Arquitectos</p>
+            <p class="card-desc">位於葡萄牙阿爾加維 Santa Bárbara de Nexe 村附近山頂的四臥室住宅，整棟以模板清水混凝土（board-marked concrete）構成，呈現粗獷的城堡式輪廓。設計目標是「與自然無縫整合」，以精確大型開口框住四周景觀，搭配多個露台與屋頂泳池，打造對阿爾加維天際線的全景體驗。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">以整體式清水混凝土的「框架」語言，讓建築成為景觀的觀看裝置——大型開口不只是窗戶，而是把阿爾加維丘頂的視野框進室內生活的每個角落。</p>
+            <div class="card-facts">
+              <span>Dezeen Top Houses 2025</span>
+              <span>Board-marked Concrete</span>
+              <span>Hilltop + Rooftop Pool</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.dezeen.com/2025/03/22/frame-house-concrete-pedro-domingos-arquitectos-algarve/" target="_blank" rel="noopener">專案頁面</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Case 7: The Wild House -->
+      <article class="card" id="case-dezeen-rss-2025-wild-house-earthscape-studio">
+        <div class="slider" tabindex="0">
+          <div class="slides">
+            <img src="https://static.dezeen.com/uploads/2025/02/the-wild-house-earthscape-studio_dezeen_2364_col_0.jpg" class="slide active" alt="The Wild House 圖片 1" loading="eager">
+            <img src="https://static.dezeen.com/uploads/2025/02/the-wild-house-earthscape-studio_dezeen_2364_col_1.jpg" class="slide" alt="The Wild House 圖片 2" loading="eager">
+            <img src="https://static.dezeen.com/uploads/2025/02/the-wild-house-earthscape-studio_dezeen_2364_col_2.jpg" class="slide" alt="The Wild House 圖片 3" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2025/02/the-wild-house-earthscape-studio_dezeen_2364_col_3.jpg" class="slide" alt="The Wild House 圖片 4" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2025/02/the-wild-house-earthscape-studio_dezeen_2364_col_4.jpg" class="slide" alt="The Wild House 圖片 5" loading="lazy">
+          </div>
+          <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
+          <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
+          <div class="sl-overlay">
+            <span class="sl-count">1 / 5</span>
+            <span class="photo-tag photo-tag-d">Dezeen</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Dezeen Top Houses 2025</span>
+              <span>2025</span>
+              <span>Tamil Nadu, India</span>
+            </div>
+            <h3 class="card-title">The Wild House<br><small style="font-size:.6em;font-weight:400;color:var(--gold);">野宅・泰米爾納杜</small></h3>
+            <p class="card-by">Earthscape Studio</p>
+            <p class="card-desc">位於印度泰米爾納杜邦 Mettupalayam 的農舍住宅，134.7 平方公尺。Earthscape Studio 以「折疊建築」概念取消傳統柱樑，用鐵絲水泥外殼支撐，外覆傳統石灰泥漿（thappi），內為泥漿灰泥洞窟質感。設計理念設定「25% 建構、75% 自然感知」，所有家具以廢木料與在地石材手工製作。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">以「折疊建築（fold architecture）」取消柱樑體系，讓建築結構本身成為無縫的有機形體，泥漿灰泥的洞窟質感讓人忘記自己在建築物裡，而是在大地的褶皺之中。</p>
+            <div class="card-facts">
+              <span>Dezeen Top Houses 2025</span>
+              <span>134.7 sqm</span>
+              <span>Ferrocement + Thappi Plaster</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.dezeen.com/2025/02/22/the-wild-house-earthscape-studio/" target="_blank" rel="noopener">專案頁面</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Case 8: Sombra de Santa Fe -->
+      <article class="card" id="case-wallpaper-2026-sombra-de-santa-fe">
+        <div class="slider" tabindex="0">
+          <div class="slides">
+            <img src="https://media.wallpaper.com/photos/673b9e456b0a5df1bc6f3e2a/master/w_1920,c_limit/sombra-de-santa-fe-dust-architects-01.jpg" class="slide active" alt="Sombra de Santa Fe 圖片 1" loading="eager">
+            <img src="https://media.wallpaper.com/photos/673b9e456b0a5df1bc6f3e2a/master/w_1920,c_limit/sombra-de-santa-fe-dust-architects-02.jpg" class="slide" alt="Sombra de Santa Fe 圖片 2" loading="eager">
+            <img src="https://media.wallpaper.com/photos/673b9e456b0a5df1bc6f3e2a/master/w_1920,c_limit/sombra-de-santa-fe-dust-architects-03.jpg" class="slide" alt="Sombra de Santa Fe 圖片 3" loading="lazy">
+            <img src="https://media.wallpaper.com/photos/673b9e456b0a5df1bc6f3e2a/master/w_1920,c_limit/sombra-de-santa-fe-dust-architects-04.jpg" class="slide" alt="Sombra de Santa Fe 圖片 4" loading="lazy">
+            <img src="https://media.wallpaper.com/photos/673b9e456b0a5df1bc6f3e2a/master/w_1920,c_limit/sombra-de-santa-fe-dust-architects-05.jpg" class="slide" alt="Sombra de Santa Fe 圖片 5" loading="lazy">
+          </div>
+          <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
+          <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
+          <div class="sl-overlay">
+            <span class="sl-count">1 / 5</span>
+            <span class="photo-tag photo-tag-w">Wallpaper*</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Wallpaper* Design Awards 2026</span>
+              <span>2025</span>
+              <span>Santa Fe, New Mexico, USA</span>
+            </div>
+            <h3 class="card-title">Sombra de Santa Fe<br><small style="font-size:.6em;font-weight:400;color:var(--gold);">聖菲之影</small></h3>
+            <p class="card-by">DUST Architects</p>
+            <p class="card-desc">位於新墨西哥 Galisteo Basin Preserve，海拔 6,500 英尺。以壓縮火山礦渣（volcanic scoria）建造的深色幾何量體，遮蔭露台的黑色礦渣牆是視覺核心。深色材料與高原大地色系形成互補，高熱質量被動調節沙漠的日夜溫差，同時維持遠眺 Sandia 和 Manzanita 山脈的無遮擋視野。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">以壓縮火山礦渣建造深色幾何量體，讓住宅成為新墨西哥高原景觀的一部分而非置入其中的異物——材料即地景，建築即陰影。</p>
+            <div class="card-facts">
+              <span>Best Use of Material</span>
+              <span>Wallpaper* Design Awards 2026</span>
+              <span>AIA Arizona 2025 Honor Award</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.wallpaper.com/architecture/residential/new-mexico-house-sombra-de-santa-fe-dust-architects-design-awards-2026" target="_blank" rel="noopener">Wallpaper* 報導</a>
+              <a href="https://dustarchitects.com/endeavors/sombra-de-santa-fe/" target="_blank" rel="noopener">事務所頁面</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <div class="cta-bar">
+      <h2>住宅得獎案日報 2026-05-28</h2>
+      <p>每日更新 · 精選全球頂尖建築獎項住宅案例 · 提供設計閱讀與客戶溝通語句</p>
+      <a href="https://yulife1289-dev.github.io/design-awards-public/2026-05-28.html" class="cta-btn" target="_blank" rel="noopener">查看完整日報</a>
+    </div>
+  </main>
+
+  <script>
+    document.querySelectorAll('.slider').forEach(slider => {
+      const slides = slider.querySelectorAll('.slide');
+      const countEl = slider.querySelector('.sl-count');
+      let cur = 0;
+      function show(n) {
+        slides[cur].classList.remove('active');
+        cur = (n + slides.length) % slides.length;
+        slides[cur].classList.add('active');
+        if (countEl) countEl.textContent = (cur + 1) + ' / ' + slides.length;
+      }
+      slider.querySelector('.sl-prev')?.addEventListener('click', () => show(cur - 1));
+      slider.querySelector('.sl-next')?.addEventListener('click', () => show(cur + 1));
+      slider.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft') show(cur - 1);
+        if (e.key === 'ArrowRight') show(cur + 1);
+      });
+      let tx = 0;
+      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+      slider.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - tx;
+        if (Math.abs(dx) > 40) show(dx < 0 ? cur + 1 : cur - 1);
+      });
+    });
+  </script>
+</body>
+</html>
