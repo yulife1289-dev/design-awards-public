@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>住宅得獎案日報</title>
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --bg-soft: #171717;
+      --panel: #121212;
+      --line: rgba(255,255,255,.1);
+      --text: #f0ebe3;
+      --muted: rgba(240,235,227,.68);
+      --gold: #e8d5a0;
+      --mint: #a0c8b0;
+      --shadow: 0 28px 80px rgba(0,0,0,.35);
+      --radius: 24px;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
+        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
+        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
+      color: var(--text);
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    body.lb-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
+    .hero {
+      padding: 36px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+      box-shadow: var(--shadow);
+    }
+    .eyebrow {
+      display: inline-flex;
+      gap: 10px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(232,213,160,.25);
+      color: var(--gold);
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    h1 {
+      margin: 18px 0 14px;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.4rem, 5vw, 4.8rem);
+      line-height: .98;
+      max-width: 10ch;
+    }
+    .hero p {
+      margin: 0;
+      max-width: 56rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
+    .hero-meta {
+      margin-top: 22px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: .92rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 26px;
+      margin-top: 26px;
+    }
+    .card {
+      border: 1px solid var(--line);
+      background: rgba(15,15,15,.92);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      min-height: 100%;
+    }
+    .card-photo {
+      position: relative;
+      overflow: hidden;
+      min-height: 440px;
+      cursor: pointer;
+      background: #090909;
+    }
+    .card-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transform: scale(1.01);
+      transition: transform .45s ease;
+    }
+    .card:hover .card-photo img { transform: scale(1.05); }
+    .photo-num, .photo-tag, .photo-count {
+      position: absolute;
+      z-index: 2;
+    }
+    .photo-num {
+      top: 14px;
+      left: 14px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.5);
+      font-size: .8rem;
+      letter-spacing: .06em;
+    }
+    .photo-tag {
+      right: 14px;
+      top: 14px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: .78rem;
+      font-weight: 700;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+    }
+    .photo-tag-d { background: rgba(232,213,160,.16); color: var(--gold); }
+    .photo-tag-f { background: rgba(160,200,176,.18); color: var(--mint); }
+    .photo-tag-a { background: rgba(214,176,122,.18); color: #d6b07a; }
+    .photo-count {
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(.92);
+      opacity: 0;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.62);
+      transition: opacity .25s ease, transform .25s ease;
+    }
+    .card:hover .photo-count {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .card-body {
+      padding: 22px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(300px, .9fr);
+      align-items: start;
+      gap: 24px;
+    }
+    .card-main {
+      display: grid;
+      gap: 14px;
+      min-width: 0;
+    }
+    .card-side {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+    .card-meta, .card-facts {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .card-meta span, .card-facts span {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.08);
+      color: var(--muted);
+      font-size: .82rem;
+    }
+    .card-title {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.5rem, 2vw, 2.3rem);
+      line-height: 1.08;
+    }
+    .card-by {
+      margin: 0;
+      color: var(--gold);
+      letter-spacing: .03em;
+      font-size: .95rem;
+    }
+    .card-desc {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: .98rem;
+    }
+    .card-note {
+      margin: 0;
+      color: rgba(232,213,160,.88);
+      line-height: 1.75;
+      font-size: .9rem;
+      padding-left: 14px;
+      border-left: 1px solid rgba(232,213,160,.25);
+    }
+    .card-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .card-links a {
+      padding: 11px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(255,255,255,.02);
+      font-size: .86rem;
+    }
+    #lb {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      display: none;
+      flex-direction: column;
+      background: rgba(5,5,5,.96);
+      padding: 20px;
+    }
+    #lb.open { display: flex; }
+    #lb-bar, #lb-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      color: var(--muted);
+    }
+    #lb-name {
+      color: var(--text);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.1rem;
+    }
+    #lb-close {
+      border: 0;
+      color: var(--text);
+      background: transparent;
+      font-size: 2rem;
+      cursor: pointer;
+    }
+    #lb-stage {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 72px 1fr 72px;
+      align-items: center;
+      gap: 14px;
+      min-height: 0;
+    }
+    #lb-img-wrap {
+      min-height: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #lb-img {
+      max-width: 100%;
+      max-height: calc(100vh - 220px);
+      object-fit: contain;
+      transition: opacity .2s ease;
+    }
+    #lb-img.loading { opacity: 0; }
+    .lb-nav {
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      font-size: 2rem;
+      border-radius: 18px;
+      height: 72px;
+      cursor: pointer;
+    }
+    #lb-thumbs {
+      display: flex;
+      gap: .4rem;
+      overflow-x: auto;
+      padding: 12px 0;
+      scrollbar-width: thin;
+    }
+    .lb-thumb {
+      width: 60px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      opacity: .5;
+      cursor: pointer;
+      flex: 0 0 auto;
+    }
+    .lb-thumb.active {
+      opacity: 1;
+      border-color: rgba(255,255,255,.55);
+    }
+    #lb-hint { font-size: .88rem; }
+    @media (max-width: 799px) {
+      .card-photo { min-height: 280px; }
+      .card-body { grid-template-columns: 1fr; }
+      #lb-stage { grid-template-columns: 54px 1fr 54px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <span class="eyebrow">Residential Awards Digest</span>
+      <h1>每天 6 點更新的住宅得獎案選輯</h1>
+      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD Style 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。版面依 design-awards-html 規格製作，保留雜誌感層次、深色奢雅基調與燈箱相冊互動；內文與說明已轉為繁體中文。</p>
+      <div class="hero-meta">
+        <span>生成時間 2026-05-12 21:29</span>
+        <span>共 8 件作品</span>
+        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD Style 2 案</span>
+        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
+      </div>
+      <div class="card-links" style="margin-top:18px;">
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-05-12.html" target="_blank" rel="noopener">查看今日 HTML</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+      </div>
+    </section>
+    <section class="grid">
+      
+            <article class="card" id="case-adstyle-news_14320a4d32b79ac6">
+              <div class="card-photo" data-gid="p01">
+                <span class="photo-num">01 / 08</span>
+                <img src="https://oimg1.selfimg.com.cn/adcms/20263/d72b8f051774602594103.jpg" alt="华丽的告别 A Grand Farewell" loading="eager">
+                <span class="photo-tag photo-tag-a">AD Style</span>
+                <span class="photo-count">查看 17 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-main">
+                  <div class="card-meta">
+                    <span>AD風格居家旅遊</span>
+                    <span>2026</span>
+                    <span>伦敦</span>
+                  </div>
+                  <h3 class="card-title">华丽的告别 A Grand Farewell</h3>
+                  <p class="card-by">AD Style 編輯部</p>
+                  <p class="card-desc">这是一套风格激进、装饰繁复的公寓，林明珠花了整整5年时间，亲自设计并监督每一个施工细节。如今，她动情地说道：“我在这里生活了25年，它承载着我人生中极为重要的一段篇章。这套公寓与我在上海的住所都于2005年完工，标志着一个鲜明的美学时代。如今，我已准备好与那个阶段告别。”</p>
+                </div>
+                <div class="card-side">
+                  <p class="card-note">华丽的告别 A Grand Farewell 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
+                  <div class="card-facts"><span>AD風格居家旅遊</span><span>伦敦</span><span>發佈時間：2026-03-27</span><span>Tags: 2026年三月号 / 伦敦 / 室内设计</span></div>
+                  <div class="card-links"><a href="https://www.adstyle.com.cn/home/home-tour/news_14320a4d32b79ac6.html" target="_blank" rel="noopener">文章頁面</a></div>
+                </div>
+              </div>
+            </article>
+            
+            <article class="card" id="case-adstyle-news_1321fda8f205c982">
+              <div class="card-photo" data-gid="p02">
+                <span class="photo-num">02 / 08</span>
+                <img src="https://oimg2.selfimg.com.cn/adcms/20263/fa34c05f1774602103183.jpg" alt="重塑日常 Magical Atelier" loading="eager">
+                <span class="photo-tag photo-tag-a">AD Style</span>
+                <span class="photo-count">查看 15 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-main">
+                  <div class="card-meta">
+                    <span>AD風格居家旅遊</span>
+                    <span>2026</span>
+                    <span>慕尼黑</span>
+                  </div>
+                  <h3 class="card-title">重塑日常 Magical Atelier</h3>
+                  <p class="card-by">AD Style 編輯部</p>
+                  <p class="card-desc">没有沙发，也没有厨房。这位画廊主在失去挚爱之后，选择以这样的方式回应生活的变化，将家变成一座献给当代艺术与设计的殿堂：“让自己真正喜欢的事物围绕身边，没有别的标准。</p>
+                </div>
+                <div class="card-side">
+                  <p class="card-note">重塑日常 Magical Atelier 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。没有沙发，也没有厨房。这位画廊主在失去挚爱之后，选择以这样的方式回应生活的变化，将家变成一座献给当代艺术与设计的殿堂：“让自己真正喜欢的事物围绕身边，没有别的标准。</p>
+                  <div class="card-facts"><span>AD風格居家旅遊</span><span>慕尼黑</span><span>發佈時間：2026-03-27</span><span>Tags: 2026年三月号 / 室内设计 / 慕尼黑</span></div>
+                  <div class="card-links"><a href="https://www.adstyle.com.cn/home/home-tour/news_1321fda8f205c982.html" target="_blank" rel="noopener">文章頁面</a></div>
+                </div>
+              </div>
+            </article>
+            
+            <article class="card" id="case-architizer-2025-fondation-de-chine">
+              <div class="card-photo" data-gid="p03">
+                <span class="photo-num">03 / 08</span>
+                <img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593602458414_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" alt="Fondation de Chine" loading="lazy">
+                <span class="photo-tag photo-tag-d">Architizer</span>
+                <span class="photo-count">查看 20 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-main">
+                  <div class="card-meta">
+                    <span>Jury Winner, 2025 A+Awards, Residential &gt; Affordable Housing</span>
+                    <span>2025</span>
+                    <span>法國巴黎</span>
+                  </div>
+                  <h3 class="card-title">Fondation de Chine</h3>
+                  <p class="card-by">Coldefy</p>
+                  <p class="card-desc">中華基金會是一個文化和建築合作項目，體現了中法文化的融合。它位於巴黎國際大學城（CIUP），既是學生的宿舍，也是在巴黎推廣中華遺產的文化中心。這種雙重目的指導了建築方法，以找到兩種不同文化和城市類型之間的共同點。</p>
+                </div>
+                <div class="card-side">
+                  <p class="card-note">Fondation de Chine 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
+                  <div class="card-facts"><span>Jury Winner, 2025 A+Awards, Residential &gt; Affordable Housing</span><span>法國巴黎</span><span>資料來源：Architizer A+Awards 2025</span></div>
+                  <div class="card-links"><a href="https://architizer.com/projects/fondation-de-chine/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
+                </div>
+              </div>
+            </article>
+            
+            <article class="card" id="case-architizer-2025-dvs-03-apartments">
+              <div class="card-photo" data-gid="p04">
+                <span class="photo-num">04 / 08</span>
+                <img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1720135957335Jorge_Urias_Studio_-_DVS_03_-_Rafael_Gamo_11__4500x3000_2.jpg?w=1680&amp;q=60&amp;auto=format" alt="DVS 03 Apartments" loading="lazy">
+                <span class="photo-tag photo-tag-d">Architizer</span>
+                <span class="photo-count">查看 14 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-main">
+                  <div class="card-meta">
+                    <span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 低層（1 - 4 層）</span>
+                    <span>2025</span>
+                    <span>墨西哥華雷斯城</span>
+                  </div>
+                  <h3 class="card-title">DVS 03 Apartments</h3>
+                  <p class="card-by">Jorge Urias Studio</p>
+                  <p class="card-desc">DVS 03 是 Villa Serena 公寓大樓內的新區域，位於墨西哥奇瓦瓦州華雷斯城。該開發案位於現有的綜合體內，該綜合體由低層磚砌公寓大樓組成，周圍有公共區域、花園、健身房、游泳池和其他設施。對場地的細緻研究和對原有建築軸線的分析是設計過程的起點，目的是在新部門和現有環境之間建立直接關係。</p>
+                </div>
+                <div class="card-side">
+                  <p class="card-note">DVS 03 Apartments 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
+                  <div class="card-facts"><span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 低層（1 - 4 層）</span><span>墨西哥華雷斯城</span><span>資料來源：Architizer A+Awards 2025</span></div>
+                  <div class="card-links"><a href="https://architizer.com/projects/dvs-03-apartments/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
+                </div>
+              </div>
+            </article>
+            
+            <article class="card" id="case-dezeen-2023-nightingale-village">
+              <div class="card-photo" data-gid="p05">
+                <span class="photo-num">05 / 08</span>
+                <img src="https://static.dezeen.com/uploads/2023/07/K1xpHjdpDO2x7zkq4oEHe4HgSJqRmXkYUYyuVnfU_Z33nsize_2048.jpeg" alt="Nightingale Village" loading="lazy">
+                <span class="photo-tag photo-tag-d">Dezeen</span>
+                <span class="photo-count">查看 1 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-main">
+                  <div class="card-meta">
+                    <span>2023年住房項目</span>
+                    <span>2023</span>
+                    <span>澳洲墨爾本</span>
+                  </div>
+                  <h3 class="card-title">Nightingale Village</h3>
+                  <p class="card-by">Nightingale Village by Architecture Architecture, Austin Maynard Architects, Breathe, Clare Cousins Architects, Hayball and Kennedy Nolan</p>
+                  <p class="card-desc">得獎者：2023 年住房計畫。六家领先的澳大利亚建筑公司合作在澳大利亚墨尔本创建了南丁格尔村。该项目是一个零天然气住宅区，距离墨尔本中央商务区（CBD）五公里。</p>
+                </div>
+                <div class="card-side">
+                  <p class="card-note">Nightingale Village 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
+                  <div class="card-facts"><span>2023年住房項目</span><span>澳洲墨爾本</span><span>資料來源：2023 年 Dezeen 獎</span></div>
+                  <div class="card-links"><a href="https://www.dezeen.com/awards/2023/winners/nightingale-village/" target="_blank" rel="noopener">得獎頁面</a> <a href="https://www.dezeen.com/awards/2023/winners/" target="_blank" rel="noopener">獎項頁面</a></div>
+                </div>
+              </div>
+            </article>
+            
+            <article class="card" id="case-dezeen-2022-stories">
+              <div class="card-photo" data-gid="p06">
+                <span class="photo-num">06 / 08</span>
+                <img src="https://static.dezeen.com/uploads/2022/07/2Ux5kc3ZuUxle0miKaYQpkpmitdkLIvvlGf6E9Uk_Z33nsize_2048.jpeg" alt="Stories" loading="lazy">
+                <span class="photo-tag photo-tag-d">Dezeen</span>
+                <span class="photo-count">查看 1 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-main">
+                  <div class="card-meta">
+                    <span>2022年住房項目</span>
+                    <span>2022</span>
+                    <span>阿姆斯特丹應對公共、高密度、永續和健康城市生活的挑戰</span>
+                  </div>
+                  <h3 class="card-title">Stories</h3>
+                  <p class="card-by">Olaf Gipser Architects</p>
+                  <p class="card-desc">得獎者：2022 年住房計畫。 Olaf Gipser Architects 在阿姆斯特丹建造了一座綠色塔樓，以應對公共、高密度、可持續和健康的城市生活的挑戰。該項目位於阿姆斯特丹努德後工業化前海港區的一個暴露的城市位置。</p>
+                </div>
+                <div class="card-side">
+                  <p class="card-note">Stories 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「透過壓縮、分層與多重使用提高空間記憶密度，讓小尺度住宅仍然具有完整敘事」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
+                  <div class="card-facts"><span>2022年住房項目</span><span>阿姆斯特丹應對公共、高密度、永續和健康城市生活的挑戰</span><span>資料來源：2022 年 Dezeen 獎</span></div>
+                  <div class="card-links"><a href="https://www.dezeen.com/awards/2022/winners/stories/" target="_blank" rel="noopener">得獎頁面</a> <a href="https://www.dezeen.com/awards/2022/winners/" target="_blank" rel="noopener">獎項頁面</a></div>
+                </div>
+              </div>
+            </article>
+            
+            <article class="card" id="case-frame-2020-marylebone">
+              <div class="card-photo" data-gid="p07">
+                <span class="photo-num">07 / 08</span>
+                <img src="https://ps.10pm.studio/media/pages/projects/marylebone-apartment/a6ca5afced-1724060816/proctor-and-shaw-architects_marylebone-apartment_18_london-320x-q80.webp" alt="Marylebone Apartment" loading="lazy">
+                <span class="photo-tag photo-tag-f">FRAME</span>
+                <span class="photo-count">查看 20 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-main">
+                  <div class="card-meta">
+                    <span>2020 年 FRAME 獎，年度小型公寓</span>
+                    <span>2020</span>
+                    <span>英國倫敦</span>
+                  </div>
+                  <h3 class="card-title">Marylebone Apartment</h3>
+                  <p class="card-by">Proctor &amp; Shaw</p>
+                  <p class="card-desc">馬里波恩公寓採用精緻的細木工和精心的空間壓縮，使緊湊的住宅感覺層次豐富、平靜和高效。</p>
+                </div>
+                <div class="card-side">
+                  <p class="card-note">Marylebone Apartment 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」調整空間氣質，最後透過「透過壓縮、分層與多重使用提高空間記憶密度，讓小尺度住宅仍然具有完整敘事」讓整體經驗從形式走向可居住性。</p>
+                  <div class="card-facts"><span>2020 年 FRAME 獎，年度小型公寓</span><span>英國倫敦</span><span>來源年份：2020</span></div>
+                  <div class="card-links"><a href="https://proctorandshaw.com/projects/marylebone-apartment/" target="_blank" rel="noopener">專案頁面</a> <a href="https://proctorandshaw.com/journal/frame-awards-2020-winner/" target="_blank" rel="noopener">獎項說明</a></div>
+                </div>
+              </div>
+            </article>
+            
+            <article class="card" id="case-frame-2019-oosterwold-co-living-complex">
+              <div class="card-photo" data-gid="p08">
+                <span class="photo-num">08 / 08</span>
+                <img src="https://images.adsttc.com/media/images/5ca1/86e1/284d/d1aa/5100/01b5/large_jpg/FEATURE_49027-main_3293-2_49027_sc_v2com.jpg?1554089690" alt="Oosterwold Co-living Complex" loading="lazy">
+                <span class="photo-tag photo-tag-f">FRAME</span>
+                <span class="photo-count">查看 20 張圖片</span>
+              </div>
+              <div class="card-body">
+                <div class="card-main">
+                  <div class="card-meta">
+                    <span>2019 年 FRAME 獎，年度共享居住綜合體</span>
+                    <span>2019</span>
+                    <span>荷蘭阿爾梅勒</span>
+                  </div>
+                  <h3 class="card-title">Oosterwold Co-living Complex</h3>
+                  <p class="card-by">bureau SLA</p>
+                  <p class="card-desc">ArchDaily 上記錄了 FRAME 認可的住宅項目。</p>
+                </div>
+                <div class="card-side">
+                  <p class="card-note">Oosterwold Co-living Complex 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
+                  <div class="card-facts"><span>2019 年 FRAME 獎，年度共享居住綜合體</span><span>荷蘭阿爾梅勒</span><span>透過 ArchDaily 和 FRAME 辨識引用</span></div>
+                  <div class="card-links"><a href="https://www.archdaily.com/914154/oosterwold-co-living-complex-bureau-sla" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.archdaily.com/914154/oosterwold-co-living-complex-bureau-sla" target="_blank" rel="noopener">獎項頁面</a></div>
+                </div>
+              </div>
+            </article>
+            
+    </section>
+  </main>
+  <div id="lb" tabindex="-1" role="dialog" aria-modal="true">
+    <div id="lb-bar">
+      <span id="lb-name"></span>
+      <span id="lb-count"></span>
+      <button id="lb-close" aria-label="關閉">×</button>
+    </div>
+    <div id="lb-stage">
+      <button class="lb-nav" id="lb-prev" aria-label="上一張">‹</button>
+      <div id="lb-img-wrap"><img id="lb-img" alt=""></div>
+      <button class="lb-nav" id="lb-next" aria-label="下一張">›</button>
+    </div>
+    <div id="lb-thumbs"></div>
+    <div id="lb-footer">
+      <span id="lb-tag-wrap"><span id="lb-tag-text" class="photo-tag"></span></span>
+      <span id="lb-hint">← → 切換 · ESC 關閉</span>
+    </div>
+  </div>
+  <script>
+    const GALLERIES = {
+      p01: {title: "\u534e\u4e3d\u7684\u544a\u522b A Grand Farewell", tag: "AD\u98a8\u683c\u5c45\u5bb6\u65c5\u904a", tagClass: "photo-tag-a", images: ["https://oimg1.selfimg.com.cn/adcms/20263/d72b8f051774602594103.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/5ad3cf951774602596333.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/ded067a91774602601642.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/6cc9b1051774602603554.jpg", "https://oimg2.selfimg.com.cn/adcms/20263/94ab89e21774602606099.jpg", "https://oimg2.selfimg.com.cn/adcms/20263/8254e011774602606804.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/b7943cb71774602607616.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/967d6f871774602609286.jpg", "https://oimg2.selfimg.com.cn/adcms/20263/fe94ce3c1774602611728.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/78d90df91774602613583.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/38c05d101774602615040.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/8f159afd1774602616054.jpg", "https://oimg2.selfimg.com.cn/adcms/20263/6e8aaa611774602617068.jpg", "https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1644660684_3u29rq.jpg?x-oss-process=image/resize", "https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1641386445_se8jtr.jpg?x-oss-process=image/resize", "https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1634796734_w63ywk.jpg?x-oss-process=image/resize", "https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1627197459_fxkb1p.jpg?x-oss-process=image/resize"]},p02: {title: "\u91cd\u5851\u65e5\u5e38 Magical Atelier", tag: "AD\u98a8\u683c\u5c45\u5bb6\u65c5\u904a", tagClass: "photo-tag-a", images: ["https://oimg2.selfimg.com.cn/adcms/20263/fa34c05f1774602103183.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/3399dca71774602119077.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/32f5ed811774602127336.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/385856fe1774602136292.jpg", "https://oimg2.selfimg.com.cn/adcms/20263/faccb4221774602144396.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/abf1e5971774602152892.jpg", "https://oimg2.selfimg.com.cn/adcms/20263/e6a7a0d31774602161016.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/2eb0bb371774602169377.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/593aa92e1774602177169.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/d8e0d4f11774602185816.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/a78aa3211774602194564.jpg", "https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1466491417_WvCJUS.jpg?x-oss-process=image/resize", "https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1467395195_9jF9bd.jpg?x-oss-process=image/resize", "https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1595317850_dSlFJG.png?x-oss-process=image/resize", "https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1595324721_VHCzw7.png?x-oss-process=image/resize"]},p03: {title: "Fondation de Chine", tag: "Jury Winner, 2025 A+Awards, Residential > Affordable Housing", tagClass: "photo-tag-d", images: ["http://architizer-prod.imgix.net/media/mediadata/uploads/174593602458414_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593598242802_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593598638603_COL1_ARCH.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593599049804_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593599361505_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593599657306_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593599935007_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593600263708_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593600596909_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593600875310_COL1_ARCH.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593601160211_COL1_ARCH.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593601618512_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593601901813_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593602675515_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593602894416_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593603145717_COL1_ARCH.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593606372318_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593606624319_COL1_ARCH.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593606831620_COL1_ARCH.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/174593607134721_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&q=60&auto=format"]},p04: {title: "DVS 03 Apartments", tag: "2025 \u5e74 A+ \u734e\u8a55\u5be9\u5718\u5f97\u734e\u8005\uff0c\u4f4f\u5b85 > \u591a\u55ae\u5143\u4f4f\u5b85 - \u4f4e\u5c64\uff081 - 4 \u5c64\uff09", tagClass: "photo-tag-d", images: ["http://architizer-prod.imgix.net/media/mediadata/uploads/1720135957335Jorge_Urias_Studio_-_DVS_03_-_Rafael_Gamo_11__4500x3000_2.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1720135764240Jorge_Urias_Studio_-_DVS_03_-_Rafael_Gamo_08_4500x3900.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1720135713489JUS_DVS03_Rafael_Gamo_02.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1720135714117JUS_DVS03_Rafael_Gamo_03.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1720135715829JUS_DVS03_Rafael_Gamo_05.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1720135717560JUS_DVS03_Rafael_Gamo_06.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1720135713487JUS_DVS03_Rafael_Gamo_01.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1720135717705JUS_DVS03_Rafael_Gamo_07.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1720135718168JUS_DVS03_Rafael_Gamo_09.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1720135715600JUS_DVS03_Rafael_Gamo_04.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1720135718281JUS_DVS03_Rafael_Gamo_10.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1720135718629JUS_DVS03_Rafael_Gamo_12.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1720135718779JUS_DVS03_Rafael_Gamo_13.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1720135718010JUS_DVS03_Rafael_Gamo_08.jpg?w=1680&q=60&auto=format"]},p05: {title: "Nightingale Village", tag: "2023\u5e74\u4f4f\u623f\u9805\u76ee", tagClass: "photo-tag-d", images: ["https://static.dezeen.com/uploads/2023/07/K1xpHjdpDO2x7zkq4oEHe4HgSJqRmXkYUYyuVnfU_Z33nsize_2048.jpeg"]},p06: {title: "Stories", tag: "2022\u5e74\u4f4f\u623f\u9805\u76ee", tagClass: "photo-tag-d", images: ["https://static.dezeen.com/uploads/2022/07/2Ux5kc3ZuUxle0miKaYQpkpmitdkLIvvlGf6E9Uk_Z33nsize_2048.jpeg"]},p07: {title: "Marylebone Apartment", tag: "2020 \u5e74 FRAME \u734e\uff0c\u5e74\u5ea6\u5c0f\u578b\u516c\u5bd3", tagClass: "photo-tag-f", images: ["https://ps.10pm.studio/media/pages/projects/marylebone-apartment/a6ca5afced-1724060816/proctor-and-shaw-architects_marylebone-apartment_18_london-320x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/a6ca5afced-1724060816/proctor-and-shaw-architects_marylebone-apartment_18_london-640x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/a6ca5afced-1724060816/proctor-and-shaw-architects_marylebone-apartment_18_london-720x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/a6ca5afced-1724060816/proctor-and-shaw-architects_marylebone-apartment_18_london-800x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/a6ca5afced-1724060816/proctor-and-shaw-architects_marylebone-apartment_18_london-960x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/a6ca5afced-1724060816/proctor-and-shaw-architects_marylebone-apartment_18_london-1024x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/a6ca5afced-1724060816/proctor-and-shaw-architects_marylebone-apartment_18_london-1600x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/a6ca5afced-1724060816/proctor-and-shaw-architects_marylebone-apartment_18_london-2048x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/e533eac965-1724060820/proctor-and-shaw-architects_marylebone-apartment_03_london-320x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/e533eac965-1724060820/proctor-and-shaw-architects_marylebone-apartment_03_london-640x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/e533eac965-1724060820/proctor-and-shaw-architects_marylebone-apartment_03_london-720x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/e533eac965-1724060820/proctor-and-shaw-architects_marylebone-apartment_03_london-800x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/e533eac965-1724060820/proctor-and-shaw-architects_marylebone-apartment_03_london-960x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/e533eac965-1724060820/proctor-and-shaw-architects_marylebone-apartment_03_london-1024x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/e533eac965-1724060820/proctor-and-shaw-architects_marylebone-apartment_03_london-1600x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/e533eac965-1724060820/proctor-and-shaw-architects_marylebone-apartment_03_london-2048x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/63b962dd94-1724060817/proctor-and-shaw-architects_marylebone-apartment_01_london-320x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/63b962dd94-1724060817/proctor-and-shaw-architects_marylebone-apartment_01_london-640x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/63b962dd94-1724060817/proctor-and-shaw-architects_marylebone-apartment_01_london-720x-q80.webp", "https://ps.10pm.studio/media/pages/projects/marylebone-apartment/63b962dd94-1724060817/proctor-and-shaw-architects_marylebone-apartment_01_london-800x-q80.webp"]},p08: {title: "Oosterwold Co-living Complex", tag: "2019 \u5e74 FRAME \u734e\uff0c\u5e74\u5ea6\u5171\u4eab\u5c45\u4f4f\u7d9c\u5408\u9ad4", tagClass: "photo-tag-f", images: ["https://images.adsttc.com/media/images/5ca1/86e1/284d/d1aa/5100/01b5/large_jpg/FEATURE_49027-main_3293-2_49027_sc_v2com.jpg?1554089690", "https://images.adsttc.com/media/images/5ca1/863f/284d/d1aa/5100/01ad/medium_jpg/49021-main_3293-2_49021_sc_v2com.jpg?1554089525", "https://images.adsttc.com/media/images/5ca1/8661/284d/d168/9200/03bc/medium_jpg/49024-main_3293-2_49024_sc_v2com.jpg?1554089561", "https://images.adsttc.com/media/images/5ca1/8679/284d/d168/9200/03bd/medium_jpg/49026-main_3293-2_49026_sc_v2com.jpg?1554089585", "https://images.adsttc.com/media/images/5ca1/8601/284d/d1aa/5100/01aa/medium_jpg/49018-main_3293-2_49018_sc_v2com.jpg?1554089463", "https://images.adsttc.com/media/images/5ca1/86a7/284d/d1aa/5100/01b2/medium_jpg/49033-main_3293-2_49033_sc_v2com.jpg?1554089632", "https://images.adsttc.com/media/images/5ca1/8620/284d/d1aa/5100/01ac/medium_jpg/49020-main_3293-2_49020_sc_v2com.jpg?1554089494", "https://images.adsttc.com/media/images/5ca1/866d/284d/d1aa/5100/01af/medium_jpg/49025-main_3293-2_49025_sc_v2com.jpg?1554089573", "https://images.adsttc.com/media/images/5ca1/8684/284d/d1aa/5100/01b0/medium_jpg/49028-main_3293-2_49028_sc_v2com.jpg?1554089597", "https://images.adsttc.com/media/images/5ca1/86b3/284d/d168/9200/03bf/medium_jpg/49034-main_3293-2_49034_sc_v2com.jpg?1554089643", "https://images.adsttc.com/media/images/5ca1/86be/284d/d1aa/5100/01b3/medium_jpg/49047-main_3293-2_49047_sc_v2com.jpg?1554089655", "https://images.adsttc.com/media/images/5ca1/86cc/284d/d168/9200/03c0/medium_jpg/49048-main_3293-2_49048_sc_v2com.jpg?1554089667", "https://images.adsttc.com/media/images/5ca1/86d5/284d/d1aa/5100/01b4/medium_jpg/49049-main_3293-2_49049_sc_v2com.jpg?1554089678", "https://images.adsttc.com/media/images/5ca1/869a/284d/d1aa/5100/01b1/medium_jpg/49030-main_3293-2_49030_sc_v2com.jpg?1554089619", "https://images.adsttc.com/media/images/5ca1/86ef/284d/d168/9200/03c1/medium_jpg/49050-main_3293-2_49050_sc_v2com.jpg?1554089701", "https://images.adsttc.com/media/images/5ca1/8649/284d/d168/9200/03bb/medium_jpg/49022-main_3293-2_49022_sc_v2com.jpg?1554089536", "https://images.adsttc.com/media/images/5ca1/8691/284d/d168/9200/03be/medium_jpg/49029-main_3293-2_49029_sc_v2com.jpg?1554089609", "https://images.adsttc.com/media/images/5ca1/8655/284d/d1aa/5100/01ae/medium_jpg/49023-main_3293-2_49023_sc_v2com.jpg?1554089550", "https://images.adsttc.com/media/images/5ca1/8610/284d/d1aa/5100/01ab/medium_jpg/49032-main_3293-2_49032_sc_v2com.jpg?1554089479", "https://images.adsttc.com/media/images/5ca1/8631/284d/d168/9200/03ba/medium_jpg/49031-main_3293-2_49031_sc_v2com.jpg?1554089509"]}
+    };
+
+    const body = document.body;
+    const lb = document.getElementById('lb');
+    const lbName = document.getElementById('lb-name');
+    const lbCount = document.getElementById('lb-count');
+    const lbTagText = document.getElementById('lb-tag-text');
+    const lbImg = document.getElementById('lb-img');
+    const lbThumbs = document.getElementById('lb-thumbs');
+    const closeBtn = document.getElementById('lb-close');
+    let active = null;
+    let index = 0;
+
+    function preload(src) {
+      return new Promise((resolve) => {
+        const image = new Image();
+        image.onload = () => resolve(src);
+        image.onerror = () => resolve(src);
+        image.src = src;
+      });
+    }
+
+    async function renderImage() {
+      const gallery = GALLERIES[active];
+      const src = gallery.images[index];
+      lbImg.classList.add('loading');
+      await preload(src);
+      lbImg.src = src;
+      lbImg.alt = gallery.title + ' 圖片 ' + (index + 1);
+      lbImg.classList.remove('loading');
+      lbCount.textContent = String(index + 1).padStart(2, '0') + ' / ' + String(gallery.images.length).padStart(2, '0');
+      [...lbThumbs.children].forEach((thumb, thumbIndex) => {
+        thumb.classList.toggle('active', thumbIndex === index);
+        if (thumbIndex === index) {
+          thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
+      });
+    }
+
+    function renderThumbs() {
+      const gallery = GALLERIES[active];
+      lbThumbs.innerHTML = '';
+      gallery.images.forEach((src, thumbIndex) => {
+        const thumb = document.createElement('img');
+        thumb.src = src;
+        thumb.className = 'lb-thumb' + (thumbIndex === index ? ' active' : '');
+        thumb.alt = gallery.title + ' 縮圖 ' + (thumbIndex + 1);
+        thumb.addEventListener('click', () => {
+          index = thumbIndex;
+          renderImage();
+        });
+        lbThumbs.appendChild(thumb);
+      });
+    }
+
+    function openLightbox(gid, start = 0) {
+      active = gid;
+      index = start;
+      const gallery = GALLERIES[gid];
+      lbName.textContent = gallery.title;
+      lbTagText.className = 'photo-tag ' + gallery.tagClass;
+      lbTagText.textContent = gallery.tag;
+      renderThumbs();
+      renderImage();
+      lb.classList.add('open');
+      body.classList.add('lb-open');
+      lb.focus();
+    }
+
+    function closeLightbox() {
+      lb.classList.remove('open');
+      body.classList.remove('lb-open');
+      active = null;
+      lbImg.removeAttribute('src');
+    }
+
+    function move(delta) {
+      if (!active) return;
+      const gallery = GALLERIES[active];
+      index = (index + delta + gallery.images.length) % gallery.images.length;
+      renderImage();
+    }
+
+    document.querySelectorAll('.card-photo[data-gid]').forEach((node) => {
+      node.addEventListener('click', () => openLightbox(node.dataset.gid, 0));
+    });
+
+    document.getElementById('lb-prev').addEventListener('click', () => move(-1));
+    document.getElementById('lb-next').addEventListener('click', () => move(1));
+    closeBtn.addEventListener('click', closeLightbox);
+    lb.addEventListener('click', (event) => {
+      if (event.target === lb) closeLightbox();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (!lb.classList.contains('open')) return;
+      if (event.key === 'Escape') closeLightbox();
+      if (event.key === 'ArrowLeft') move(-1);
+      if (event.key === 'ArrowRight') move(1);
+    });
+  </script>
+</body>
+</html>
