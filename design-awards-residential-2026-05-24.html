@@ -227,6 +227,42 @@
       .card-body { grid-template-columns: 1fr; padding: 20px; }
       .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
     }
+    .slide { cursor: zoom-in; }
+    #lb-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0,0,0,.92);
+      cursor: zoom-out;
+      align-items: center;
+      justify-content: center;
+    }
+    #lb-backdrop.open { display: flex; }
+    #lb-img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      pointer-events: none;
+      border-radius: 4px;
+    }
+    #lb-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      background: none;
+      border: 1px solid rgba(255,255,255,.3);
+      color: #fff;
+      font-size: 1.4rem;
+      line-height: 1;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   </style>
 </head>
 <body>
@@ -482,6 +518,10 @@
             
     </section>
   </main>
+  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
+    <img id="lb-img" src="" alt="">
+    <button id="lb-close" aria-label="關閉">✕</button>
+  </div>
   <script>
     document.querySelectorAll('.slider').forEach(slider => {
       const slides = [...slider.querySelectorAll('.slide')];
@@ -516,6 +556,27 @@
         if (e.key === 'ArrowRight') show(idx + 1);
       });
     });
+    (function() {
+      const backdrop = document.getElementById('lb-backdrop');
+      const lbImg = document.getElementById('lb-img');
+      function openLb(src, alt) {
+        lbImg.src = src;
+        lbImg.alt = alt;
+        backdrop.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeLb() {
+        backdrop.classList.remove('open');
+        document.body.style.overflow = '';
+        lbImg.src = '';
+      }
+      document.querySelectorAll('.slide').forEach(img => {
+        img.addEventListener('click', () => openLb(img.src, img.alt));
+      });
+      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
+      document.getElementById('lb-close').addEventListener('click', closeLb);
+      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
+    })();
   </script>
 </body>
 </html>
