@@ -533,5 +533,178 @@
     "note_path": "",
     "original_title": "Oosterwold Co-living Complex",
     "original_architect": "bureau SLA"
+  },
+  {
+    "source": "FRAME",
+    "source_accent": "f",
+    "entry_id": "frame-api-122771",
+    "year": 2026,
+    "title": "House AQ",
+    "architect": "StudioXYYI",
+    "category": "FRAME Awards, House",
+    "location": "JFP8+33C, Yubei District, China, 401123",
+    "description": "For large-scale residential projects, the primary task is to construct a suitable scene and scale, based on a shared understanding of life with the client. Even with the ample square footage, Designer Ruoqiao Chai maximized the utility of every space rather than creating empty rooms that might only be used once or twice a year. So, we don’t have any amenities such as guest room, home theatre, recreation room, or gym, we focused on better serving practical living needs.",
+    "facts": [
+      "House",
+      "JFP8+33C, Yubei District, China, 401123",
+      "Published: 05 Jun 2026",
+      "Tags: awards / china / chongqing / fa26"
+    ],
+    "images": [
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213211/3层-客厅6.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213212/1层-会客厅10.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213231/1层-茶室2.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213232/1层-会客厅5.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213233/1层-会议室2.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213234/2层-起居室.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213251/3层-餐厅2.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213252/3层-客厅8.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213253/5层-书房3.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213254/1层-花园8.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213255/3层-花园.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213256/5层-主卫.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213257/5层-主卧7.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213259/1层-花园2.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213260/4层-起居室2.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213270/3.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213271/9D.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213273/7D(1).jpg"
+    ],
+    "links": {
+      "Project": "https://frameweb.com/project/house-aq",
+      "Awards": "https://frameweb.com/awards"
+    },
+    "note_excerpt": "",
+    "note_path": "",
+    "original_title": "House AQ",
+    "original_architect": "StudioXYYI"
+  },
+  {
+    "source": "FRAME",
+    "source_accent": "f",
+    "entry_id": "frame-api-122443",
+    "year": 2026,
+    "title": "Fletcher Street House",
+    "architect": "H&E Architects",
+    "category": "FRAME Awards, House",
+    "location": "Fletcher St, Bondi NSW 2026, Australia",
+    "description": "Fletcher Street is a three-level residence set on a constrained coastal site overlooking Bondi Beach. The project responds to limited access to light and space by turning constraint into a defining architectural move. The interior is organised around a central sculptural staircase, which operates as both circulation and a vertical light well.",
+    "facts": [
+      "House",
+      "Fletcher St, Bondi NSW 2026, Australia",
+      "Published: 04 Jun 2026",
+      "Tags: australia / awards / fa26 / he-architects"
+    ],
+    "images": [
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/210933/H&E_BONDI_061125_0004.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/210934/H&E_BONDI_061125_0007.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/210935/H&E_BONDI_061125_0044.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/210936/H&E_BONDI_061125_0043.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/210937/H&E_BONDI_061125_0049.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/210938/H&E_BONDI_061125_0051.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/210939/H&E_BONDI_061125_0031.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/210940/H&E_BONDI_061125_0070.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/210941/H&E_BONDI_061125_0068.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/210942/H&E_BONDI_061125_0018.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/210943/64-Fletcher-St_-Drawings-5.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/210944/64-Fletcher-St_-Drawings-1.jpg"
+    ],
+    "links": {
+      "Project": "https://frameweb.com/project/fletcher-street-house",
+      "Awards": "https://frameweb.com/awards"
+    },
+    "note_excerpt": "",
+    "note_path": "",
+    "original_title": "Fletcher Street House",
+    "original_architect": "H&E Architects"
+  },
+  {
+    "source": "FRAME",
+    "source_accent": "f",
+    "entry_id": "frame-api-121459",
+    "year": 2026,
+    "title": "27B Aida Street",
+    "architect": "Renaissance Planners and Designers",
+    "category": "FRAME Awards, House",
+    "location": "27B Aida St, Singapore 459954",
+    "description": "“A home that brings light in, while keeping the heat out.” Located within Singapore’s dense urban fabric, Aida Street explores how an ageing inter-terrace house can be transformed through environmental responsiveness, spatial clarity, and long-term adaptability. Owned by the Chua family for over 30 years, the original house was affected by leaks, poor ventilation, and dark internal spaces caused by its deep plan and challenging east–west orientation. Rather than demolishing the house, the family chose to retain and transform it, preserving both its structure and emotional significance.",
+    "facts": [
+      "House",
+      "27B Aida St, Singapore 459954",
+      "Published: 04 Jun 2026",
+      "Tags: awards / fa26 / house / living"
+    ],
+    "images": [
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215069/16-27AS.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215064/02-27AS.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215065/05-27AS.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215066/03-27AS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215067/08-27AS.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215068/15-27AS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215070/36-27AS.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215085/39-27AS-(2).jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215087/43-27AS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215090/26-27AS.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215369/33-27AS.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215370/1st-Storey-Plan_page-0001.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215371/2nd-Storey-Plan_page-0001.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215372/3rd-Storey-Plan_page-0001.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215373/Roof-Plan_page-0001.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215359/1st-Storey-Plan_page-0001.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215360/2nd-Storey-Plan_page-0001.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/215364/3rd-Storey-Plan_page-0001.jpg"
+    ],
+    "links": {
+      "Project": "https://frameweb.com/project/27b-aida-street",
+      "Awards": "https://frameweb.com/awards"
+    },
+    "note_excerpt": "",
+    "note_path": "",
+    "original_title": "27B Aida Street",
+    "original_architect": "Renaissance Planners and Designers"
+  },
+  {
+    "source": "FRAME",
+    "source_accent": "f",
+    "entry_id": "frame-api-122547",
+    "year": 2026,
+    "title": "DJ's House",
+    "architect": "Pitsou Kedem Architects",
+    "category": "FRAME Awards, House",
+    "location": "Tel Aviv-Yafo, Israel",
+    "description": "The project redefines domestic space by merging family life with a performative environment for music. Designed for a pair of DJ performers and music producers, the house integrates two custom DJ stations, indoors and outdoors, embedding sound, rhythm, and hosting into the spatial fabric of everyday life. Innovation lies in the transformation of the home into a live cultural infrastructure.",
+    "facts": [
+      "House",
+      "Tel Aviv-Yafo, Israel",
+      "Published: 04 Jun 2026",
+      "Tags: awards / fa26 / house / israel"
+    ],
+    "images": [
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212951/DJ_HOUSE_059.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212947/DJ_HOUSE_004.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212948/DJ_HOUSE_012.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212949/DJ_HOUSE_023.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212950/DJ_HOUSE_035.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212952/DJ_HOUSE_072.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212953/DJ_HOUSE_085.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212954/DJ_HOUSE_095.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212955/DJ_HOUSE_114.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212956/DJ_HOUSE_123.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212962/DJ_HOUSE_167.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212965/DJ_HOUSE_177.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212966/DJ_HOUSE_204.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/212967/DJ_HOUSE_244.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213021/DJ_HOUSE_102.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/214702/gf.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/213011/Section.jpg"
+    ],
+    "links": {
+      "Project": "https://frameweb.com/project/djs-house",
+      "Awards": "https://frameweb.com/awards"
+    },
+    "note_excerpt": "",
+    "note_path": "",
+    "original_title": "DJ's House",
+    "original_architect": "Pitsou Kedem Architects"
   }
 ]
