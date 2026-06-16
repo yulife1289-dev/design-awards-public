@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>住宅得獎案日報 2026-06-15</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #111111;
+    color: #f0ebe3;
+    font-family: 'Georgia', 'Times New Roman', serif;
+    line-height: 1.7;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, #1a1a1a 0%, #222 100%);
+    border-bottom: 1px solid #2a2a2a;
+    padding: 48px 32px 40px;
+    text-align: center;
+  }
+  header .eyebrow {
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  header h1 {
+    font-size: clamp(22px, 4vw, 38px);
+    color: #d4af8a;
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+  header .subtitle {
+    color: #888;
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(480px, 1fr));
+    gap: 32px;
+  }
+  .card {
+    background: #1a1a1a;
+    border: 1px solid #252525;
+    border-radius: 2px;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+  .card:hover { border-color: #d4af8a44; }
+  .card-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: #141414;
+    border-bottom: 1px solid #222;
+  }
+  .badge-source {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #d4af8a;
+    background: #d4af8a11;
+    border: 1px solid #d4af8a44;
+    padding: 3px 10px;
+    border-radius: 1px;
+  }
+  .badge-year {
+    font-size: 11px;
+    color: #666;
+    margin-left: auto;
+  }
+  .badge-award {
+    font-size: 11px;
+    color: #aaa;
+    flex: 1;
+    text-align: center;
+  }
+  .card-photos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: #111;
+  }
+  .card-photos .photo-main {
+    grid-column: 1 / -1;
+    height: 220px;
+    overflow: hidden;
+    background: #1e1e1e;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-photos .photo-thumb {
+    height: 120px;
+    overflow: hidden;
+    background: #181818;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-photos img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s;
+  }
+  .card-photos img:hover { transform: scale(1.03); }
+  .photo-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #444;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    gap: 8px;
+  }
+  .photo-placeholder svg { opacity: 0.3; }
+  .card-body { padding: 24px; }
+  .card-title {
+    font-size: 20px;
+    color: #d4af8a;
+    font-weight: 400;
+    margin-bottom: 4px;
+    letter-spacing: 0.03em;
+    line-height: 1.3;
+  }
+  .card-title-zh {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 14px;
+  }
+  .card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 18px;
+  }
+  .meta-tag {
+    font-size: 11px;
+    color: #999;
+    background: #222;
+    border: 1px solid #2a2a2a;
+    padding: 3px 10px;
+    border-radius: 1px;
+    letter-spacing: 0.5px;
+  }
+  .meta-tag.architect { color: #c8b89a; border-color: #c8b89a33; }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #555;
+    margin-bottom: 8px;
+    margin-top: 18px;
+  }
+  .design-reading {
+    font-size: 14px;
+    color: #c5bfb5;
+    line-height: 1.8;
+    border-left: 2px solid #d4af8a44;
+    padding-left: 14px;
+    margin-bottom: 18px;
+  }
+  .client-quote {
+    font-size: 14px;
+    color: #b5a898;
+    font-style: italic;
+    line-height: 1.8;
+    background: #161616;
+    border: 1px solid #252525;
+    padding: 14px 18px;
+    position: relative;
+  }
+  .client-quote::before {
+    content: '"';
+    font-size: 40px;
+    color: #d4af8a33;
+    position: absolute;
+    top: -8px;
+    left: 12px;
+    font-family: Georgia, serif;
+    line-height: 1;
+  }
+  .card-footer {
+    padding: 14px 24px;
+    border-top: 1px solid #222;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+  }
+  .card-footer .location { color: #666; }
+  .card-footer a {
+    color: #d4af8a;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    font-size: 11px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+  }
+  .card-footer a:hover { opacity: 1; }
+  footer {
+    text-align: center;
+    padding: 60px 24px 80px;
+    border-top: 1px solid #1e1e1e;
+  }
+  .cta-btn {
+    display: inline-block;
+    padding: 14px 40px;
+    background: transparent;
+    border: 1px solid #d4af8a;
+    color: #d4af8a;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+    margin-top: 24px;
+  }
+  .cta-btn:hover {
+    background: #d4af8a;
+    color: #111;
+  }
+  footer p {
+    font-size: 12px;
+    color: #444;
+    margin-top: 20px;
+  }
+  @media (max-width: 600px) {
+    .grid { grid-template-columns: 1fr; }
+    .card-photos { grid-template-columns: 1fr; }
+    .card-photos .photo-main { height: 180px; }
+    .card-photos .photo-thumb { height: 100px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Daily Digest · Residential Architecture Awards</div>
+  <h1>住宅得獎案日報</h1>
+  <div class="subtitle">2026 — 06 — 15 &nbsp;·&nbsp; 8 Projects Selected</div>
+</header>
+
+<div class="container">
+<div class="grid">
+
+<!-- ====== CASE 1: Light House ====== -->
+<div class="card">
+  <div class="card-badge">
+    <span class="badge-source">Dezeen</span>
+    <span class="badge-award">House of the Month March 2026</span>
+    <span class="badge-year">2026</span>
+  </div>
+  <div class="card-photos">
+    <div class="photo-main">
+      <div class="photo-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Light House
+      </div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>傳統坡屋頂外立面</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>錯層夾層木質內部</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>松木板牆面細部</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>河畔狹地全景</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-title">Light House</div>
+    <div class="card-title-zh">光之屋</div>
+    <div class="card-meta">
+      <span class="meta-tag architect">Woonpioniers</span>
+      <span class="meta-tag">Nigtevecht, Utrecht, Netherlands</span>
+      <span class="meta-tag">2026</span>
+    </div>
+    <div class="section-label">Design Reading</div>
+    <div class="design-reading">
+      Light House 以傳統荷蘭村落的坡屋頂立面包裹當代激進的多層木質內部空間。兩個山形體量如拼圖拼合，創造了錯層與夾層所帶來的超出面積預期的空間感。建築師稱之為「披著羊皮的狼」——向街道鄰里讓步，向室內釋放自由。蒸汽可滲透的木質結構實現呼吸性，松木板與石膏粉飾在不同空間氛圍中轉換，隱喻外斂內豐的生活哲學。整個設計精髓在於：以限制為媒介，藉由限制的詩意，創造比表面積更寬廣的生活空間。
+    </div>
+    <div class="section-label">Client Translation</div>
+    <div class="client-quote">
+      我們的設計理念是以在地文脈為外表，以當代生活為核心——建築在鄰里間謙遜，卻在生活中奔放。以傳統坡屋頂回應街廓，以錯層夾層突破面積限制。這是一種向外謙讓、向內解放的空間策略，讓居住品質不受環境限制而妥協。
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="location">📍 Nigtevecht, Netherlands</span>
+    <a href="https://www.dezeen.com/2026/03/26/light-house-woonpioniers/" target="_blank">View Project →</a>
+  </div>
+</div>
+
+<!-- ====== CASE 2: Casa Óculo ====== -->
+<div class="card">
+  <div class="card-badge">
+    <span class="badge-source">Wallpaper*</span>
+    <span class="badge-award">Best Residential Architecture — January 2026</span>
+    <span class="badge-year">2026</span>
+  </div>
+  <div class="card-photos">
+    <div class="photo-main">
+      <div class="photo-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Casa Óculo
+      </div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>圓形天窗日晷效果</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>石灰牆體節奏立面</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>地中海庭園延伸</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>石材地板黃銅細部</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-title">Casa Óculo</div>
+    <div class="card-title-zh">天眼之家</div>
+    <div class="card-meta">
+      <span class="meta-tag architect">OHLAB (Paloma Hernaiz & Jaime Oliver)</span>
+      <span class="meta-tag">Palma, Mallorca, Spain</span>
+      <span class="meta-tag">2026</span>
+    </div>
+    <div class="section-label">Design Reading</div>
+    <div class="design-reading">
+      Casa Óculo 以圓形天窗作為住宅的核心敘事元素，將太陽的軌跡轉化為每日儀式——光線隨時間在石灰塗飾的牆面上移動，成為一種活態的日晷。厚重牆體節奏性地分隔空間，同時過濾地中海強烈日光。石灰砂漿、石材地板、木材與黃銅均被選擇以風化為美，讓建築隨時間生長出層次與歷史感。茂盛的地中海庭園被視為室內的延伸，模糊邊界、引入自然。整個設計是對感官體驗與時間流逝的迷戀——一個關於光、材料與氣候的慢居宣言。
+    </div>
+    <div class="section-label">Client Translation</div>
+    <div class="client-quote">
+      我們以光為設計核心——一個圓形天窗讓太陽的路徑成為您的居住儀式。每天不同時刻，光的角度在石灰牆上畫出不同的時間線索。材料會隨時間優雅老化，建築也將隨著您的生活而成長。這是為地中海氣候量身訂製的慢生活空間。
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="location">📍 Palma, Mallorca, Spain</span>
+    <a href="https://www.wallpaper.com/architecture/residential/casa-oculo-ohlab-mallorca-house-spain" target="_blank">View Project →</a>
+  </div>
+</div>
+
+<!-- ====== CASE 3: Pyramid House ====== -->
+<div class="card">
+  <div class="card-badge">
+    <span class="badge-source">Wallpaper*</span>
+    <span class="badge-award">Architecture Edit April 2026 — Post-Modern Retrofit</span>
+    <span class="badge-year">2024</span>
+  </div>
+  <div class="card-photos">
+    <div class="photo-main">
+      <div class="photo-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Pyramid House
+      </div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>CNC白樺木螺旋梯</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>金字塔幾何外觀</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>頂層工作空間採光</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>底層休憩空間細部</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-title">Pyramid House</div>
+    <div class="card-title-zh">金字塔屋</div>
+    <div class="card-meta">
+      <span class="meta-tag architect">Khan Bonshek</span>
+      <span class="meta-tag">Milton Keynes, UK</span>
+      <span class="meta-tag">2024</span>
+    </div>
+    <div class="section-label">Design Reading</div>
+    <div class="design-reading">
+      金字塔屋誕生於1981年世博展示屋，此次由Khan Bonshek以「三聯幅」概念重新詮釋——以螺旋木楼梯為核心，串聯工作、生活、休憩三種空間模式。設計核心挑戰在於在尖銳收縮的幾何體量中重新配置動線，令每寸地板面積均被精確運用。CNC加工的白樺木夾板螺旋梯既是結構元素又是光線井，將天光從最高層引至最底層。被動式能源系統的植入讓這座歷史建築以極低能耗運作，使其成為歷史與未來的融合體。
+    </div>
+    <div class="section-label">Client Translation</div>
+    <div class="client-quote">
+      金字塔屋是後現代建築與當代生活的深度對話。我們將奇特幾何轉化為效率空間——每層各有其性格，螺旋梯串聯所有故事。對於珍視歷史底蘊同時擁抱當代生活品質的業主，這是一個罕見範本：不是抹去建築的過去，而是讓它帶著歷史走向未來。
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="location">📍 Milton Keynes, UK</span>
+    <a href="https://www.wallpaper.com/architecture/residential/pyramid-house-khan-bonshek-milton-keynes-uk" target="_blank">View Project →</a>
+  </div>
+</div>
+
+<!-- ====== CASE 4: Villa Nouvelle Vague ====== -->
+<div class="card">
+  <div class="card-badge">
+    <span class="badge-source">Wallpaper*</span>
+    <span class="badge-award">Architecture Edit April 2026 — Coastal Concrete Villa</span>
+    <span class="badge-year">2025</span>
+  </div>
+  <div class="card-photos">
+    <div class="photo-main">
+      <div class="photo-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Villa Nouvelle Vague
+      </div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>曲面混凝土外殼</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>雕鑿混凝土樓梯</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>石灰水洗牆面臥室</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>沙丘景觀開放起居</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-title">Villa Nouvelle Vague</div>
+    <div class="card-title-zh">新浪潮別墅</div>
+    <div class="card-meta">
+      <span class="meta-tag architect">Magalie Munters Architecture</span>
+      <span class="meta-tag">Koksijde, Belgium</span>
+      <span class="meta-tag">2025</span>
+    </div>
+    <div class="section-label">Design Reading</div>
+    <div class="design-reading">
+      Villa Nouvelle Vague 以混凝土為唯一語言，創造了海岸沙丘景觀的建築回應。建築外形如貝殼保護殼，曲面牆體由地形、風向與光線共同塑造，並隱含對諾曼底號輪船剪影的致敬。室內混凝土以「雕鑿」而非「澆注」的姿態存在——樓梯、浴室、嵌入傢具皆由整體混凝土體刻出，石灰粉刷表面柔化粗獷。半嵌地面的臥室帶來被庇護的親密感，而主生活空間向沙丘開放，形成壓縮與釋放的空間序列。
+    </div>
+    <div class="section-label">Client Translation</div>
+    <div class="client-quote">
+      我們以混凝土雕塑海岸生活的詩意——建築外形如貝殼抵禦北海海風，室內空間如地穴庇護私密。這不是冷硬的混凝土，而是被地形、風與光一起塑造的有機殼體。所有傢具、樓梯、浴室都從同一塊混凝土中雕刻而出，觸覺語言徹底統一。
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="location">📍 Koksijde, Belgium</span>
+    <a href="https://www.wallpaper.com/architecture/residential/concrete-seaside-villa-belgium" target="_blank">View Project →</a>
+  </div>
+</div>
+
+<!-- ====== CASE 5: Dinodactyl House ====== -->
+<div class="card">
+  <div class="card-badge">
+    <span class="badge-source">Wallpaper*</span>
+    <span class="badge-award">Best Residential Architecture — May 2026 · Predock Legacy</span>
+    <span class="badge-year">2026</span>
+  </div>
+  <div class="card-photos">
+    <div class="photo-main">
+      <div class="photo-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Dinodactyl House
+      </div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>荒漠山脊混凝土量體</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>放射狀套房翼部</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>劇場式中央起居</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>私人露台與火坑</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-title">Dinodactyl House</div>
+    <div class="card-title-zh">恐翼龍宅</div>
+    <div class="card-meta">
+      <span class="meta-tag architect">Antoine Predock Architect</span>
+      <span class="meta-tag">New Mexico, USA</span>
+      <span class="meta-tag">2026</span>
+    </div>
+    <div class="section-label">Design Reading</div>
+    <div class="design-reading">
+      「恐翼龍」是傳奇建築師Antoine Predock的最後一件住宅作品，以低匍匐的混凝土體量趴伏於新墨西哥荒漠山脊之上。五個臥室套房如恐龍翅膀般從中央「劇場式」起居空間放射展開，每個套房均配備私人露台與火坑，可獨立運作如沙漠小屋。設計以地景為建築的延伸——混凝土色調呼應紅土荒野，水平線條融入地平線。這是對美國西南荒野精神的終極禮讚，亦是一位建築大師對沙漠詩意最後的深情凝視。
+    </div>
+    <div class="section-label">Client Translation</div>
+    <div class="client-quote">
+      我們為荒漠創造了一個聚落——五個各自獨立的臥室小屋圍繞一個共享的戶外劇場式中心，讓每位家庭成員或賓客都能擁有自己的沙漠天空與私密火坑。這是Antoine Predock對美國西南荒野最後的建築情書，每一個空間都在與地景對話。
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="location">📍 New Mexico, USA</span>
+    <a href="https://www.wallpaper.com/architecture/residential/albuquerque-house-antoine-predock-usa" target="_blank">View Project →</a>
+  </div>
+</div>
+
+<!-- ====== CASE 6: KW House ====== -->
+<div class="card">
+  <div class="card-badge">
+    <span class="badge-source">Dezeen</span>
+    <span class="badge-award">Dezeen Featured Residential 2025 — Forest Duality House</span>
+    <span class="badge-year">2025</span>
+  </div>
+  <div class="card-photos">
+    <div class="photo-main">
+      <div class="photo-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        KW House
+      </div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>全玻璃「魚缸」底層</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>木質封閉首層立面</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>維利亞里卡火山遠景</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>冬季壁爐起居空間</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-title">KW House</div>
+    <div class="card-title-zh">KW森林之家</div>
+    <div class="card-meta">
+      <span class="meta-tag architect">Eugenio Simonetti + Bastian San Martin</span>
+      <span class="meta-tag">Araucanía, Chile</span>
+      <span class="meta-tag">2025</span>
+    </div>
+    <div class="section-label">Design Reading</div>
+    <div class="design-reading">
+      KW House 是「二元性研究」的空間實踐——全玻璃底層如「魚缸」讓居者沉浸於阿勞卡尼亞森林之中，木質首層則提供隔絕的私密庇護。兩種空間狀態之間的轉換如四季更迭：夏季完全開放融入自然，冬季密封保溫，周邊走廊串聯兩端起居空間，各設有木燃壁爐創造溫暖核心。這種季節性切換的設計邏輯使居住本身成為對氣候的詩意回應，維利亞里卡火山麓的森林成為一年四季都無法缺席的建築主角。
+    </div>
+    <div class="section-label">Client Translation</div>
+    <div class="client-quote">
+      我們設計了一個能夠隨季節變換性格的家——夏日底層全玻璃讓您沉浸在森林光影中，如同住在自然景觀的中央；冬日則轉換為溫暖的木質封閉殼體，壁爐的火光與森林的靜謐共存。兩種完全不同的居住體驗存在於同一棟房子。
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="location">📍 Araucanía, Chile</span>
+    <a href="https://www.dezeen.com/2025/01/12/kw-house-eugenio-simonetti-bastian-san-martin/" target="_blank">View Project →</a>
+  </div>
+</div>
+
+<!-- ====== CASE 7: Palo Quemado House ====== -->
+<div class="card">
+  <div class="card-badge">
+    <span class="badge-source">Dezeen</span>
+    <span class="badge-award">Dezeen Featured Residential 2025 — Lake View Holiday Home</span>
+    <span class="badge-year">2025</span>
+  </div>
+  <div class="card-photos">
+    <div class="photo-main">
+      <div class="photo-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        Palo Quemado House
+      </div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>V形體量湖景視角</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>多面金屬坡頂細部</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>hualle橡木室內鋪面</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>蘭科湖遠景</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-title">Palo Quemado House</div>
+    <div class="card-title-zh">焦木之家</div>
+    <div class="card-meta">
+      <span class="meta-tag architect">Hebra Arquitectos</span>
+      <span class="meta-tag">Los Ríos Region, Chile</span>
+      <span class="meta-tag">2025</span>
+    </div>
+    <div class="section-label">Design Reading</div>
+    <div class="design-reading">
+      Palo Quemado House 以兩個正方體量相互旋轉45度的姿態落在洛斯里奧斯大區的緩坡上，形成向湖Ranco開放的V形視野。屋頂以多面金屬板疊合呼應智利南部山林的稜角地貌。本土橡木（hualle oak）作為外牆與室內鋪面的統一語言，令建築在視覺上與周邊森林融合。雙體量的旋轉既是日照策略——北向迎光，南向覽湖——也是空間的詩意姿勢，讓光線、風景與木材共同生長。
+    </div>
+    <div class="section-label">Client Translation</div>
+    <div class="client-quote">
+      我們以兩個旋轉的木質體量在智利湖區創造了最佳賞景角度——一個旋轉動作讓南向完全朝向蘭科湖，讓北向充分接受陽光，這是最經濟的幾何決策。本土橡木的溫暖氣息讓您在森林中感到真正的安居，同時也是對在地自然資源的尊重。
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="location">📍 Los Ríos Region, Chile</span>
+    <a href="https://www.dezeen.com/2025/03/11/hebra-arquitectos-palo-quemado-house/" target="_blank">View Project →</a>
+  </div>
+</div>
+
+<!-- ====== CASE 8: House in Three Heights ====== -->
+<div class="card">
+  <div class="card-badge">
+    <span class="badge-source">Dezeen</span>
+    <span class="badge-award">Dezeen Featured Residential 2025 — Coastal Hillside Extension</span>
+    <span class="badge-year">2025</span>
+  </div>
+  <div class="card-photos">
+    <div class="photo-main">
+      <div class="photo-placeholder">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><rect x="3" y="3" width="18" height="18" rx="1"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        House in Three Heights
+      </div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>玻璃廊橋新舊連結</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>三層不同高度全景</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>木質外鋪坡地延伸</span></div>
+    </div>
+    <div class="photo-thumb">
+      <div class="photo-placeholder"><span>太平洋海岸遠景</span></div>
+    </div>
+  </div>
+  <div class="card-body">
+    <div class="card-title">House in Three Heights</div>
+    <div class="card-title-zh">三高度之家</div>
+    <div class="card-meta">
+      <span class="meta-tag architect">Ignacio Correa Arquitecto</span>
+      <span class="meta-tag">Zapallar, Valparaíso, Chile</span>
+      <span class="meta-tag">2025</span>
+    </div>
+    <div class="section-label">Design Reading</div>
+    <div class="design-reading">
+      House in Three Heights 是對海濱山坡地形的精確回應——現有的三角形小屋在玻璃廊橋的串聯下，與新的多層木質擴建體量形成對話。「三高度」的命名本身即是設計宣言：不同標高創造不同視野，每個層級都以細膩的姿態擁抱查帕拉爾海岸線。兩棟建築以薄透的玻璃走廊相連，強調輕盈與通透，讓連接動線本身成為景觀的框架。所有木質外鋪延伸建築與地景之間的連續性，讓太平洋的海景從任何高度都無法被忽視。
+    </div>
+    <div class="section-label">Client Translation</div>
+    <div class="client-quote">
+      我們保留了您既有的家，讓它以玻璃廊橋與新的擴建相連。新舊建築在坡地上形成三個高度，每一層都開向不同角度的太平洋景觀——這不只是增建面積，而是讓您的家與地形、海景產生前所未有的對話層次。
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="location">📍 Zapallar, Chile</span>
+    <a href="https://www.dezeen.com/2025/07/24/ignacio-correa-chilean-hillside-house/" target="_blank">View Project →</a>
+  </div>
+</div>
+
+</div><!-- /grid -->
+</div><!-- /container -->
+
+<footer>
+  <div class="eyebrow" style="font-size:11px;letter-spacing:4px;color:#555;text-transform:uppercase;margin-bottom:16px;">Daily Digest · 2026-06-15</div>
+  <p style="color:#666;font-size:14px;max-width:480px;margin:0 auto 8px;">8 件精選住宅得獎案，每日更新。設計閱讀 + 客戶提案語句，直接應用於建築事務所業務。</p>
+  <a class="cta-btn" href="https://yulife1289-dev.github.io/design-awards-public/2026-06-15.html" target="_blank">View Online Version →</a>
+  <p style="margin-top:32px;">Generated at 2026-06-15T06:17:08+08:00</p>
+</footer>
+
+</body>
+</html>
