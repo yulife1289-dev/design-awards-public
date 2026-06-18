@@ -104,6 +104,20 @@
       display: block;
     }
     .slide.active { opacity: 1; }
+    .slide-placeholder {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity .4s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .slide-placeholder.active { opacity: 1; }
     .sl-btn {
       position: absolute;
       top: 50%;
@@ -153,7 +167,7 @@
       text-transform: uppercase;
     }
     .photo-tag-d { background: rgba(212,175,138,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
+    .photo-tag-w { background: rgba(160,200,176,.22); color: var(--mint); }
     .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
     .card-body {
       padding: 28px 32px;
@@ -293,6 +307,28 @@
       letter-spacing: .06em;
       pointer-events: none;
     }
+    .no-img-bg {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 32px;
+      text-align: center;
+    }
+    .no-img-bg .proj-name {
+      font-family: Georgia, serif;
+      font-size: clamp(1.4rem, 2.5vw, 2.4rem);
+      color: var(--gold);
+      line-height: 1.2;
+    }
+    .no-img-bg .proj-sub {
+      color: var(--muted);
+      font-size: .92rem;
+      letter-spacing: .05em;
+    }
   </style>
 </head>
 <body>
@@ -300,12 +336,12 @@
     <section class="hero">
       <span class="eyebrow">Residential Awards Digest</span>
       <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、Houses Awards、Pritzker 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
+      <p>本頁收錄來自 Dezeen、Wallpaper、Architizer A+ Awards 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
       <div class="hero-meta">
-        <span>生成時間 2026-06-18 06:00</span>
+        <span>生成時間 2026-06-18 10:11</span>
         <span>共 8 件作品</span>
-        <span>Dezeen 5 案、Architizer 1 案、Houses Awards 1 案、Pritzker Prize 1 案</span>
-        <span>每案 4–6 張圖片</span>
+        <span>Dezeen 3 案、Wallpaper 4 案、Architizer 1 案</span>
+        <span>每案 3–5 張圖片</span>
       </div>
       <div class="card-links" style="margin-top:18px;">
         <a href="https://yulife1289-dev.github.io/design-awards-public/2026-06-18.html" target="_blank" rel="noopener">查看今日 HTML</a>
@@ -314,341 +350,345 @@
     </section>
     <section class="grid">
 
-      <article class="card" id="case-dezeen-2025-ninas-house-cork">
+      <!-- 1. Yogi's Cabin -->
+      <article class="card" id="case-dezeen-2026-yogis-cabin-built-works">
         <div class="slider" tabindex="0">
           <div class="slides">
-            <img src="https://static.dezeen.com/uploads/2025/04/ninaco-roar-architects-ninas-house-cork_dezeen_2364_col_0.jpg" class="slide active" alt="Nina's House 圖片 1" loading="eager">
-            <img src="https://static.dezeen.com/uploads/2025/04/ninaco-roar-architects-ninas-house-cork_dezeen_2364_col_1.jpg" class="slide" alt="Nina's House 圖片 2" loading="eager">
-            <img src="https://static.dezeen.com/uploads/2025/04/ninaco-roar-architects-ninas-house-cork_dezeen_2364_col_6.jpg" class="slide" alt="Nina's House 圖片 3" loading="lazy">
-            <img src="https://static.dezeen.com/uploads/2025/04/ninaco-roar-architects-ninas-house-cork_dezeen_2364_col_15.jpg" class="slide" alt="Nina's House 圖片 4" loading="lazy">
-            <img src="https://static.dezeen.com/uploads/2025/04/ninaco-roar-architects-ninas-house-cork_dezeen_2364_col_18.jpg" class="slide" alt="Nina's House 圖片 5" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2026/06/built-works-yogis-cabin_dezeen_2364_col_0.jpg" class="slide active" alt="Yogi's Cabin 圖片 1" loading="eager" onerror="this.style.display='none'">
+            <img src="https://static.dezeen.com/uploads/2026/06/built-works-yogis-cabin_dezeen_2364_col_1.jpg" class="slide" alt="Yogi's Cabin 圖片 2" loading="lazy" onerror="this.style.display='none'">
+            <img src="https://static.dezeen.com/uploads/2026/06/built-works-yogis-cabin_dezeen_2364_col_6.jpg" class="slide" alt="Yogi's Cabin 圖片 3" loading="lazy" onerror="this.style.display='none'">
+            <img src="https://static.dezeen.com/uploads/2026/06/built-works-yogis-cabin_dezeen_2364_col_12.jpg" class="slide" alt="Yogi's Cabin 圖片 4" loading="lazy" onerror="this.style.display='none'">
           </div>
           <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
           <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
           <div class="sl-overlay">
-            <span class="sl-count">1 / 5</span>
-            <span class="photo-tag photo-tag-d">Dezeen</span>
+            <span class="sl-count">1 / 4</span>
+            <span class="photo-tag photo-tag-d">Dezeen 2026</span>
           </div>
         </div>
         <div class="card-body">
           <div class="card-main">
             <div class="card-meta">
-              <span>Dezeen Awards 2025 住宅城市類入圍</span>
-              <span>2025</span>
-              <span>英國倫敦南托騰漢</span>
+              <span>Dezeen Houses 2026</span>
+              <span>2026</span>
+              <span>英國東薩塞克斯</span>
             </div>
-            <h3 class="card-title">Nina's House<br><small style="font-size:.55em;color:var(--gold)">妮娜之家</small></h3>
-            <p class="card-by">ROAR Architects / Nina+Co</p>
-            <p class="card-desc">一棟 1970 年代教士宿舍的深度翻新。100mm 膨脹軟木板包覆全棟外牆，展示氣候立場。道格拉斯杉木廚房搭配回收塑料檯面，熱泵完全取代天然氣，實現建築層面的零化石燃料目標。NLA 倫敦環境獎 2025 得主。</p>
+            <h3 class="card-title">Yogi's Cabin<br><small style="font-size:.55em;color:var(--gold)">冥想小屋</small></h3>
+            <p class="card-by">Built Works</p>
+            <p class="card-desc">農場水塘畔的 38 平方米冥想小屋，外皮採用燒焦落葉松（Shou Sugi Ban）炭化處理，賦予建築強烈的炭黑視覺重量。內部以道格拉斯冷杉和手工磚建立溫暖觸感層次。沿水側設有日式簷廊（engawa），作為室內靜思與戶外水景的過渡空間，讓池塘映射成主要居住景觀。</p>
           </div>
           <div class="card-side">
-            <p class="card-note">Nina's House 最有說服力的地方在於它讓「翻新」本身成為最強的設計論述：軟木板外牆不只是隔熱材料，而是一種可被視覺識別的氣候立場——任何人走過都能直覺感知到這棟建築與眾不同的材料選擇，讓生態決策成為美學宣言。</p>
+            <p class="card-note">Yogi's Cabin 最值得提案借用的是它對「尺度壓縮」的操作方式：38 平方米不是限制，而是把所有設計決策聚焦在一個感知節點——簷廊和水面的關係——讓居住者每天都在同一個位置獲得最強的空間體驗。材料選擇（Shou Sugi Ban）則在視覺上讓建築「消失」於農場地景，成為水面的框架而非主體。</p>
             <div class="card-facts">
-              <span>住宅深度翻新</span>
-              <span>英國倫敦南托騰漢</span>
-              <span>NLA 環境獎 2025 得主</span>
-              <span>Dezeen Awards 2025 入圍</span>
+              <span>38 平方米極小住宅</span>
+              <span>Shou Sugi Ban 炭化落葉松</span>
+              <span>日式簷廊 engawa</span>
+              <span>東薩塞克斯 Great Park Farm</span>
             </div>
             <div class="card-links">
-              <a href="https://www.dezeen.com/2025/04/27/ninaco-roar-architects-ninas-house-cork/" target="_blank" rel="noopener">專案頁面</a>
+              <a href="https://www.dezeen.com/2026/06/13/built-works-yogis-cabin/" target="_blank" rel="noopener">專案頁面</a>
               <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">Dezeen Houses</a>
             </div>
           </div>
         </div>
       </article>
 
-      <article class="card" id="case-dezeen-2026-nieuw-bergen-mvrdv">
+      <!-- 2. South Barn -->
+      <article class="card" id="case-dezeen-2025-south-barn-studio-weave">
         <div class="slider" tabindex="0">
           <div class="slides">
-            <img src="https://static.dezeen.com/uploads/2026/06/mvrdv-nieuw-bergen-housing-complex-eindhoven_dezeen_2364_col_0.jpg" class="slide active" alt="Nieuw Bergen 圖片 1" loading="eager">
-            <img src="https://static.dezeen.com/uploads/2026/06/mvrdv-nieuw-bergen-housing-complex-eindhoven_dezeen_2364_col_1.jpg" class="slide" alt="Nieuw Bergen 圖片 2" loading="eager">
-            <img src="https://static.dezeen.com/uploads/2026/06/mvrdv-nieuw-bergen-housing-complex-eindhoven_dezeen_2364_col_6.jpg" class="slide" alt="Nieuw Bergen 圖片 3" loading="lazy">
-            <img src="https://static.dezeen.com/uploads/2026/06/mvrdv-nieuw-bergen-housing-complex-eindhoven_dezeen_2364_col_15.jpg" class="slide" alt="Nieuw Bergen 圖片 4" loading="lazy">
-            <img src="https://static.dezeen.com/uploads/2026/06/mvrdv-nieuw-bergen-housing-complex-eindhoven_dezeen_2364_col_22.jpg" class="slide" alt="Nieuw Bergen 圖片 5" loading="lazy">
-            <img src="https://static.dezeen.com/uploads/2026/06/mvrdv-nieuw-bergen-housing-complex-eindhoven_dezeen_2364_col_30.jpg" class="slide" alt="Nieuw Bergen 圖片 6" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2025/11/studio-weave-south-barn_dezeen_2364_col_0.jpg" class="slide active" alt="South Barn 圖片 1" loading="eager" onerror="this.style.display='none'">
+            <img src="https://static.dezeen.com/uploads/2025/11/studio-weave-south-barn_dezeen_2364_col_1.jpg" class="slide" alt="South Barn 圖片 2" loading="lazy" onerror="this.style.display='none'">
+            <img src="https://static.dezeen.com/uploads/2025/11/studio-weave-south-barn_dezeen_2364_col_6.jpg" class="slide" alt="South Barn 圖片 3" loading="lazy" onerror="this.style.display='none'">
+            <img src="https://static.dezeen.com/uploads/2025/11/studio-weave-south-barn_dezeen_2364_col_12.jpg" class="slide" alt="South Barn 圖片 4" loading="lazy" onerror="this.style.display='none'">
           </div>
           <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
           <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
           <div class="sl-overlay">
-            <span class="sl-count">1 / 6</span>
-            <span class="photo-tag photo-tag-d">Dezeen</span>
+            <span class="sl-count">1 / 4</span>
+            <span class="photo-tag photo-tag-d">Dezeen 2025</span>
           </div>
         </div>
         <div class="card-body">
           <div class="card-main">
             <div class="card-meta">
-              <span>Dezeen 2026 年 6 月特刊</span>
-              <span>2026</span>
-              <span>荷蘭艾因霍芬伯根區</span>
-            </div>
-            <h3 class="card-title">Nieuw Bergen<br><small style="font-size:.55em;color:var(--gold)">新伯根住宅群</small></h3>
-            <p class="card-by">MVRDV</p>
-            <p class="card-desc">7 棟建築、237 戶混合住宅（社會住宅至頂層豪宅）。各棟建築的屋頂輪廓均由鄰近建築的 45 度日照退縮要求決定，形成獨特鋸齒天際線。三座玻璃溫室屋頂花園、光伏板整合屋面系統。</p>
-          </div>
-          <div class="card-side">
-            <p class="card-note">Nieuw Bergen 最值得學習的是它對法規的態度：45 度日照退縮不是被繞開的約束，而是被放大成整個街區最顯眼的形態特徵——鋸齒屋頂讓社會住宅和頂層豪宅共用同一個輪廓，以建築形式消解住宅的社會階層。</p>
-            <div class="card-facts">
-              <span>集合住宅 237 戶</span>
-              <span>荷蘭艾因霍芬</span>
-              <span>Dezeen 2026 年 6 月 14 日</span>
-            </div>
-            <div class="card-links">
-              <a href="https://www.dezeen.com/2026/06/14/mvrdv-nieuw-bergen-housing-complex-eindhoven/" target="_blank" rel="noopener">專案頁面</a>
-              <a href="https://www.mvrdv.com" target="_blank" rel="noopener">MVRDV</a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <article class="card" id="case-dezeen-2025-blythe-hill-house">
-        <div class="slider" tabindex="0">
-          <div class="slides">
-            <img src="https://static.dezeen.com/uploads/2025/06/blythe-hill-house-courtyard-london-whittaker-parsons_dezeen_2364_col_0.jpg" class="slide active" alt="Blythe Hill House 圖片 1" loading="eager">
-            <img src="https://static.dezeen.com/uploads/2025/06/blythe-hill-house-courtyard-london-whittaker-parsons_dezeen_2364_col_1.jpg" class="slide" alt="Blythe Hill House 圖片 2" loading="eager">
-            <img src="https://static.dezeen.com/uploads/2025/06/blythe-hill-house-courtyard-london-whittaker-parsons_dezeen_2364_col_6.jpg" class="slide" alt="Blythe Hill House 圖片 3" loading="lazy">
-            <img src="https://static.dezeen.com/uploads/2025/06/blythe-hill-house-courtyard-london-whittaker-parsons_dezeen_2364_col_12.jpg" class="slide" alt="Blythe Hill House 圖片 4" loading="lazy">
-            <img src="https://static.dezeen.com/uploads/2025/06/blythe-hill-house-courtyard-london-whittaker-parsons_dezeen_2364_col_18.jpg" class="slide" alt="Blythe Hill House 圖片 5" loading="lazy">
-          </div>
-          <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-          <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-          <div class="sl-overlay">
-            <span class="sl-count">1 / 5</span>
-            <span class="photo-tag photo-tag-d">Dezeen</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-main">
-            <div class="card-meta">
-              <span>Dezeen 2025 年 6 月特刊</span>
+              <span>Dezeen Houses 2025；Wallpaper 年度建築師 2026</span>
               <span>2025</span>
-              <span>英國倫敦白斯山丘</span>
+              <span>英國懷特島</span>
             </div>
-            <h3 class="card-title">Blythe Hill House<br><small style="font-size:.55em;color:var(--gold)">白斯山丘之家</small></h3>
-            <p class="card-by">Whittaker Parsons</p>
-            <p class="card-desc">1970 年代排屋的 14 公尺後方延伸。大麻磚砌體牆面配合道格拉斯杉木屋頂構架，縱深庭院花園作為空間核心。Wallpaper* 稱其為「緊湊的野獸派珍品」。低碳材料雙重服務於環境目標和空間美學。</p>
+            <h3 class="card-title">South Barn<br><small style="font-size:.55em;color:var(--gold)">南穀倉住宅</small></h3>
+            <p class="card-by">Studio Weave（Je Ahn）</p>
+            <p class="card-desc">懷特島考斯附近舊穀倉的住宅改造。設計以最小干預為原則，保留農業建築的結構骨架與材料歷史，迴避現代化改造的典型語言。主持建築師 Je Ahn 以此項目獲選 Wallpaper 2026 年度建築師，評審肯定其對建築謙遜性與時間連續性的堅持。</p>
           </div>
           <div class="card-side">
-            <p class="card-note">Blythe Hill House 告訴我們：當材料選擇足夠精確，形式就不需要太多表演。大麻磚的特殊之處在於它同時滿足了低碳、觸感豐富、色調中性三個條件，讓擴建以一種不同卻和諧的材料語言延續了排屋傳統。</p>
+            <p class="card-note">South Barn 讓我們重新思考「改造」的定義：當農業建築本身的時間積層已經足夠豐富，最強的設計決策往往是「不做」——不覆蓋樑柱的歲月痕跡，不替換結構材料，讓農業勞動的歷史成為住宅情緒的主要內容。Je Ahn 的「建築謙遜性」是一種設計立場，不是技術的缺失。</p>
             <div class="card-facts">
-              <span>住宅後方延伸 14m</span>
-              <span>英國倫敦白斯山丘</span>
-              <span>Wallpaper* 推薦</span>
+              <span>農業穀倉住宅改造</span>
+              <span>英國懷特島</span>
+              <span>最小干預策略</span>
+              <span>Wallpaper 年度建築師 Je Ahn 2026</span>
             </div>
             <div class="card-links">
-              <a href="https://www.dezeen.com/2025/06/16/blythe-hill-house-courtyard-london-whittaker-parsons/" target="_blank" rel="noopener">專案頁面</a>
+              <a href="https://www.dezeen.com/2025/11/11/studio-weave-south-barn/" target="_blank" rel="noopener">專案頁面</a>
               <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">Dezeen Houses</a>
             </div>
           </div>
         </div>
       </article>
 
-      <article class="card" id="case-houses-2026-cottesloe-house-vokes-peters">
+      <!-- 3. Co.arch Alpine Apartment -->
+      <article class="card" id="case-dezeen-2026-co-arch-galvagni-giomein">
         <div class="slider" tabindex="0">
           <div class="slides">
-            <img src="https://thedesignfiles.net/wp-content/uploads/2025/11/Cottesloe-House-Vokes-Peters-1.jpg" class="slide active" alt="Cottesloe House 圖片 1" loading="eager">
-            <img src="https://thedesignfiles.net/wp-content/uploads/2025/11/Cottesloe-House-Vokes-Peters-2.jpg" class="slide" alt="Cottesloe House 圖片 2" loading="eager">
-            <img src="https://thedesignfiles.net/wp-content/uploads/2025/11/Cottesloe-House-Vokes-Peters-3.jpg" class="slide" alt="Cottesloe House 圖片 3" loading="lazy">
-            <img src="https://thedesignfiles.net/wp-content/uploads/2025/11/Cottesloe-House-Vokes-Peters-4.jpg" class="slide" alt="Cottesloe House 圖片 4" loading="lazy">
-            <img src="https://thedesignfiles.net/wp-content/uploads/2025/11/Cottesloe-House-Vokes-Peters-5.jpg" class="slide" alt="Cottesloe House 圖片 5" loading="lazy">
+            <img src="https://static.dezeen.com/uploads/2026/01/co-arch-studio-mario-galvagni-giomein-breuil-cervinia_dezeen_2364_col_0.jpg" class="slide active" alt="Co.arch Alpine Apartment 圖片 1" loading="eager" onerror="this.style.display='none'">
+            <img src="https://static.dezeen.com/uploads/2026/01/co-arch-studio-mario-galvagni-giomein-breuil-cervinia_dezeen_2364_col_1.jpg" class="slide" alt="Co.arch Alpine Apartment 圖片 2" loading="lazy" onerror="this.style.display='none'">
+            <img src="https://static.dezeen.com/uploads/2026/01/co-arch-studio-mario-galvagni-giomein-breuil-cervinia_dezeen_2364_col_6.jpg" class="slide" alt="Co.arch Alpine Apartment 圖片 3" loading="lazy" onerror="this.style.display='none'">
+            <img src="https://static.dezeen.com/uploads/2026/01/co-arch-studio-mario-galvagni-giomein-breuil-cervinia_dezeen_2364_col_10.jpg" class="slide" alt="Co.arch Alpine Apartment 圖片 4" loading="lazy" onerror="this.style.display='none'">
           </div>
           <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
           <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
           <div class="sl-overlay">
-            <span class="sl-count">1 / 5</span>
-            <span class="photo-tag photo-tag-a">Houses Awards</span>
+            <span class="sl-count">1 / 4</span>
+            <span class="photo-tag photo-tag-d">Dezeen 2026</span>
           </div>
         </div>
         <div class="card-body">
           <div class="card-main">
             <div class="card-meta">
-              <span>2026 Houses Awards 入圍；2026 西澳建築大獎得主</span>
-              <span>2025</span>
-              <span>澳洲西澳伯斯科特斯洛</span>
-            </div>
-            <h3 class="card-title">Cottesloe House<br><small style="font-size:.55em;color:var(--gold)">科特斯洛之家</small></h3>
-            <p class="card-by">Vokes and Peters / Sam Carter</p>
-            <p class="card-desc">夾在街道與後巷之間的海岸都市住宅。宏偉拱廊貫穿建築前後，連接街道與砂地後巷。兩層量體整合內外「房間序列」，融合英國拱廊傳統與澳洲海岸現代主義。業主 Sam Carter 本身亦為設計師。</p>
-          </div>
-          <div class="card-side">
-            <p class="card-note">Cottesloe House 的設計核心在於把「穿越」做成居住敘事：拱廊貫穿前後，讓街道行人與後巷居民都能感受到建築的存在感。英國拱廊的正式感和澳洲海岸的輕鬆感在同一棟建築裡形成張力，這種張力讓整個空間有一種讓人想停留的吸引力。</p>
-            <div class="card-facts">
-              <span>海岸都市住宅</span>
-              <span>澳洲西澳科特斯洛</span>
-              <span>2026 Houses Awards 入圍</span>
-              <span>2026 西澳建築大獎</span>
-            </div>
-            <div class="card-links">
-              <a href="https://thedesignfiles.net/2025/11/architecture-cottesloe-house-vokes-and-peters" target="_blank" rel="noopener">專案頁面</a>
-              <a href="https://www.vokesandpeters.com" target="_blank" rel="noopener">Vokes and Peters</a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <article class="card" id="case-dezeen-2026-144-vanderbilt-soil">
-        <div class="slider" tabindex="0">
-          <div class="slides">
-            <img src="https://static.dezeen.com/uploads/2026/03/144-vanderbilt-apartment-pink-concrete-brooklyn-soil_dezeen_2364_col_0.jpg" class="slide active" alt="144 Vanderbilt 圖片 1" loading="eager">
-            <img src="https://static.dezeen.com/uploads/2026/03/144-vanderbilt-apartment-pink-concrete-brooklyn-soil_dezeen_2364_col_1.jpg" class="slide" alt="144 Vanderbilt 圖片 2" loading="eager">
-            <img src="https://static.dezeen.com/uploads/2026/03/144-vanderbilt-apartment-pink-concrete-brooklyn-soil_dezeen_2364_col_6.jpg" class="slide" alt="144 Vanderbilt 圖片 3" loading="lazy">
-            <img src="https://static.dezeen.com/uploads/2026/03/144-vanderbilt-apartment-pink-concrete-brooklyn-soil_dezeen_2364_col_15.jpg" class="slide" alt="144 Vanderbilt 圖片 4" loading="lazy">
-            <img src="https://static.dezeen.com/uploads/2026/03/144-vanderbilt-apartment-pink-concrete-brooklyn-soil_dezeen_2364_col_24.jpg" class="slide" alt="144 Vanderbilt 圖片 5" loading="lazy">
-          </div>
-          <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-          <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-          <div class="sl-overlay">
-            <span class="sl-count">1 / 5</span>
-            <span class="photo-tag photo-tag-d">Dezeen</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-main">
-            <div class="card-meta">
-              <span>Dezeen 2026 年 3 月特刊</span>
+              <span>Dezeen Houses 2026</span>
               <span>2026</span>
-              <span>美國紐約布魯克林克林頓丘</span>
+              <span>義大利布勒伊-切爾維尼亞 焦梅因</span>
             </div>
-            <h3 class="card-title">144 Vanderbilt<br><small style="font-size:.55em;color:var(--gold)">凡德比特 144 號</small></h3>
-            <p class="card-by">SO-IL</p>
-            <p class="card-desc">布魯克林六層公寓住宅，26 戶中有 21 種獨特平面。粉色波浪形預鑄混凝土立面，扇貝形剖面讓光線在不同角度呈現動態視覺效果。建築面積約 8,300 平方公尺，二至四房配置。</p>
+            <h3 class="card-title">Co.arch Alpine Apartment<br><small style="font-size:.55em;color:var(--gold)">加爾瓦尼阿爾卑斯公寓更新</small></h3>
+            <p class="card-by">Co.arch Studio</p>
+            <p class="card-desc">翻新義大利現代主義建築師 Mario Galvagni 1960 年代設計的阿爾卑斯滑雪度假綜合體中的一間公寓。設計以當代室內語言回應 Galvagni 的現代主義空間秩序，在歷史建築框架內建立溫暖而精確的當代居住品質，選材謹慎以向原始設計意圖致敬。</p>
           </div>
           <div class="card-side">
-            <p class="card-note">144 Vanderbilt 選擇了「粉色」作為城市宣言：在布魯克林棕色石砌街區中，粉色預鑄混凝土以顏色的反差製造住宅多樣性的視覺陳述。扇貝形波浪剖面讓靜態的顏色成為動態的光線遊戲，21 種獨特平面讓每戶居住者都有不可複製的家。</p>
+            <p class="card-note">Co.arch Alpine Apartment 提示一種在「有歷史的框架內」工作的方法：翻新不是從零開始，而是先理解 Galvagni 的空間比例邏輯，再找到「新舊可以共存」的切入點。阿爾卑斯度假空間的光線特性（反射雪地的白色漫射光）決定了材料溫暖度的閾值——這種氣候-材料-空間的連鎖關係是可以在任何高緯度或高山住宅提案中直接應用的設計工具。</p>
             <div class="card-facts">
-              <span>公寓住宅 26 戶</span>
-              <span>美國布魯克林克林頓丘</span>
-              <span>Dezeen 2026 年 3 月 20 日</span>
+              <span>歷史現代主義建築公寓翻新</span>
+              <span>義大利焦梅因</span>
+              <span>Mario Galvagni 1960s 遺產</span>
+              <span>阿爾卑斯度假住宅</span>
             </div>
             <div class="card-links">
-              <a href="https://www.dezeen.com/2026/03/20/144-vanderbilt-apartment-pink-concrete-brooklyn-soil/" target="_blank" rel="noopener">專案頁面</a>
-              <a href="https://www.dezeen.com/tag/apartments/" target="_blank" rel="noopener">Dezeen Apartments</a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <article class="card" id="case-architizer-2026-hotham-house-maynard">
-        <div class="slider" tabindex="0">
-          <div class="slides">
-            <img src="https://images.adsttc.com/media/images/6891/ff19/9a2f/b601/7e5e/8d25/large_jpg/hotham-house-austin-maynard-architects-photo.jpg" class="slide active" alt="Hotham House 圖片 1" loading="eager">
-            <img src="https://images.adsttc.com/media/images/6891/ff17/9a2f/b601/7e5e/8d21/large_jpg/hotham-house-austin-maynard-architects-photo.jpg" class="slide" alt="Hotham House 圖片 2" loading="eager">
-            <img src="https://images.adsttc.com/media/images/6891/ff18/cb12/3810/0390/a0d4/large_jpg/hotham-house-austin-maynard-architects-photo.jpg" class="slide" alt="Hotham House 圖片 3" loading="lazy">
-            <img src="https://images.adsttc.com/media/images/6891/ffe7/cb12/3860/35f7/a4c3/large_jpg/hotham-house-austin-maynard-architects-ground-floor-plan.jpg" class="slide" alt="Hotham House 圖片 4" loading="lazy">
-            <img src="https://images.adsttc.com/media/images/6891/ffe7/a805/bb20/539c/bdc9/large_jpg/hotham-house-austin-maynard-architects-elevation-east-and-west.jpg" class="slide" alt="Hotham House 圖片 5" loading="lazy">
-          </div>
-          <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-          <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-          <div class="sl-overlay">
-            <span class="sl-count">1 / 5</span>
-            <span class="photo-tag photo-tag-a">Architizer</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-main">
-            <div class="card-meta">
-              <span>Architizer A+Awards 2026 住宅改建類特別提名</span>
-              <span>2025</span>
-              <span>澳洲坎培拉</span>
-            </div>
-            <h3 class="card-title">Hotham House<br><small style="font-size:.55em;color:var(--gold)">霍瑟姆之家</small></h3>
-            <p class="card-by">Austin Maynard Architects</p>
-            <p class="card-desc">坎培拉兩戰間風格平房（Inter-War Bungalow）的深度翻新。在原建築兩端各增建一翼並加建車庫，「保留和再投資」設計哲學貫穿全案。Horbury Hunt 住宅獎 2025 及 Think Brick 建築獎得主。</p>
-          </div>
-          <div class="card-side">
-            <p class="card-note">Hotham House 代表了一種越來越重要的設計思路：翻新比新建更有可持續意義，但翻新要有說服力，就必須真正理解原建築的空間邏輯。Austin Maynard 的「謙遜增建」——讓新增建在尺度、材料和退縮上均服從原建築節奏——比任何視覺炫技都更難做到。</p>
-            <div class="card-facts">
-              <span>兩戰間風格平房翻新</span>
-              <span>澳洲坎培拉</span>
-              <span>Architizer A+Awards 2026 特別提名</span>
-              <span>Horbury Hunt 住宅獎 2025</span>
-            </div>
-            <div class="card-links">
-              <a href="https://www.archdaily.com/1032831/hotham-house-austin-maynard-architects" target="_blank" rel="noopener">專案頁面</a>
-              <a href="https://awards.architizer.com" target="_blank" rel="noopener">Architizer A+Awards</a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <article class="card" id="case-pritzker-2026-prism-house-radic">
-        <div class="slider" tabindex="0">
-          <div class="slides">
-            <img src="https://static.dezeen.com/uploads/2020/09/prism-house-room-smiljan-radic-conguillio-chile_dezeen_2364_col_0.jpg" class="slide active" alt="Prism House + Terrace Room 圖片 1" loading="eager">
-            <img src="https://static.dezeen.com/uploads/2020/09/prism-house-room-smiljan-radic-conguillio-chile_dezeen_2364_col_1.jpg" class="slide" alt="Prism House + Terrace Room 圖片 2" loading="eager">
-            <img src="https://static.dezeen.com/uploads/2020/09/prism-house-room-smiljan-radic-conguillio-chile_dezeen_2364_col_6.jpg" class="slide" alt="Prism House + Terrace Room 圖片 3" loading="lazy">
-            <img src="https://static.dezeen.com/uploads/2020/09/prism-house-room-smiljan-radic-conguillio-chile_dezeen_2364_col_12.jpg" class="slide" alt="Prism House + Terrace Room 圖片 4" loading="lazy">
-            <img src="https://static.dezeen.com/uploads/2020/09/prism-house-room-smiljan-radic-conguillio-chile_dezeen_2364_col_18.jpg" class="slide" alt="Prism House + Terrace Room 圖片 5" loading="lazy">
-          </div>
-          <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-          <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-          <div class="sl-overlay">
-            <span class="sl-count">1 / 5</span>
-            <span class="photo-tag photo-tag-d">Pritzker 2026</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-main">
-            <div class="card-meta">
-              <span>2026 普里茨克建築獎桂冠得主代表住宅作品</span>
-              <span>2020</span>
-              <span>智利阿勞卡尼亞孔基略</span>
-            </div>
-            <h3 class="card-title">Prism House + Terrace Room<br><small style="font-size:.55em;color:var(--gold)">棱柱之家與露台房</small></h3>
-            <p class="card-by">Smiljan Radić</p>
-            <p class="card-desc">184 平方公尺的週末住宅，由兩個量體組成：單坡的棱柱之家與雙坡的露台房。黑色波紋金屬板（Instapanel）覆蓋屋頂及牆面，高架木棧道讓建築漂浮於孔基略火山熔岩地景之上。引用川島新哉 1970s 原型。</p>
-          </div>
-          <div class="card-side">
-            <p class="card-note">Prism House + Terrace Room 是一場關於「原型」的思想實驗：把來自不同文化的歷史住宅原型帶到同一個基地並置，高架木棧道的輕觸姿態讓建築對火山地景保持謙遜——居住者是地景的過客，建築是可移除的存在。Smiljan Radić 以此獲得 2026 普里茨克獎。</p>
-            <div class="card-facts">
-              <span>週末住宅 184m²</span>
-              <span>智利孔基略</span>
-              <span>2026 普里茨克建築獎桂冠得主</span>
-            </div>
-            <div class="card-links">
-              <a href="https://www.dezeen.com/2020/09/11/prism-house-room-smiljan-radic-conguillio-chile/" target="_blank" rel="noopener">專案頁面</a>
-              <a href="https://www.dezeen.com/2026/03/12/pritzker-prize-2026-winner-smiljan-radic-key-projects/" target="_blank" rel="noopener">Pritzker Prize 2026</a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <article class="card" id="case-dezeen-2026-anthill-house-kaushal-tatiya">
-        <div class="slider" tabindex="0">
-          <div class="slides">
-            <img src="https://static.dezeen.com/uploads/2026/06/anthill-house-kaushal-tatiya-architects_dezeen_2364_col_0.jpg" class="slide active" alt="The Anthill House 圖片 1" loading="eager">
-            <img src="https://static.dezeen.com/uploads/2026/06/anthill-house-kaushal-tatiya-architects_dezeen_2364_col_1.jpg" class="slide" alt="The Anthill House 圖片 2" loading="eager">
-            <img src="https://static.dezeen.com/uploads/2026/06/anthill-house-kaushal-tatiya-architects_dezeen_2364_col_6.jpg" class="slide" alt="The Anthill House 圖片 3" loading="lazy">
-            <img src="https://static.dezeen.com/uploads/2026/06/anthill-house-kaushal-tatiya-architects_dezeen_2364_col_12.jpg" class="slide" alt="The Anthill House 圖片 4" loading="lazy">
-            <img src="https://static.dezeen.com/uploads/2026/06/anthill-house-kaushal-tatiya-architects_dezeen_2364_col_18.jpg" class="slide" alt="The Anthill House 圖片 5" loading="lazy">
-          </div>
-          <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-          <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-          <div class="sl-overlay">
-            <span class="sl-count">1 / 5</span>
-            <span class="photo-tag photo-tag-d">Dezeen</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-main">
-            <div class="card-meta">
-              <span>Dezeen 2026 年 6 月 18 日特刊</span>
-              <span>2026</span>
-              <span>印度馬哈拉施特拉邦阿伊爾亞那格爾</span>
-            </div>
-            <h3 class="card-title">The Anthill House<br><small style="font-size:.55em;color:var(--gold)">蟻丘之家</small></h3>
-            <p class="card-by">Kaushal Tatiya Architects</p>
-            <p class="card-desc">650 平方公尺印度住宅，以蟻丘的溫控生物學邏輯設計空間剖面。曲線磚弧形陽台層疊立面，圍繞雙層高核心起居空間，形成被動降溫系統。熱乾氣候下完全無需機械空調，全建築以磚砌弧形拱體現在地工藝。</p>
-          </div>
-          <div class="card-side">
-            <p class="card-note">The Anthill House 讓仿生設計做到了言行一致：不只是複製蟻丘的外形，而是複製它的溫控工作邏輯——熱空氣從底部進入，在磚砌弧形陽台系統中上升後自然排出，讓曲線磚立面成為三維的被動氣候調節裝置，徹底拒絕機械空調。</p>
-            <div class="card-facts">
-              <span>獨棟住宅 650m²</span>
-              <span>印度馬哈拉施特拉邦</span>
-              <span>Dezeen 2026 年 6 月 17 日</span>
-            </div>
-            <div class="card-links">
-              <a href="https://www.dezeen.com/2026/06/17/anthill-house-kaushal-tatiya-architects/" target="_blank" rel="noopener">專案頁面</a>
+              <a href="https://www.dezeen.com/2026/01/02/co-arch-studio-mario-galvagni-giomein-breuil-cervinia/" target="_blank" rel="noopener">專案頁面</a>
               <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">Dezeen Houses</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4. House in Narutaki -->
+      <article class="card" id="case-wallpaper-2026-house-narutaki-kooo">
+        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #0f1008 0%, #1a1c10 50%, #0d0d0a 100%);">
+          <div class="slides">
+            <div class="slide-placeholder active">
+              <div class="no-img-bg">
+                <div class="proj-name">House in Narutaki</div>
+                <div class="proj-sub">kooo architects · Kyoto, Japan · 2026</div>
+              </div>
+            </div>
+          </div>
+          <div class="sl-overlay">
+            <span class="sl-count">Wallpaper 建築精選</span>
+            <span class="photo-tag photo-tag-w">Wallpaper 2026</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Wallpaper 建築精選 2026</span>
+              <span>2026</span>
+              <span>日本京都鳴滝</span>
+            </div>
+            <h3 class="card-title">House in Narutaki<br><small style="font-size:.55em;color:var(--gold)">鳴滝之家</small></h3>
+            <p class="card-by">kooo architects</p>
+            <p class="card-desc">京都鳴滝地區的數寄屋翻新。以聚樂壁（Juraku plaster）為主要表面材料，重新排列土間、接待室與起居空間的動線序列，使傳統建築序列與當代家庭生活相容。主棟之外另設獨立附屬棟，搭配瀑布庭園景觀，形成公私領域的物理與情感分隔。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">House in Narutaki 最重要的設計決策是「序列重組」：土間→接待→起居這條動線不是複製傳統，而是以現代生活的使用頻率重新排列每個空間的位置。聚樂壁的選擇讓材料本身帶有時間感，而獨立附屬棟與瀑布庭園則把「公私分離」做成一個空間體驗而非平面規劃術語。</p>
+            <div class="card-facts">
+              <span>數寄屋翻新</span>
+              <span>日本京都鳴滝</span>
+              <span>聚樂壁 Juraku plaster</span>
+              <span>獨立附屬棟 + 瀑布庭園</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.wallpaper.com/architecture/residential/kyoto-home-kooo-architects-japan" target="_blank" rel="noopener">專案頁面</a>
+              <a href="https://www.wallpaper.com/architecture" target="_blank" rel="noopener">Wallpaper 建築</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5. Casa Macahuite -->
+      <article class="card" id="case-wallpaper-2026-casa-macahuite-studio-font">
+        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #0f0c08 0%, #1a1208 50%, #0a0d0a 100%);">
+          <div class="slides">
+            <div class="slide-placeholder active">
+              <div class="no-img-bg">
+                <div class="proj-name">Casa Macahuite</div>
+                <div class="proj-sub">Studio Font · Puerto Escondido, Oaxaca · 2026</div>
+              </div>
+            </div>
+          </div>
+          <div class="sl-overlay">
+            <span class="sl-count">Wallpaper 建築精選</span>
+            <span class="photo-tag photo-tag-w">Wallpaper 2026</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Wallpaper 建築精選 2026</span>
+              <span>2026</span>
+              <span>墨西哥瓦哈卡州普埃爾托埃斯孔迪多</span>
+            </div>
+            <h3 class="card-title">Casa Macahuite<br><small style="font-size:.55em;color:var(--gold)">馬卡瓦特之家</small></h3>
+            <p class="card-by">Studio Font</p>
+            <p class="card-desc">海龜繁殖海灘旁的 300 平方米離網住宅。H 型平面將公共空間置於中央，私密臥室設於兩翼，以 14 公尺懸挑帕洛塔木格柵遮廊連接整體。清水混凝土結構搭配帕洛塔木（parota wood），透過橋樑進入基地，保持海灘地景完整性並回應熱帶氣候需求。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">Casa Macahuite 的 H 型平面不是幾何偏好，而是同時解決三個問題的唯一解：熱帶自然通風需要中央開口、海龜保育需要最小地面佔用、度假住宅需要明確的公私分離。14 公尺懸挑遮廊把遮蔭效果做到最大，同時讓帕洛塔木的材料溫度和清水混凝土的材料重量形成視覺對話。</p>
+            <div class="card-facts">
+              <span>300 平方米離網住宅</span>
+              <span>H 型平面</span>
+              <span>14m 懸挑木格柵遮廊</span>
+              <span>海龜繁殖地保育</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.wallpaper.com/architecture/residential/brutalist-mexican-casa-macahuite-oaxaca" target="_blank" rel="noopener">專案頁面</a>
+              <a href="https://www.wallpaper.com/architecture" target="_blank" rel="noopener">Wallpaper 建築</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 6. Hilltop Residence -->
+      <article class="card" id="case-wallpaper-2026-hilltop-residence-michael-hennessey">
+        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #0a0c10 0%, #111520 50%, #080a10 100%);">
+          <div class="slides">
+            <div class="slide-placeholder active">
+              <div class="no-img-bg">
+                <div class="proj-name">Hilltop Residence</div>
+                <div class="proj-sub">Michael Hennessey Architecture · Los Altos Hills, CA · 2026</div>
+              </div>
+            </div>
+          </div>
+          <div class="sl-overlay">
+            <span class="sl-count">Wallpaper 建築精選</span>
+            <span class="photo-tag photo-tag-w">Wallpaper 2026</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Wallpaper 建築精選 2026</span>
+              <span>2026</span>
+              <span>美國加州洛斯阿爾托斯山</span>
+            </div>
+            <h3 class="card-title">Hilltop Residence<br><small style="font-size:.55em;color:var(--gold)">山丘住宅</small></h3>
+            <p class="card-by">Michael Hennessey Architecture</p>
+            <p class="card-desc">1959 年加州現代主義住宅的單層水平量體更新。設計維持原有低矮線性延伸語言，以精確的水平線條強化建築與矽谷山丘地景的對話關係。翻新保留戰後加州現代主義的空間開放性，同時導入當代材料與設備系統，確保時代連續性不被技術升級所打斷。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">Hilltop Residence 示範了一種「謙遜的更新」策略：1959 年的設計精神不是需要被超越的起點，而是需要被尊重的設計立場。單層水平線條讓建築在山丘地景中保持低姿態，這種「退讓」反而是讓矽谷山丘地景獲得最大視覺尊嚴的正確選擇。翻新的任務是讓原設計意圖在當代使用中繼續成立。</p>
+            <div class="card-facts">
+              <span>1959 年現代主義住宅翻新</span>
+              <span>單層低水平線量體</span>
+              <span>矽谷洛斯阿爾托斯山</span>
+              <span>戰後加州現代主義</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.wallpaper.com/architecture/residential/hilltop-residence-michael-hennessey-architecture-usa" target="_blank" rel="noopener">專案頁面</a>
+              <a href="https://www.wallpaper.com/architecture" target="_blank" rel="noopener">Wallpaper 建築</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 7. Edge House -->
+      <article class="card" id="case-wallpaper-2026-edge-house-fernanda-marques">
+        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #0a0a0a 0%, #141414 50%, #080808 100%);">
+          <div class="slides">
+            <div class="slide-placeholder active">
+              <div class="no-img-bg">
+                <div class="proj-name">Edge House</div>
+                <div class="proj-sub">Fernanda Marques Arquitetos · São Paulo, Brazil · 2026</div>
+              </div>
+            </div>
+          </div>
+          <div class="sl-overlay">
+            <span class="sl-count">Wallpaper 建築精選</span>
+            <span class="photo-tag photo-tag-w">Wallpaper 2026</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Wallpaper 建築精選 2026</span>
+              <span>2026</span>
+              <span>巴西聖保羅</span>
+            </div>
+            <h3 class="card-title">Edge House<br><small style="font-size:.55em;color:var(--gold)">邊界之家</small></h3>
+            <p class="card-by">Fernanda Marques Arquitetos</p>
+            <p class="card-desc">以安藤忠雄式的清水混凝土靜謐感翻新聖保羅都市住宅，以直島（Naoshima）美術館的沉思性空間氛圍為居住品質標準。設計透過精確的光線切割、材料克制與空間靜謐感，在嘈雜的都市環境中創造具有美術館等級感知密度的居住體驗。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">Edge House 用「以美術館體驗為居住品質基準」這個定錨，讓清水混凝土的材料選擇從「建築師偏好」升格為「可向客戶說明的品質決策」：直島讓人願意搭渡輪去感受的那種沉浸式靜謐，可以在自家住宅中以光線計畫、材料紀律與空間比例重現。這是一個把頂級參照轉化為提案語言的絕佳示範。</p>
+            <div class="card-facts">
+              <span>清水混凝土都市住宅翻新</span>
+              <span>巴西聖保羅</span>
+              <span>安藤忠雄 / 直島參照</span>
+              <span>美術館居住品質標準</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.wallpaper.com/architecture/residential/fernanda-marques-sao-paulo-house" target="_blank" rel="noopener">專案頁面</a>
+              <a href="https://www.wallpaper.com/architecture" target="_blank" rel="noopener">Wallpaper 建築</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 8. Echo -->
+      <article class="card" id="case-architizer-2026-echo-daniel-joseph-chenin">
+        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #080810 0%, #10101a 50%, #060608 100%);">
+          <div class="slides">
+            <div class="slide-placeholder active">
+              <div class="no-img-bg">
+                <div class="proj-name">Echo</div>
+                <div class="proj-sub">Daniel Joseph Chenin Ltd. · Las Vegas, Nevada · 2026</div>
+              </div>
+            </div>
+          </div>
+          <div class="sl-overlay">
+            <span class="sl-count">Architizer A+ Awards</span>
+            <span class="photo-tag photo-tag-a">Architizer 2026</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Architizer A+ Awards 2026 大眾票選獎</span>
+              <span>2026</span>
+              <span>美國內華達州拉斯維加斯（未建成）</span>
+            </div>
+            <h3 class="card-title">Echo<br><small style="font-size:.55em;color:var(--gold)">回聲（未建成永續住宅）</small></h3>
+            <p class="card-by">Daniel Joseph Chenin Ltd.</p>
+            <p class="card-desc">Architizer A+ Awards 2026 未建成永續住宅類大眾票選獎。方案以聲學共鳴原理重新組織住宅空間，探索自然聲景與建築形式的對應關係。在拉斯維加斯這個以人工聲音與視覺刺激著稱的都市環境中，Echo 提出以靜謐自然感知為主軸的居住願景，概念本身即是對場域文化的批判性回應。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">Echo 在競圖策略上示範了「選擇場域本身就是設計立場」的操作方法：在拉斯維加斯提出靜謐住宅，不是在迴避這個城市的本質，而是用建築語言提出一個反命題——讓都市中最需要的「安靜」透過聲學空間組織成為可被設計的內容。這種批判性場域選擇在概念設計和競圖提案中是強力的說服工具。</p>
+            <div class="card-facts">
+              <span>未建成概念方案</span>
+              <span>永續住宅類大眾票選獎</span>
+              <span>聲學空間組織原理</span>
+              <span>拉斯維加斯批判性場域</span>
+            </div>
+            <div class="card-links">
+              <a href="https://architizer.com/awards/" target="_blank" rel="noopener">Architizer A+ Awards</a>
+              <a href="https://architizer.com/blog/awards/" target="_blank" rel="noopener">Awards 公告</a>
             </div>
           </div>
         </div>
@@ -656,21 +696,19 @@
 
     </section>
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
+
+  <div id="lb-backdrop">
     <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">&#x2715;</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
+    <button id="lb-close">&#x2715;</button>
+    <button class="lb-nav" id="lb-prev">&#8249;</button>
+    <button class="lb-nav" id="lb-next">&#8250;</button>
     <span id="lb-count"></span>
   </div>
+
   <script>
     document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
+      const slides = [...slider.querySelectorAll('.slide, .slide-placeholder')];
+      if (slides.length === 0) return;
       const countEl = slider.querySelector('.sl-count');
       let idx = 0;
 
@@ -678,12 +716,14 @@
         slides[idx].classList.remove('active');
         idx = ((n % slides.length) + slides.length) % slides.length;
         slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
+        if (slides[idx].loading !== undefined) slides[idx].loading = 'eager';
+        if (countEl && !countEl.dataset.fixed) countEl.textContent = (idx + 1) + ' / ' + slides.length;
       }
 
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
+      const prevBtn = slider.querySelector('.sl-prev');
+      const nextBtn = slider.querySelector('.sl-next');
+      if (prevBtn) prevBtn.addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
+      if (nextBtn) nextBtn.addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
 
       let tx = 0;
       slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
@@ -726,9 +766,9 @@
         lbSlides = [];
       }
       document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
+        const slides = [...slider.querySelectorAll('.slide')].filter(el => el.tagName === 'IMG');
         slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
+          img.addEventListener('click', () => { if (slides.length > 0) openLb(slides, i); });
         });
       });
       lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
