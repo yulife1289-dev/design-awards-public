@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報 — 2026-06-19</title>
+  <title>住宅得獎案日報 — 2026-06-20</title>
   <style>
     :root {
       --bg: #111111;
@@ -332,369 +332,371 @@
   </style>
 </head>
 <body>
+  <div id="lb-backdrop" role="dialog" aria-modal="true">
+    <img id="lb-img" src="" alt="">
+    <button id="lb-close" aria-label="Close">&#x2715;</button>
+    <button class="lb-nav" id="lb-prev" aria-label="Previous">&#8249;</button>
+    <button class="lb-nav" id="lb-next" aria-label="Next">&#8250;</button>
+    <div id="lb-count"></div>
+  </div>
   <main class="page">
     <section class="hero">
       <span class="eyebrow">Residential Awards Digest</span>
       <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Dezeen、Wallpaper 的住宅案例，各來源優先選取最新案例，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
+      <p>本頁收錄來自 Dezeen Awards 2024 / 2025 的住宅及室內案例，優先選取最新入圍或得獎作品，若已在歷史記錄中使用過便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
       <div class="hero-meta">
-        <span>生成時間 2026-06-19 06:00</span>
+        <span>生成時間 2026-06-20 06:00</span>
         <span>共 8 件作品</span>
-        <span>Dezeen 2 案、Wallpaper 6 案</span>
-        <span>巴西、英國、比利時、義大利（2）、哥斯大黎加、澳洲、日本</span>
+        <span>Dezeen 8 案</span>
+        <span>澳洲（2） · 克羅埃西亞 · 德國 · 葡萄牙 · 西班牙 · 墨西哥 · 日本</span>
       </div>
       <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/2026-06-19.html" target="_blank" rel="noopener">查看今日 HTML</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/2026-06-20.html" target="_blank" rel="noopener">查看今日 HTML</a>
         <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
       </div>
     </section>
     <section class="grid">
 
-      <!-- 1. Xingu House -->
-      <article class="card" id="case-wallpaper-2026-xingu-house-tetro-arquitetura">
-        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #100808 0%, #1c1208 50%, #100a06 100%);">
+      <!-- 1. Northcote House -->
+      <article class="card" id="case-dezeen-2024-northcote-house">
+        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #080e08 0%, #0e1a0e 50%, #080e08 100%);" id="sl-dezeen-2024-northcote-house" data-idx="0" data-total="4">
           <div class="slides">
-            <div class="slide-placeholder active">
-              <div class="no-img-bg">
-                <div class="proj-name">Xingu House</div>
-                <div class="proj-sub">Tetro Arquitetura · Nova Lima, Minas Gerais, Brazil · 2021</div>
-              </div>
-            </div>
+            <img class="slide active" src="https://static.dezeen.com/uploads/2024/11/northcote-house-llds-architects-melbourne-dezeen-2364-col-0.jpg" alt="Northcote House photo 1" loading="lazy">
+            <img class="slide" src="https://static.dezeen.com/uploads/2024/11/northcote-house-llds-architects-melbourne-dezeen-2364-col-1.jpg" alt="Northcote House photo 2" loading="lazy">
+            <img class="slide" src="https://static.dezeen.com/uploads/2024/11/northcote-house-llds-architects-melbourne-dezeen-2364-col-2.jpg" alt="Northcote House photo 3" loading="lazy">
+            <img class="slide" src="https://static.dezeen.com/uploads/2024/11/northcote-house-llds-architects-melbourne-dezeen-2364-col-3.jpg" alt="Northcote House photo 4" loading="lazy">
           </div>
+          <button class="sl-btn sl-prev" onclick="slide('dezeen-2024-northcote-house',-1)" aria-label="Previous">&#8249;</button>
+          <button class="sl-btn sl-next" onclick="slide('dezeen-2024-northcote-house',1)" aria-label="Next">&#8250;</button>
           <div class="sl-overlay">
-            <span class="sl-count">Wallpaper 建築精選</span>
-            <span class="photo-tag photo-tag-w">Wallpaper 2026</span>
+            <span class="sl-count" id="sl-count-dezeen-2024-northcote-house">1 / 4</span>
+            <span class="photo-tag photo-tag-d">Dezeen 2024</span>
           </div>
         </div>
         <div class="card-body">
           <div class="card-main">
             <div class="card-meta">
-              <span>Wallpaper* 建築精選 2026</span>
-              <span>2021</span>
-              <span>巴西米納斯吉拉斯州新利馬</span>
-            </div>
-            <h3 class="card-title">Xingu House<br><small style="font-size:.55em;color:var(--gold)">信古之家</small></h3>
-            <p class="card-by">Tetro Arquitetura（Carlos Maia、Débora Mendes、Igor Macedo）</p>
-            <p class="card-desc">1,500 平方米山坡住宅，基地面積 8,000 平方米。設計以磅礴的混凝土柱叢為結構核心，向外伸展三個懸臂分支，各自對應不同的居住功能與景觀朝向。完全玻璃化的起居翼俯瞰山脈，戶外娛樂翼與反射水池翼在地形折疊中形成漂浮感。原有石砌廢墟與本地原生森林完整保留，洞穴式空間預留給未來私人酒莊。</p>
-          </div>
-          <div class="card-side">
-            <p class="card-note">Xingu House 的設計策略是把地形複雜性轉化為形式語言的來源：三分支懸臂不是幾何偏好，而是讓每個居住功能找到最佳景觀朝向的場所解答。保留石砌廢墟與原生森林讓新建築在既有場所記憶中取得情感合法性——這種場所認同策略在巴西山地住宅設計中具有強烈的文化說服力。</p>
-            <div class="card-facts">
-              <span>1,500 平方米住宅</span>
-              <span>三懸臂分支量體</span>
-              <span>混凝土柱叢結構</span>
-              <span>石砌廢墟景觀整合</span>
-              <span>洞穴未來酒莊</span>
-            </div>
-            <div class="card-links">
-              <a href="https://www.wallpaper.com/architecture/residential/xingu-house-tetro-arquitetura-brazil" target="_blank" rel="noopener">專案頁面</a>
-              <a href="https://www.wallpaper.com/architecture" target="_blank" rel="noopener">Wallpaper 建築</a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- 2. Crouch End House -->
-      <article class="card" id="case-wallpaper-2026-crouch-end-house-formwork">
-        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #080a12 0%, #101420 50%, #080a12 100%);">
-          <div class="slides">
-            <div class="slide-placeholder active">
-              <div class="no-img-bg">
-                <div class="proj-name">Crouch End House</div>
-                <div class="proj-sub">Formwork Architects · Crouch End, North London, UK · 2026</div>
-              </div>
-            </div>
-          </div>
-          <div class="sl-overlay">
-            <span class="sl-count">Wallpaper 建築精選</span>
-            <span class="photo-tag photo-tag-w">Wallpaper 2026</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-main">
-            <div class="card-meta">
-              <span>Wallpaper* 建築精選 2026 年 5 月</span>
-              <span>2026</span>
-              <span>英國倫敦北部克勞奇恩德</span>
-            </div>
-            <h3 class="card-title">Crouch End House<br><small style="font-size:.55em;color:var(--gold)">克勞奇恩德之家</small></h3>
-            <p class="card-by">Formwork Architects</p>
-            <p class="card-desc">465 平方米的愛德華時代老人看護院改建為當代家宅。設計以訂製雕塑性金屬螺旋樓梯作為室內視覺核心，以雙高後側延伸製造垂直光線穿透，以凹陷式中庭（sunken courtyard）回應地面層採光與隱私需求。原有彩色玻璃門廊與愛德華式主樓梯完整修復保留，讓新舊語彙在材料對比中清晰標示。</p>
-          </div>
-          <div class="card-side">
-            <p class="card-note">Crouch End House 示範了改建的雙重合法性：訂製金屬樓梯以現代雕塑感取代了舊式看護院的功能空間，而保留彩色玻璃與原有主樓梯的策略讓改建不需要對歷史建築道歉——新舊對比不是衝突而是對話，這是在有歷史保護需求的改建案中最有效的說服方式。</p>
-            <div class="card-facts">
-              <span>465 平方米改建</span>
-              <span>愛德華時代看護院</span>
-              <span>訂製金屬螺旋樓梯</span>
-              <span>雙高後側延伸</span>
-              <span>凹陷式中庭</span>
-            </div>
-            <div class="card-links">
-              <a href="https://www.wallpaper.com/architecture/residential/crouch-end-house-formwork-architects" target="_blank" rel="noopener">專案頁面</a>
-              <a href="https://www.wallpaper.com/architecture" target="_blank" rel="noopener">Wallpaper 建築</a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- 3. Flemish House -->
-      <article class="card" id="case-wallpaper-2026-flemish-house-thiers-bilquin">
-        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #080a08 0%, #101610 50%, #080a08 100%);">
-          <div class="slides">
-            <div class="slide-placeholder active">
-              <div class="no-img-bg">
-                <div class="proj-name">Flemish House</div>
-                <div class="proj-sub">Pascal Bilquin + Julie Thiers · Flanders, Belgium · 2026</div>
-              </div>
-            </div>
-          </div>
-          <div class="sl-overlay">
-            <span class="sl-count">Wallpaper 建築精選</span>
-            <span class="photo-tag photo-tag-w">Wallpaper 2026</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-main">
-            <div class="card-meta">
-              <span>Wallpaper* 建築精選 2026 年 2 月</span>
-              <span>2026</span>
-              <span>比利時法蘭德斯鄉村</span>
-            </div>
-            <h3 class="card-title">Flemish House<br><small style="font-size:.55em;color:var(--gold)">法蘭德斯之家</small></h3>
-            <p class="card-by">Pascal Bilquin（建築）+ Julie Thiers（室內設計）</p>
-            <p class="card-desc">室內設計師 Julie Thiers 與建築師 Pascal Bilquin 合作打造的私人住所，坐落比利時法蘭德斯鄉村。Thiers 將其策展式的物件選擇——精心挑選的家具、材料與陳設——從城市設計案延伸至個人居住空間，讓這棟住宅成為一個關於品味與美學立場的生活宣言。Bilquin 的建築框架提供了適切的空間容器，讓室內的陳設語言有清晰的建築邏輯作為依托。</p>
-          </div>
-          <div class="card-side">
-            <p class="card-note">Flemish House 是「設計師把自己的住宅作為美學宣言」的絕佳示範：每一個物件的選擇都是一個關於品味的公開聲明，整個住宅是設計師的立場展示，也是對未來客戶最有說服力的作品集。建築師與室內設計師合作自宅的模式讓兩個專業的邊界在同一個空間中清晰呈現。</p>
-            <div class="card-facts">
-              <span>設計師私人住所</span>
-              <span>策展式室內陳設</span>
-              <span>比利時法蘭德斯鄉村</span>
-              <span>建築 + 室內雙向合作</span>
-            </div>
-            <div class="card-links">
-              <a href="https://www.wallpaper.com/architecture/residential/flemish-house-julie-thiers-pascal-bilquin-belgium" target="_blank" rel="noopener">專案頁面</a>
-              <a href="https://www.wallpaper.com/architecture" target="_blank" rel="noopener">Wallpaper 建築</a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- 4. Castel Sonnino -->
-      <article class="card" id="case-wallpaper-2026-castel-sonnino-livorno">
-        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #100a06 0%, #1c1408 50%, #100c06 100%);">
-          <div class="slides">
-            <div class="slide-placeholder active">
-              <div class="no-img-bg">
-                <div class="proj-name">Castel Sonnino</div>
-                <div class="proj-sub">Tono Architettura · Quercianella, Livorno, Tuscany · 2025</div>
-              </div>
-            </div>
-          </div>
-          <div class="sl-overlay">
-            <span class="sl-count">Wallpaper 建築精選</span>
-            <span class="photo-tag photo-tag-w">Wallpaper 2026</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-main">
-            <div class="card-meta">
-              <span>Wallpaper* 建築精選 2026 年 6 月</span>
-              <span>2025（16 世紀原建）</span>
-              <span>義大利托斯卡尼里沃諾奎爾恰內拉</span>
-            </div>
-            <h3 class="card-title">Castel Sonnino<br><small style="font-size:.55em;color:var(--gold)">索尼諾城堡</small></h3>
-            <p class="card-by">Tono Architettura & Interior Design</p>
-            <p class="card-desc">16 世紀梅迪奇時代瞭望塔的謹慎修復，委託方為普奇亞里尼家族。修復以保守主義手法維持塔樓的新中世紀建築形制，將現代居住設備（含 Vimar 智能家居系統）謹慎整合入中世紀石砌結構，不打破歷史外觀的完整性。索尼諾城堡俯瞰里沃諾海岸線，提供全景托斯卡尼海景，是義大利海岸私人歷史住宅修復的稀有案例。</p>
-          </div>
-          <div class="card-side">
-            <p class="card-note">Castel Sonnino 的核心選擇是「保守式修復」而非當代干預——讓 500 年的時間感繼續主導居住體驗。Tono Architettura 把「現代設備隱形整合」做到讓科技服務歷史而非支配歷史：智能家居系統藏入中世紀石牆，站在全景海景陽台時，感受到的是場所的連續性，而非時代的對比。</p>
-            <div class="card-facts">
-              <span>16 世紀梅迪奇瞭望塔</span>
-              <span>保守式修復手法</span>
-              <span>新中世紀建築形制</span>
-              <span>俯瞰里沃諾海岸</span>
-              <span>Vimar 智能系統整合</span>
-            </div>
-            <div class="card-links">
-              <a href="https://www.wallpaper.com/architecture/residential/castel-sonnino-livorno-italian-castle" target="_blank" rel="noopener">專案頁面</a>
-              <a href="https://www.wallpaper.com/architecture" target="_blank" rel="noopener">Wallpaper 建築</a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- 5. Casa Contenta -->
-      <article class="card" id="case-wallpaper-2026-casa-contenta-taller-ken">
-        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #0a0c08 0%, #141c0e 50%, #0a0c08 100%);">
-          <div class="slides">
-            <div class="slide-placeholder active">
-              <div class="no-img-bg">
-                <div class="proj-name">Casa Contenta</div>
-                <div class="proj-sub">Taller KEN · Punta Islita, Costa Rica · 2026</div>
-              </div>
-            </div>
-          </div>
-          <div class="sl-overlay">
-            <span class="sl-count">Wallpaper 建築精選</span>
-            <span class="photo-tag photo-tag-w">Wallpaper 2026</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-main">
-            <div class="card-meta">
-              <span>Wallpaper* 建築精選 2026 年 2 月</span>
-              <span>2026</span>
-              <span>哥斯大黎加普塔伊斯利塔</span>
-            </div>
-            <h3 class="card-title">Casa Contenta<br><small style="font-size:.55em;color:var(--gold)">滿足之家</small></h3>
-            <p class="card-by">Taller KEN（Greg Kahn Melitonov + Ines Guzman）</p>
-            <p class="card-desc">紐約事務所 Taller KEN 對哥斯大黎加普塔伊斯利塔一棟 15 年度假老宅的翻新設計。「Contenta」源自哥斯大黎加俗語，傳達 Pura Vida（純粹生活）的悠閒樂觀精神。設計以中世紀現代主義的空間語彙更新老宅，配合色彩觸感讓整個住宅在情感上傳遞放鬆與愉悅的生活基調，讓翻新後的空間能夠持續喚起哥斯大黎加式的「凡事都好」生活態度。</p>
-          </div>
-          <div class="card-side">
-            <p class="card-note">Casa Contenta 把「地域精神」（Pura Vida）做成了設計語言：它不是口號，而是可以用色彩計畫、家具選擇、空間開放性來實現的情緒目標。「用色彩調節情緒」的策略在度假住宅中特別有效——色彩是觸發情緒切換最直接的感知工具，讓每次踏入家門都有從工作模式切換到放鬆模式的感覺。</p>
-            <div class="card-facts">
-              <span>15 年老宅翻新</span>
-              <span>Pura Vida 精神</span>
-              <span>中世紀現代主義語彙</span>
-              <span>色彩計畫情緒調節</span>
-              <span>哥斯大黎加海岸</span>
-            </div>
-            <div class="card-links">
-              <a href="https://www.wallpaper.com/architecture/residential/costa-rica-house-casa-contenta" target="_blank" rel="noopener">專案頁面</a>
-              <a href="https://www.wallpaper.com/architecture" target="_blank" rel="noopener">Wallpaper 建築</a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- 6. Rome Residence -->
-      <article class="card" id="case-wallpaper-2026-rome-residence-prime-design">
-        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #0c0a08 0%, #1a1510 50%, #0c0a08 100%);">
-          <div class="slides">
-            <div class="slide-placeholder active">
-              <div class="no-img-bg">
-                <div class="proj-name">Rome Residence</div>
-                <div class="proj-sub">Prime Design (Edoardo Ventisette) · Rome, Italy · 2026</div>
-              </div>
-            </div>
-          </div>
-          <div class="sl-overlay">
-            <span class="sl-count">Wallpaper 建築精選</span>
-            <span class="photo-tag photo-tag-w">Wallpaper 2026</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-main">
-            <div class="card-meta">
-              <span>Wallpaper* 建築精選 2026 年 3 月</span>
-              <span>2026</span>
-              <span>義大利羅馬</span>
-            </div>
-            <h3 class="card-title">Rome Residence<br><small style="font-size:.55em;color:var(--gold)">羅馬私邸</small></h3>
-            <p class="card-by">Prime Design（Edoardo Ventisette）</p>
-            <p class="card-desc">Prime Design 主理人 Edoardo Ventisette 對羅馬一棟 20 世紀住宅的全面翻新。設計以「靜謐的奢侈」（Quiet Extravagance）為美學主軸，以復古酷意（retro-cool）為視覺基調，讓翻新後的空間在羅馬歷史城市紋理中以當代視角援引 20 世紀設計的豐富性。精準細節工藝和克制材料語言示範了義大利當代室內設計在奢侈美學上的特定路徑——不依賴品牌標誌或材料昂貴性，而是依賴設計品味的深度。</p>
-          </div>
-          <div class="card-side">
-            <p class="card-note">「靜謐奢侈」這個概念框架的強大之處在於它同時解決了兩個設計溝通問題：讓業主知道「不炫耀」是積極的設計選擇（而非節省預算的理由），同時讓設計師有清晰的自我審查標準。復古酷意美學在羅馬這個城市有強烈的場域合法性——對 20 世紀設計的援引讓空間在歷史城市中有時間縱深感而非孤立的當代感。</p>
-            <div class="card-facts">
-              <span>20 世紀都市住宅翻新</span>
-              <span>靜謐奢侈美學框架</span>
-              <span>復古酷意視覺基調</span>
-              <span>義大利當代室內設計</span>
-            </div>
-            <div class="card-links">
-              <a href="https://www.wallpaper.com/architecture/residential/rome-residence-prime-design-italy" target="_blank" rel="noopener">專案頁面</a>
-              <a href="https://www.wallpaper.com/architecture" target="_blank" rel="noopener">Wallpaper 建築</a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- 7. Ironbark House -->
-      <article class="card" id="case-dezeen-2025-ironbark-house-klauscarson">
-        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #100c04 0%, #1c1608 50%, #100c04 100%);">
-          <div class="slides">
-            <div class="slide-placeholder active">
-              <div class="no-img-bg">
-                <div class="proj-name">Ironbark House</div>
-                <div class="proj-sub">Klaus Carson Studio · Ulladulla, NSW, Australia · 2025</div>
-              </div>
-            </div>
-          </div>
-          <div class="sl-overlay">
-            <span class="sl-count">Dezeen 特刊</span>
-            <span class="photo-tag photo-tag-d">Dezeen 2025</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-main">
-            <div class="card-meta">
-              <span>Dezeen 2025 年 6 月特刊</span>
-              <span>2025</span>
-              <span>澳洲新南威爾斯州烏拉杜拉</span>
-            </div>
-            <h3 class="card-title">Ironbark House<br><small style="font-size:.55em;color:var(--gold)">鐵樹之家</small></h3>
-            <p class="card-by">Klaus Carson Studio</p>
-            <p class="card-desc">250 平方米澳洲 NSW 南海岸住宅，2025 年完工。設計由兩個穀倉造型量體加車庫構成，以礫石中庭分隔。外牆採用波紋辛卡盧姆鋼板（Zincalume）配合斑桉木（Spotted Gum）線腳，底部以基地現場開採的砂岩作為基座層，讓住宅在視覺上從地面生長出來。滑動玻璃門讓主要居住空間直接對外開放，獲澳大利亞建築師協會（AIA）獎項肯定。</p>
-          </div>
-          <div class="card-side">
-            <p class="card-note">Ironbark House 把「材料選擇即是場所宣言」做到了字面層次：砂岩從基地挖出，斑桉木是 NSW 的在地木種，辛卡盧姆鋼板是澳洲農業建築的標誌外皮——三個材料的組合讓這棟住宅在澳洲鄉村語境中有不需要解釋的場所合法性。穀倉造型讓住宅保持低姿態，成為地景的一部分而非突出於地景之上。</p>
-            <div class="card-facts">
-              <span>250 平方米海岸住宅</span>
-              <span>波紋辛卡盧姆鋼板</span>
-              <span>斑桉木線腳</span>
-              <span>現場砂岩基座</span>
-              <span>AIA 獎項肯定</span>
-            </div>
-            <div class="card-links">
-              <a href="https://www.dezeen.com/2025/06/22/ironbark-house-klaus-carson-studio/" target="_blank" rel="noopener">Dezeen 專案頁面</a>
-              <a href="https://www.archdaily.com/1031137/ironbark-house-klaus-carson-studio" target="_blank" rel="noopener">ArchDaily</a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <!-- 8. Nakano House -->
-      <article class="card" id="case-dezeen-2025-nakano-house">
-        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #080808 0%, #111111 50%, #080808 100%);">
-          <div class="slides">
-            <div class="slide-placeholder active">
-              <div class="no-img-bg">
-                <div class="proj-name">Nakano House</div>
-                <div class="proj-sub">Suzuko Yamada Architects · Nakano, Tokyo, Japan · 2024</div>
-              </div>
-            </div>
-          </div>
-          <div class="sl-overlay">
-            <span class="sl-count">Dezeen 特刊</span>
-            <span class="photo-tag photo-tag-d">Dezeen 2025</span>
-          </div>
-        </div>
-        <div class="card-body">
-          <div class="card-main">
-            <div class="card-meta">
-              <span>Dezeen 2025 年 6 月特刊</span>
+              <span>Dezeen Awards 2024</span>
               <span>2024</span>
-              <span>日本東京中野區</span>
+              <span>澳洲維多利亞州墨爾本</span>
             </div>
-            <h3 class="card-title">Nakano House<br><small style="font-size:.55em;color:var(--gold)">中野之家</small></h3>
-            <p class="card-by">Suzuko Yamada Architects</p>
-            <p class="card-desc">東京中野區 24 平方米基地上的三層樓住宅，2024 年完工。整棟建築以清水混凝土殼體構成，現澆混凝土延伸成為室內的樓梯與家具，讓材料在結構與日常接觸面之間無縫連接。螺旋樓梯設計同時服務人與貓咪的動線需求，讓動物活動整合入建築結構系統。空間整體呈現洞穴式包覆感與侘寂美學，讓都市密度的物理限制在材料感知密度中找到對應的空間品質。</p>
+            <h3 class="card-title">Northcote House<br><small style="font-size:.55em;color:var(--gold)">諾斯科特住宅</small></h3>
+            <p class="card-by">LLDS Architects</p>
+            <p class="card-desc">4.6×22 公尺狹長地塊，前身為停車場。LLDS Architects 以彎曲膠合板屋頂、紋理清水混凝土牆，將維多利亞式排屋原型重新詮釋。木材導向材料系統全部採用五公里內本地製造，定制膠合板樓梯、弧形開口與藍綠地面處理在緊湊尺度內創造溫暖敘事。</p>
           </div>
           <div class="card-side">
-            <p class="card-note">Nakano House 把「24 平方米基地的物理限制」轉化為空間詩意的來源——「不逃避小」，讓小成為材料感知密度和生活親密感的最佳條件。「螺旋樓梯兼作貓咪步道」的決策精妙之處在於把附加需求整合進建築結構的核心元素，讓兩個需求用同一個建築語彙回答——這是在小基地設計中必要的整合思維。</p>
+            <p class="card-note">在墨爾本廢棄停車場的狹長基地上，LLDS 以自由形木構屋頂消弭工業過去，紋理清水混凝土牆兼具蓄熱與降噪；五公里範圍內製造的所有定制元素讓設計在地性成為倫理立場，而非風格表態。</p>
             <div class="card-facts">
-              <span>24 平方米基地</span>
-              <span>三層清水混凝土殼體</span>
-              <span>現澆混凝土家具</span>
-              <span>螺旋樓梯貓咪步道</span>
-              <span>侘寂美學</span>
+              <span>4.6 × 22 公尺狹長地塊</span>
+              <span>彎曲膠合板屋頂</span>
+              <span>五公里本地製造</span>
+              <span>年度大獎</span>
             </div>
             <div class="card-links">
-              <a href="https://www.dezeen.com/2025/06/09/suzuko-yamada-architects-nakano-house/" target="_blank" rel="noopener">Dezeen 專案頁面</a>
-              <a href="https://www.archdaily.com/1027975/nakano-house-suzuko-yamada-architects" target="_blank" rel="noopener">ArchDaily</a>
+              <a href="https://www.dezeen.com/awards/2024/winners/northcote-house/" target="_blank" rel="noopener">獎項頁面</a>
+              <a href="https://www.dezeen.com/2024/11/04/northcote-house-llds-architects-melbourne/" target="_blank" rel="noopener">專案資料</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2. Shed House -->
+      <article class="card" id="case-dezeen-2024-shed-house">
+        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #0a0a0a 0%, #141414 50%, #0a0a0a 100%);">
+          <div class="slides">
+            <div class="slide-placeholder active">
+              <div class="no-img-bg">
+                <div class="proj-name">Shed House</div>
+                <div class="proj-sub">Breakspear Architects · 澳洲新南威爾斯州悉尼厄爾伍德 · 2024</div>
+              </div>
+            </div>
+          </div>
+          <div class="sl-overlay">
+            <span class="sl-count">Dezeen 2024</span>
+            <span class="photo-tag photo-tag-d">Dezeen 2024</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Dezeen Awards 2024 入圍 × Houses Awards 2024 金獎</span>
+              <span>2024</span>
+              <span>澳洲新南威爾斯州悉尼厄爾伍德</span>
+            </div>
+            <h3 class="card-title">Shed House<br><small style="font-size:.55em;color:var(--gold)">棚屋住宅</small></h3>
+            <p class="card-by">Breakspear Architects</p>
+            <p class="card-desc">為家具業主夫妻與三個孩子設計。底層保持棚屋式開放，作為工坊兼多功能空間；一樓十字形平面在四個角落各設一間臥室，圍繞中央庭院組織。工作與家居在此刻意交疊，庭院將光線和通風引入所有角落。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">Breakspear Architects 把家具業主的工作需求與居住需求疊合在同一棟建築：底層棚屋保持開放靈活，十字形平面讓四臥室環繞庭院呼吸，設計問題不是「如何分隔工作與生活」，而是「如何讓它們共存得自然」。</p>
+            <div class="card-facts">
+              <span>底層工坊兼家庭空間</span>
+              <span>一樓十字形平面</span>
+              <span>中央庭院採光通風</span>
+              <span>Houses Awards 2024 金獎</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.dezeen.com/awards/2024/shortlists/shed-house/" target="_blank" rel="noopener">獎項頁面</a>
+              <a href="https://www.brkspr.com/projects/doris-ave-house/" target="_blank" rel="noopener">專案資料</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3. Light House (3×3) -->
+      <article class="card" id="case-dezeen-2025-3x3-light-house">
+        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #080a10 0%, #0d1318 50%, #080a10 100%);" id="sl-dezeen-2025-3x3-light-house" data-idx="0" data-total="4">
+          <div class="slides">
+            <img class="slide active" src="https://images.adsttc.com/media/images/669d/4819/df91/fa3e/4685/4ef9/large_jpg/lighthouse-ofis-architects-photo.jpg" alt="Light House (3×3) photo 1" loading="lazy">
+            <img class="slide" src="https://static.dezeen.com/uploads/2024/11/ofis-arhitekti-light-house-croatia-dezeen-2364-col-0.jpg" alt="Light House (3×3) photo 2" loading="lazy">
+            <img class="slide" src="https://static.dezeen.com/uploads/2024/11/ofis-arhitekti-light-house-croatia-dezeen-2364-col-1.jpg" alt="Light House (3×3) photo 3" loading="lazy">
+            <img class="slide" src="https://static.dezeen.com/uploads/2024/11/ofis-arhitekti-light-house-croatia-dezeen-2364-col-2.jpg" alt="Light House (3×3) photo 4" loading="lazy">
+          </div>
+          <button class="sl-btn sl-prev" onclick="slide('dezeen-2025-3x3-light-house',-1)" aria-label="Previous">&#8249;</button>
+          <button class="sl-btn sl-next" onclick="slide('dezeen-2025-3x3-light-house',1)" aria-label="Next">&#8250;</button>
+          <div class="sl-overlay">
+            <span class="sl-count" id="sl-count-dezeen-2025-3x3-light-house">1 / 4</span>
+            <span class="photo-tag photo-tag-d">Dezeen 2025</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Dezeen Awards 2025 入圍 House Renovation</span>
+              <span>2024</span>
+              <span>克羅埃西亞科雷斯島</span>
+            </div>
+            <h3 class="card-title">Light House (3×3)<br><small style="font-size:.55em;color:var(--gold)">光屋（3×3）</small></h3>
+            <p class="card-by">OFIS Arhitekti</p>
+            <p class="card-desc">科雷斯島一棟歷史石砌建築的改造，僅有 3×3 公尺樓面面積。清空三層夾層，保留石砌外牆，在空殼內插入以 4×4 公分木條構成的輕量格架，仿照碼頭碼墩語彙手工組裝。木格架兼作床、儲物、起居所有功能，光線透過格架在垂直空間中漫射流動。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">OFIS Arhitekti 在 3×3 公尺的石牆空殼內建起一座木質「燈塔」：保留重量級石砌外殼，插入輕盈木格架作為所有功能的承載，光線沿木條縱向漫射，讓最小空間擁有最大的垂直詩意——是以少換多的改造範本。</p>
+            <div class="card-facts">
+              <span>3×3 公尺樓面</span>
+              <span>歷史石砌外牆保留</span>
+              <span>4×4 公分木條格架</span>
+              <span>碼頭碼墩語彙</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.dezeen.com/2024/11/27/ofis-arhitekti-light-house-croatia/" target="_blank" rel="noopener">獎項頁面</a>
+              <a href="https://www.dezeen.com/2024/11/27/ofis-arhitekti-light-house-croatia/" target="_blank" rel="noopener">專案資料</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 4. Erika and Willi's Barn -->
+      <article class="card" id="case-dezeen-2025-erika-and-willis-barn">
+        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #0d0a06 0%, #1a1308 50%, #0d0a06 100%);" id="sl-dezeen-2025-erika-and-willis-barn" data-idx="0" data-total="5">
+          <div class="slides">
+            <img class="slide active" src="https://images.adsttc.com/media/images/66fe/960d/2684/7b7a/6d14/e571/large_jpg/erika-and-willis-barn-piertzovanis-toews-photo.jpg" alt="Erika and Willi&#x27;s Barn photo 1" loading="lazy">
+            <img class="slide" src="https://images.adsttc.com/media/images/66fe/960f/4003/186b/8cb3/3287/large_jpg/erika-and-willis-barn-piertzovanis-toews-photo.jpg" alt="Erika and Willi&#x27;s Barn photo 2" loading="lazy">
+            <img class="slide" src="https://images.adsttc.com/media/images/66fe/960e/2684/7b7a/6d14/e574/large_jpg/erika-and-willis-barn-piertzovanis-toews-photo.jpg" alt="Erika and Willi&#x27;s Barn photo 3" loading="lazy">
+            <img class="slide" src="https://images.adsttc.com/media/images/66fe/960b/4003/186b/8cb3/3281/large_jpg/erika-and-willis-barn-piertzovanis-toews-photo.jpg" alt="Erika and Willi&#x27;s Barn photo 4" loading="lazy">
+            <img class="slide" src="https://images.adsttc.com/media/images/66fe/9607/2684/7b7a/6d14/e56a/large_jpg/erika-and-willis-barn-piertzovanis-toews-photo.jpg" alt="Erika and Willi&#x27;s Barn photo 5" loading="lazy">
+          </div>
+          <button class="sl-btn sl-prev" onclick="slide('dezeen-2025-erika-and-willis-barn',-1)" aria-label="Previous">&#8249;</button>
+          <button class="sl-btn sl-next" onclick="slide('dezeen-2025-erika-and-willis-barn',1)" aria-label="Next">&#8250;</button>
+          <div class="sl-overlay">
+            <span class="sl-count" id="sl-count-dezeen-2025-erika-and-willis-barn">1 / 5</span>
+            <span class="photo-tag photo-tag-a">ArchDaily</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Dezeen Awards 2025 入圍 House Renovation</span>
+              <span>2024</span>
+              <span>德國萊茵蘭-普法爾茨阿爾比斯海姆</span>
+            </div>
+            <h3 class="card-title">Erika and Willi&#x27;s Barn<br><small style="font-size:.55em;color:var(--gold)">艾麗卡與威利的穀倉</small></h3>
+            <p class="card-by">Piertzovanis Toews</p>
+            <p class="card-desc">巴塞爾事務所 Piertzovanis Toews 將 18 世紀穀倉改造設計成逐步圖解手冊，由業主艾麗卡和威利親手執行，歷時四年。除暖氣與窗戶外，所有元素均由業主自行完成。穀倉長出四個彩色小屋：黃色涼廊、綠色廚房、淡紅樓梯間、薰衣草色玻璃走廊通往中庭。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">Piertzovanis Toews 用圖解手冊把建築師的設計能力轉移給業主：艾麗卡和威利成為自己家的建造者，四個彩色房間各有獨立性格，讓這棟 18 世紀穀倉擁有真正的個人身份——不是商業品味，而是四年親手勞作的居住宣言。</p>
+            <div class="card-facts">
+              <span>18 世紀穀倉改造</span>
+              <span>業主自行施工四年</span>
+              <span>黃色涼廊・綠色廚房</span>
+              <span>薰衣草玻璃走廊</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.archdaily.com/1021942/erika-and-willis-barn-piertzovanis-toews" target="_blank" rel="noopener">獎項頁面</a>
+              <a href="https://www.archdaily.com/1021942/erika-and-willis-barn-piertzovanis-toews" target="_blank" rel="noopener">專案資料</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 5. Do Sol Apartment -->
+      <article class="card" id="case-dezeen-2025-do-sol-apartment">
+        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #0a0808 0%, #160e0c 50%, #0a0808 100%);">
+          <div class="slides">
+            <div class="slide-placeholder active">
+              <div class="no-img-bg">
+                <div class="proj-name">Do Sol Apartment</div>
+                <div class="proj-sub">AB+AC Architects · 葡萄牙里斯本 · 2024</div>
+              </div>
+            </div>
+          </div>
+          <div class="sl-overlay">
+            <span class="sl-count">Dezeen 2025</span>
+            <span class="photo-tag photo-tag-d">Dezeen 2025</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Dezeen Awards 2025 短名單 Residential Interior (Small)</span>
+              <span>2024</span>
+              <span>葡萄牙里斯本</span>
+            </div>
+            <h3 class="card-title">Do Sol Apartment<br><small style="font-size:.55em;color:var(--gold)">日光公寓</small></h3>
+            <p class="card-by">AB+AC Architects</p>
+            <p class="card-desc">AB+AC Architects 以感官材質回應里斯本光線，在緊湊公寓中打造靜謐棲所。工作室探索建築、健康與未來主義的交叉地帶，讓自然紋理、雕塑感傢俱與生物親和色調共同構成情緒調節系統，入選 Dezeen Awards 2025 小型住宅室內評選短名單。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">AB+AC Architects 讓里斯本的陽光成為室內設計的主角：自然材質、雕塑感傢俱與生物親和色調共同構成一個感官調節系統，讓小面積公寓不只是居住容器，而是對抗都市壓力的情緒錨點。</p>
+            <div class="card-facts">
+              <span>里斯本小型公寓</span>
+              <span>感官材質系統</span>
+              <span>生物親和色調</span>
+              <span>Dezeen 2025 短名單</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.dezeen.com/awards/2025/longlists/do-sol-apartment/" target="_blank" rel="noopener">獎項頁面</a>
+              <a href="https://www.dezeen.com/awards/2025/longlists/do-sol-apartment/" target="_blank" rel="noopener">專案資料</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 6. Casa Gesso -->
+      <article class="card" id="case-dezeen-2025-casa-gesso-valencia">
+        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #0d0d08 0%, #181808 50%, #0d0d08 100%);" id="sl-dezeen-2025-casa-gesso-valencia" data-idx="0" data-total="4">
+          <div class="slides">
+            <img class="slide active" src="https://static.dezeen.com/uploads/2024/12/viruta-lab-casa-gesso-valencia-dezeen-2364-col-0.jpg" alt="Casa Gesso photo 1" loading="lazy">
+            <img class="slide" src="https://static.dezeen.com/uploads/2024/12/viruta-lab-casa-gesso-valencia-dezeen-2364-col-1.jpg" alt="Casa Gesso photo 2" loading="lazy">
+            <img class="slide" src="https://static.dezeen.com/uploads/2024/12/viruta-lab-casa-gesso-valencia-dezeen-2364-col-2.jpg" alt="Casa Gesso photo 3" loading="lazy">
+            <img class="slide" src="https://static.dezeen.com/uploads/2024/12/viruta-lab-casa-gesso-valencia-dezeen-2364-col-3.jpg" alt="Casa Gesso photo 4" loading="lazy">
+          </div>
+          <button class="sl-btn sl-prev" onclick="slide('dezeen-2025-casa-gesso-valencia',-1)" aria-label="Previous">&#8249;</button>
+          <button class="sl-btn sl-next" onclick="slide('dezeen-2025-casa-gesso-valencia',1)" aria-label="Next">&#8250;</button>
+          <div class="sl-overlay">
+            <span class="sl-count" id="sl-count-dezeen-2025-casa-gesso-valencia">1 / 4</span>
+            <span class="photo-tag photo-tag-d">Dezeen 2025</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Dezeen Awards 2025 長名單 Residential Interior (Large)</span>
+              <span>2024</span>
+              <span>西班牙巴倫西亞省皮卡尼亞</span>
+            </div>
+            <h3 class="card-title">Casa Gesso<br><small style="font-size:.55em;color:var(--gold)">石膏之家</small></h3>
+            <p class="card-by">Viruta Lab（David Puerta &amp; María Daroz）</p>
+            <p class="card-desc">Viruta Lab 將 Casa Gesso 設計為可居住的空白畫布，向西班牙七○年代女性主義藝術先驅 Ángela García Codoñer 致敬。骨白色瓷磚外牆、天然木材、石灰華大理石與微水泥構成材料體系。各室詮釋藝術家不同系列：中央空間演繹「形態學」，主臥呼應「小姐」，客廳對應「勞作」。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">Viruta Lab 把室內設計做成女性主義藝術的空間批注：骨白外牆、石灰華地板、每個房間對應一組藝術系列，Casa Gesso 不是靠材質精緻或造型取勝，而是靠概念完整性創造辨識度——其空間邏輯比任何單一元素都更值得參考。</p>
+            <div class="card-facts">
+              <span>骨白色瓷磚外牆</span>
+              <span>中央庭院</span>
+              <span>石灰華大理石與微水泥</span>
+              <span>三藝術系列對應三空間</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.dezeen.com/2024/12/27/viruta-lab-casa-gesso-valencia/" target="_blank" rel="noopener">獎項頁面</a>
+              <a href="https://www.dezeen.com/2024/12/27/viruta-lab-casa-gesso-valencia/" target="_blank" rel="noopener">專案資料</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 7. Casa 13 -->
+      <article class="card" id="case-dezeen-2024-casa-13">
+        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #0a0e06 0%, #141808 50%, #0a0e06 100%);" id="sl-dezeen-2024-casa-13" data-idx="0" data-total="4">
+          <div class="slides">
+            <img class="slide active" src="https://images.adsttc.com/media/images/6758/8d2a/9ce0/3101/88ba/f1e8/large_jpg/casa-13-tulum-aha-photo.jpg" alt="Casa 13 photo 1" loading="lazy">
+            <img class="slide" src="https://images.adsttc.com/media/images/6758/8d27/db5c/2001/8806/b0c7/large_jpg/casa-13-tulum-aha-photo.jpg" alt="Casa 13 photo 2" loading="lazy">
+            <img class="slide" src="https://images.adsttc.com/media/images/6758/8d2b/9ce0/311a/2f07/bd83/large_jpg/casa-13-tulum-aha-photo.jpg" alt="Casa 13 photo 3" loading="lazy">
+            <img class="slide" src="https://images.adsttc.com/media/images/6758/8d27/9ce0/3101/88ba/f1e6/large_jpg/casa-13-tulum-aha-photo.jpg" alt="Casa 13 photo 4" loading="lazy">
+          </div>
+          <button class="sl-btn sl-prev" onclick="slide('dezeen-2024-casa-13',-1)" aria-label="Previous">&#8249;</button>
+          <button class="sl-btn sl-next" onclick="slide('dezeen-2024-casa-13',1)" aria-label="Next">&#8250;</button>
+          <div class="sl-overlay">
+            <span class="sl-count" id="sl-count-dezeen-2024-casa-13">1 / 4</span>
+            <span class="photo-tag photo-tag-a">ArchDaily</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Dezeen Awards 2024 入圍 House Urban</span>
+              <span>2024</span>
+              <span>墨西哥金塔納羅奧州圖倫</span>
+            </div>
+            <h3 class="card-title">Casa 13<br><small style="font-size:.55em;color:var(--gold)">十三號宅</small></h3>
+            <p class="card-by">AHÁ</p>
+            <p class="card-desc">在圖倫叢林中，Casa 13 的折疊牆體融合曲線與直線，以單色調混凝土強調整體性。靈感疊合加勒比海西班牙城堡瞭望堡、烏斯馬爾馬雅石刻浮雕、巴拉岡花園牆體與尤卡坦莊園傳統。熱帶薩拉木（tzalam）為混凝土體塊注入自然溫度，建築面積 400 平方米。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">AHÁ 把圖倫度假宅的設計問題轉化成一場文化疊加：馬雅浮雕、西班牙瞭望堡、巴拉岡花園三種歷史參照交疊在折疊混凝土牆上，使 Casa 13 不是熱帶風格刻板印象，而是有歷史密度的現代量體——融入叢林而非對抗叢林。</p>
+            <div class="card-facts">
+              <span>建築面積 400 平方米</span>
+              <span>折疊混凝土牆體</span>
+              <span>薩拉木熱帶木材</span>
+              <span>三重歷史文化參照</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.dezeen.com/awards/2024/shortlists/casa-13/" target="_blank" rel="noopener">獎項頁面</a>
+              <a href="https://www.archdaily.mx/mx/1023415/casa-13-tulum-aha" target="_blank" rel="noopener">專案資料</a>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 8. Azabu Hills Residence -->
+      <article class="card" id="case-dezeen-2025-azabu-hills-residence">
+        <div class="slider" tabindex="0" style="background: linear-gradient(135deg, #08080a 0%, #10101a 50%, #08080a 100%);" id="sl-dezeen-2025-azabu-hills-residence" data-idx="0" data-total="4">
+          <div class="slides">
+            <img class="slide active" src="https://static.dezeen.com/uploads/2024/02/karimoku-case-minimalist-apartment-tokyo-dezeen-2364-col-0.jpg" alt="Azabu Hills Residence photo 1" loading="lazy">
+            <img class="slide" src="https://static.dezeen.com/uploads/2024/02/karimoku-case-minimalist-apartment-tokyo-dezeen-2364-col-1.jpg" alt="Azabu Hills Residence photo 2" loading="lazy">
+            <img class="slide" src="https://static.dezeen.com/uploads/2024/02/karimoku-case-minimalist-apartment-tokyo-dezeen-2364-col-2.jpg" alt="Azabu Hills Residence photo 3" loading="lazy">
+            <img class="slide" src="https://static.dezeen.com/uploads/2024/02/karimoku-case-minimalist-apartment-tokyo-dezeen-2364-col-3.jpg" alt="Azabu Hills Residence photo 4" loading="lazy">
+          </div>
+          <button class="sl-btn sl-prev" onclick="slide('dezeen-2025-azabu-hills-residence',-1)" aria-label="Previous">&#8249;</button>
+          <button class="sl-btn sl-next" onclick="slide('dezeen-2025-azabu-hills-residence',1)" aria-label="Next">&#8250;</button>
+          <div class="sl-overlay">
+            <span class="sl-count" id="sl-count-dezeen-2025-azabu-hills-residence">1 / 4</span>
+            <span class="photo-tag photo-tag-d">Dezeen 2025</span>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-main">
+            <div class="card-meta">
+              <span>Dezeen Awards 2025 長名單 Residential Interior; Karimoku Case No.10</span>
+              <span>2024</span>
+              <span>日本東京都港區南麻布</span>
+            </div>
+            <h3 class="card-title">Azabu Hills Residence<br><small style="font-size:.55em;color:var(--gold)">麻布山丘住宅</small></h3>
+            <p class="card-by">Keiji Ashizawa Design + Norm Architects</p>
+            <p class="card-desc">Karimoku Case 第十號案例研究，設計師為 Keiji Ashizawa 與 Norm Architects 的 Frederik Alexander Werner。南麻布山頂公寓以欅木（zelkova）為主材。格子門縱貫細長平面引導光線；亞麻布簾、石灰抹牆、淺色大理石與觸感豐富傢俱在日式—北歐美學中構建靜謐氛圍，受谷崎潤一郎《陰翳禮讚》啟發。</p>
+          </div>
+          <div class="card-side">
+            <p class="card-note">Keiji Ashizawa 與 Norm Architects 以欅木重新定義麻布山頂公寓的材料語言：格子門讓光線沿縱深漫流，谷崎潤一郎的陰翳美學在都市豪宅中找到當代版本——不是風格模仿，而是對日本居住文化的空間詮釋，是日式靜謐與北歐精確的雙重哲學。</p>
+            <div class="card-facts">
+              <span>南麻布山頂公寓</span>
+              <span>欅木（zelkova）主材</span>
+              <span>格子門引光縱深</span>
+              <span>Karimoku Case No.10</span>
+            </div>
+            <div class="card-links">
+              <a href="https://www.dezeen.com/2024/02/06/karimoku-case-minimalist-apartment-tokyo/" target="_blank" rel="noopener">獎項頁面</a>
+              <a href="https://www.dezeen.com/2024/02/06/karimoku-case-minimalist-apartment-tokyo/" target="_blank" rel="noopener">專案資料</a>
             </div>
           </div>
         </div>
@@ -702,98 +704,66 @@
 
     </section>
   </main>
-
-  <div id="lb-backdrop">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close">&#x2715;</button>
-    <button class="lb-nav" id="lb-prev">&#8249;</button>
-    <button class="lb-nav" id="lb-next">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
-
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide, .slide-placeholder')];
-      if (slides.length === 0) return;
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        if (slides[idx].loading !== undefined) slides[idx].loading = 'eager';
-        if (countEl && !countEl.dataset.fixed) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      const prevBtn = slider.querySelector('.sl-prev');
-      const nextBtn = slider.querySelector('.sl-next');
-      if (prevBtn) prevBtn.addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      if (nextBtn) nextBtn.addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
+    // Slider
+    function slide(id, dir) {
+      const el = document.getElementById('sl-' + id);
+      if (!el) return;
+      const total = +el.dataset.total;
+      let idx = ((+el.dataset.idx + dir) + total) % total;
+      el.dataset.idx = idx;
+      el.querySelectorAll('.slide').forEach((s, i) => s.classList.toggle('active', i === idx));
+      const cnt = document.getElementById('sl-count-' + id);
+      if (cnt) cnt.textContent = (idx + 1) + ' / ' + total;
+    }
+    // Keyboard slider
+    document.querySelectorAll('.slider[data-total]').forEach(sl => {
+      sl.addEventListener('keydown', e => {
+        const id = sl.id.replace('sl-', '');
+        if (e.key === 'ArrowLeft') { slide(id, -1); e.preventDefault(); }
+        if (e.key === 'ArrowRight') { slide(id, 1); e.preventDefault(); }
       });
     });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')].filter(el => el.tagName === 'IMG');
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => { if (slides.length > 0) openLb(slides, i); });
-        });
+    // Touch swipe
+    document.querySelectorAll('.slider[data-total]').forEach(sl => {
+      let sx = 0;
+      sl.addEventListener('touchstart', e => { sx = e.touches[0].clientX; }, {passive:true});
+      sl.addEventListener('touchend', e => {
+        const dx = e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx) > 40) {
+          const id = sl.id.replace('sl-', '');
+          slide(id, dx < 0 ? 1 : -1);
+        }
+      }, {passive:true});
+    });
+    // Lightbox
+    const lb = document.getElementById('lb-backdrop');
+    const lbImg = document.getElementById('lb-img');
+    const lbCount = document.getElementById('lb-count');
+    let lbSlides = [], lbIdx = 0;
+    document.querySelectorAll('.slide').forEach(img => {
+      img.addEventListener('click', () => {
+        const sl = img.closest('.slider');
+        lbSlides = Array.from(sl.querySelectorAll('.slide'));
+        lbIdx = lbSlides.indexOf(img);
+        showLb();
       });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    });
+    function showLb() {
+      lbImg.src = lbSlides[lbIdx].src;
+      lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
+      lb.classList.add('open');
+    }
+    document.getElementById('lb-close').addEventListener('click', () => lb.classList.remove('open'));
+    document.getElementById('lb-prev').addEventListener('click', () => { lbIdx = (lbIdx - 1 + lbSlides.length) % lbSlides.length; showLb(); });
+    document.getElementById('lb-next').addEventListener('click', () => { lbIdx = (lbIdx + 1) % lbSlides.length; showLb(); });
+    lb.addEventListener('click', e => { if (e.target === lb) lb.classList.remove('open'); });
+    document.addEventListener('keydown', e => {
+      if (!lb.classList.contains('open')) return;
+      if (e.key === 'Escape') lb.classList.remove('open');
+      if (e.key === 'ArrowLeft') { lbIdx = (lbIdx - 1 + lbSlides.length) % lbSlides.length; showLb(); }
+      if (e.key === 'ArrowRight') { lbIdx = (lbIdx + 1) % lbSlides.length; showLb(); }
+    });
   </script>
 </body>
 </html>
