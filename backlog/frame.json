@@ -880,5 +880,86 @@
     "note_path": "",
     "original_title": "Harper House",
     "original_architect": "SPAN Architecture"
+  },
+  {
+    "source": "FRAME",
+    "source_accent": "f",
+    "entry_id": "frame-api-122927",
+    "year": 2026,
+    "title": "W Residence Penthouse Dubai a Study in Restraint",
+    "architect": "Worldesignteam",
+    "category": "FRAME Awards, Large Apartment",
+    "location": "West - Plm Jumeirah - Crescent Rd - The Palm Jumeirah - Dubai - United Arab Emirates",
+    "description": "The project is conceived as a spatial interpretation of calm within a context often defined by excess. Located in the W Residences, Palm Jumeirah, the apartment explores how restraint, proportion and material continuity can generate a sense of quiet clarity without relying on gesture. The project includes a private lift lobby that serves as the entrance to the penthouse, establishing the architectural language from the moment of arrival.",
+    "facts": [
+      "Large Apartment",
+      "West - Plm Jumeirah - Crescent Rd - The Palm Jumeirah - Dubai - United Arab Emirates",
+      "Published: 24 Jun 2026",
+      "Tags: awards / dubai / fa26 / large-apartment"
+    ],
+    "images": [
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/214454/Living_room_2_Night.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/214466/Lobby_1.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/214467/Dining_2_curtain_open.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/214468/Bar_Side_2-.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/214469/Bar_4.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/214470/Enterteinment_day.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/214471/Master_Bedroom_1_bed_Day-.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/214472/Master_Bathroom-_fron-.JPG",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/214474/W_Penthouse_Interior_Design_Concept_Presentation-.jpg"
+    ],
+    "links": {
+      "Project": "https://frameweb.com/project/w-residence-penthouse-dubai-a-study-in-restraint",
+      "Awards": "https://frameweb.com/awards"
+    },
+    "note_excerpt": "",
+    "note_path": "",
+    "original_title": "W Residence Penthouse Dubai a Study in Restraint",
+    "original_architect": "Worldesignteam"
+  },
+  {
+    "source": "FRAME",
+    "source_accent": "f",
+    "entry_id": "frame-api-119398",
+    "year": 2026,
+    "title": "La maison de la Baie de l'Ours",
+    "architect": "ACDF Architecture",
+    "category": "FRAME Awards, House",
+    "location": "Saint-Donat, QC G0K 1L0, Canada",
+    "description": "Architecture is not merely a shelter; it is an invitation to dialogue between humans and nature. When its boundaries dissolve, it becomes an experience—a sensation, an inhabited landscape. La Maison de la Baie de l’Ours draws its strength from the striking beauty of its site: its relationship to the horizon, the lake, and the rocky headlands.",
+    "facts": [
+      "House",
+      "Saint-Donat, QC G0K 1L0, Canada",
+      "Published: 23 Jun 2026",
+      "Tags: acdf-architecture / awards / canada / fa26"
+    ],
+    "images": [
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204431/1-JPEG-LR-BAIE-DE-LOURS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204432/2-JPEG-LR-BAIE-DE-LOURS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204433/3-JPEG-LR-BAIE-DE-LOURS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204434/4-JPEG-LR-BAIE-DE-LOURS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204435/5-JPEG-LR-BAIE-DE-LOURS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204436/6-JPEG-LR-BAIE-DE-LOURS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204437/7-JPEG-LR-BAIE-DE-LOURS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204438/8-JPEG-LR-BAIE-DE-LOURS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204439/9-JPEG-LR-BAIE-DE-LOURS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204440/10-JPEG-LR-BAIE-DE-LOURS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204441/11-JPEG-LR-BAIE-DE-LOURS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204442/12-JPEG-LR-BAIE-DE-LOURS.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204446/1-Croquis01.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204447/2-Croquis02.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204448/3-Croquis03.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204443/5-Plans-pour-publication-RDC.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204444/4-Plan-de-site.jpg",
+      "https://d1tm14lrsghf7q.cloudfront.net/public/media/204445/6-Plans-pour-publication-niveau-2.jpg"
+    ],
+    "links": {
+      "Project": "https://frameweb.com/project/la-maison-de-la-baie-de-lours",
+      "Awards": "https://frameweb.com/awards"
+    },
+    "note_excerpt": "",
+    "note_path": "",
+    "original_title": "La maison de la Baie de l'Ours",
+    "original_architect": "ACDF Architecture"
   }
 ]
