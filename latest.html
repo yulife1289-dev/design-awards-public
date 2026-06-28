@@ -1,177 +1,860 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>住宅設計得獎案 — 2026-06-27</title>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{--bg:#111111;--surface:#1a1a1a;--surface2:#222222;--gold:#d4af8a;--gold-dim:#a08060;--text:#e8e0d8;--text-muted:#888880;--border:#2a2a2a;}
-body{background:var(--bg);color:var(--text);font-family:Georgia,"Noto Serif TC",serif;line-height:1.7;}
-header{background:linear-gradient(135deg,#0d0d0d 0%,#1a1505 100%);border-bottom:1px solid #2a2010;padding:3rem 2rem 2rem;text-align:center;}
-.eyebrow{font-size:.75rem;letter-spacing:.3em;color:var(--gold-dim);text-transform:uppercase;margin-bottom:.75rem;font-family:"Helvetica Neue",Arial,sans-serif;}
-h1{font-size:clamp(1.6rem,4vw,2.6rem);color:var(--gold);font-weight:400;letter-spacing:.05em;margin-bottom:.5rem;}
-.date{color:var(--text-muted);font-size:.9rem;letter-spacing:.1em;font-family:"Helvetica Neue",Arial,sans-serif;}
-.stats{margin-top:1.2rem;font-size:.82rem;color:var(--gold-dim);font-family:"Helvetica Neue",Arial,sans-serif;}
-main{max-width:860px;margin:0 auto;padding:2.5rem 1.5rem 4rem;display:flex;flex-direction:column;gap:2rem;}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:4px;display:flex;overflow:hidden;transition:border-color .2s;}
-.card:hover{border-color:var(--gold-dim);}
-.card-num{background:var(--surface2);color:var(--gold-dim);font-size:1.8rem;font-weight:300;padding:1.8rem 1.2rem;min-width:3.5rem;text-align:center;flex-shrink:0;border-right:1px solid var(--border);display:flex;align-items:flex-start;justify-content:center;}
-.card-body{padding:1.5rem 1.8rem;flex:1;}
-.badge{display:inline-block;font-size:.67rem;letter-spacing:.08em;text-transform:uppercase;color:#000;padding:.2em .7em;border-radius:2px;margin-bottom:.7rem;font-family:"Helvetica Neue",Arial,sans-serif;font-weight:700;}
-.card-title{font-size:1.35rem;font-weight:400;margin-bottom:.2rem;}
-.card-title a{color:var(--gold);text-decoration:none;}
-.card-title a:hover{text-decoration:underline;}
-.card-zh{color:var(--text-muted);font-size:.9rem;margin-bottom:1rem;}
-.card-meta{display:grid;grid-template-columns:auto 1fr;gap:.25rem 1rem;font-size:.82rem;margin-bottom:1rem;font-family:"Helvetica Neue",Arial,sans-serif;}
-.card-meta dt{color:var(--gold-dim);text-transform:uppercase;letter-spacing:.08em;font-size:.7rem;padding-top:.15em;}
-.card-meta dd{color:var(--text);}
-.card-desc{font-size:.88rem;color:#c0b8b0;line-height:1.8;margin-bottom:.5rem;}
-.photo-credit{font-size:.72rem;color:var(--text-muted);font-family:"Helvetica Neue",Arial,sans-serif;}
-footer{text-align:center;padding:2rem;border-top:1px solid var(--border);color:var(--text-muted);font-size:.78rem;letter-spacing:.05em;font-family:"Helvetica Neue",Arial,sans-serif;}
-@media(max-width:600px){.card{flex-direction:column;}.card-num{padding:.8rem;min-width:unset;border-right:none;border-bottom:1px solid var(--border);font-size:1.2rem;}.card-meta{grid-template-columns:1fr;}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>住宅得獎案日報 2026-06-29</title>
+  <style>
+    :root {
+      --bg: #111111;
+      --card-bg: #1a1a1a;
+      --text: #f0ebe3;
+      --gold: #d4af8a;
+      --gold-dim: #a0825a;
+      --accent: #2a2a2a;
+      --border: #333333;
+      --badge-bg: #2d2010;
+      --font: 'Georgia', 'Times New Roman', serif;
+      --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; color: #e8c89e; }
+
+    /* Header */
+    .site-header {
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a1205 50%, #0d0d0d 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+
+    .site-header h1 {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      color: var(--gold);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+      font-weight: 400;
+    }
+
+    .site-header .subtitle {
+      color: var(--gold-dim);
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .site-header .date-badge {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.4rem 1.2rem;
+      border: 1px solid var(--border);
+      color: var(--gold-dim);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      letter-spacing: 0.1em;
+    }
+
+    /* Main Content */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .intro {
+      text-align: center;
+      margin-bottom: 3rem;
+      padding: 2rem;
+      border: 1px solid var(--border);
+      background: var(--card-bg);
+    }
+
+    .intro p {
+      color: var(--gold-dim);
+      font-family: var(--font-sans);
+      font-size: 0.95rem;
+    }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      margin-bottom: 3rem;
+      overflow: hidden;
+      transition: border-color 0.2s;
+    }
+
+    .card:hover {
+      border-color: var(--gold-dim);
+    }
+
+    .card-header {
+      background: linear-gradient(90deg, #1e1408 0%, var(--accent) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 0.8rem 1.5rem;
+      display: flex;
+      gap: 0.8rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .source-badge {
+      background: var(--badge-bg);
+      border: 1px solid var(--gold-dim);
+      color: var(--gold);
+      padding: 0.2rem 0.8rem;
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .year-badge {
+      color: var(--gold-dim);
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+    }
+
+    .card-title {
+      font-size: clamp(1.2rem, 3vw, 1.7rem);
+      color: var(--gold);
+      font-weight: 400;
+      padding: 1.5rem 1.5rem 0.3rem;
+      letter-spacing: 0.02em;
+    }
+
+    .card-title-zh {
+      font-size: 1rem;
+      color: var(--gold-dim);
+      font-weight: 400;
+      padding: 0 1.5rem 1rem;
+      font-family: var(--font-sans);
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      padding: 0 1.5rem 1rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .meta span {
+      font-family: var(--font-sans);
+      font-size: 0.82rem;
+      color: #888;
+      background: var(--accent);
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+    }
+
+    /* Photos */
+    .photos {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      background: var(--border);
+      margin: 0;
+    }
+
+    .photo-wrapper {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      background: var(--accent);
+    }
+
+    .photo-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s;
+      display: block;
+    }
+
+    .photo-wrapper img:hover {
+      transform: scale(1.03);
+    }
+
+    /* Atomic */
+    .atomic-box {
+      margin: 1.5rem;
+      padding: 1.2rem 1.5rem;
+      border-left: 3px solid var(--gold);
+      background: rgba(212, 175, 138, 0.05);
+    }
+
+    .atomic-label {
+      font-family: var(--font-sans);
+      font-size: 0.7rem;
+      color: var(--gold-dim);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+
+    .atomic-text {
+      color: var(--gold);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+
+    /* Sections */
+    .section {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .section h4 {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      color: var(--gold-dim);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .reading-text {
+      font-size: 0.92rem;
+      line-height: 1.8;
+      color: #c8c0b5;
+    }
+
+    /* Client Box */
+    .client-box {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      background: rgba(212, 175, 138, 0.03);
+    }
+
+    .client-box h4 {
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      color: var(--gold-dim);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+    }
+
+    .client-box blockquote {
+      font-size: 0.92rem;
+      line-height: 1.8;
+      color: #c8c0b5;
+      font-style: italic;
+      border-left: none;
+    }
+
+    .source-link {
+      display: block;
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: var(--font-sans);
+      font-size: 0.8rem;
+      color: var(--gold-dim);
+      letter-spacing: 0.05em;
+      text-align: right;
+    }
+
+    .source-link:hover {
+      color: var(--gold);
+      background: rgba(212, 175, 138, 0.05);
+    }
+
+    /* CTA Footer */
+    .cta-footer {
+      text-align: center;
+      padding: 3rem 2rem;
+      border-top: 1px solid var(--border);
+      margin-top: 2rem;
+    }
+
+    .cta-footer p {
+      color: var(--gold-dim);
+      font-family: var(--font-sans);
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .cta-btn {
+      display: inline-block;
+      padding: 0.9rem 2.5rem;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .cta-btn:hover {
+      background: var(--gold);
+      color: #111;
+      text-decoration: none;
+    }
+
+    .footer-meta {
+      margin-top: 2rem;
+      color: #555;
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+    }
+
+    @media (max-width: 600px) {
+      .photos { grid-template-columns: 1fr; }
+      .card-header { flex-direction: column; gap: 0.4rem; }
+    }
+  </style>
 </head>
 <body>
-<header>
-  <p class="eyebrow">Daily Digest &middot; Architecture Awards</p>
-  <h1>住宅設計得獎案精選</h1>
-  <p class="date">2026-06-27 &middot; UTC+8</p>
-  <p class="stats">本期精選 8 件 &nbsp;&middot;&nbsp; AIA Housing Award 2026 &nbsp;&middot;&nbsp; RIBA House of the Year 2025 &nbsp;&middot;&nbsp; Australian National Architecture Awards 2025</p>
-</header>
-<main>
+
+  <header class="site-header">
+    <h1>住宅得獎案日報</h1>
+    <p class="subtitle">Residential Design Awards Daily Digest</p>
+    <div class="date-badge">2026-06-29</div>
+  </header>
+
+  <main class="container">
+
+    <div class="intro">
+      <p>本日精選 8 件全球住宅設計得獎案，涵蓋社會住宅、私人宅邸、模組住居與歷史建築改建。<br>
+      每案附設計閱讀分析與建築事務所語感的客戶溝通語句，供設計研究與提案參考。</p>
+    </div>
+
+
     <article class="card">
-      <div class="card-num">01</div>
-      <div class="card-body">
-        <div class="badge" style="background:#c9a227">AIA Housing Award 2026</div>
-        <h2 class="card-title"><a href="https://ndjda.com/offbeat" target="_blank">OFFbeat</a></h2>
-        <p class="card-zh">奇趣宅</p>
-        <dl class="card-meta">
-          <dt>建築師</dt><dd>Jes Deaver Architecture (Nick Deaver + Jes Deaver)</dd>
-          <dt>地點</dt><dd>Austin, TX, USA</dd>
-          <dt>年份</dt><dd>2026</dd>
-          <dt>類別</dt><dd>Residential – Single-Family Detached</dd>
-        </dl>
-        <p class="card-desc">A derelict 1930s cottage in Austin's historic district reimagined with a shed-inspired cypress, concrete, and glass addition. The curved metal roof is skewed to the original cottage geometry across a 4-foot grade change. A 36-foot cantilevered concrete bench embraces two heritage oaks at the heart of the composition. Photography by Leonid Furmansky.</p>
-        <p class="photo-credit">Photo: Leonid Furmansky</p>
+      <div class="card-header">
+        <span class="source-badge">RIBA Stirling Prize</span>
+        <span class="year-badge">2025</span>
       </div>
+
+      <h2 class="card-title">
+        <a href="https://www.dezeen.com/2025/10/16/appleby-blue-almshouse-riba-stirling-prize-2025/" target="_blank" rel="noopener">Appleby Blue Almshouse</a>
+      </h2>
+      <h3 class="card-title-zh">阿普比藍老人住宅</h3>
+
+      <div class="meta">
+        <span class="architect">⬜ Witherford Watson Mann Architects</span>
+        <span class="location">📍 Southwark, London, UK</span>
+        <span class="category">🏆 RIBA Stirling Prize 2025</span>
+      </div>
+
+      <div class="photos">
+        
+            <div class="photo-wrapper">
+              <img src="https://static.dezeen.com/uploads/2025/10/appleby-blue-almshouse-riba-stirling-prize-2025/dezeen_appleby-blue-almshouse-riba-stirling-prize-2025_1.jpg"
+                   alt="Appleby Blue Almshouse"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://static.dezeen.com/uploads/2025/10/appleby-blue-almshouse-riba-stirling-prize-2025/dezeen_appleby-blue-almshouse-riba-stirling-prize-2025_2.jpg"
+                   alt="Appleby Blue Almshouse"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://static.dezeen.com/uploads/2025/10/appleby-blue-almshouse-riba-stirling-prize-2025/dezeen_appleby-blue-almshouse-riba-stirling-prize-2025_3.jpg"
+                   alt="Appleby Blue Almshouse"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://static.dezeen.com/uploads/2025/10/appleby-blue-almshouse-riba-stirling-prize-2025/dezeen_appleby-blue-almshouse-riba-stirling-prize-2025_4.jpg"
+                   alt="Appleby Blue Almshouse"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+      </div>
+
+      <div class="atomic-box">
+        <p class="atomic-label">空間核心 / Core Concept</p>
+        <p class="atomic-text">顛覆傳統「向內退縮」的老人院平面，將公共空間置於核心，以街道式走廊縫合居住者與城市日常。</p>
+      </div>
+
+      <div class="section">
+        <h4>設計閱讀 / Design Reading</h4>
+        <p class="reading-text">Witherford Watson Mann 的核心策略是「翻轉院舍」：傳統慈善住所往往向內收縮、與城市隔絕，而 Appleby Blue 則以公共空間為心臟，將雙層挑高花園廳、共用廚房、屋頂露台排列於中庭四周，讓老人的日常動線本身即是社交機會。寬幅赤土色陶磚走廊設有長凳與植栽，以「街道」邏輯取代「走廊」邏輯。臨街的大型木框架灣窗讓居住者可以俯瞰社區動態，消弭了照護建築常見的孤立感。整棟建築以藍褐色磚砌成，既呼應了倫敦磚造街景，又以獨特的藍灰色調自成一格。配合 Grant Associates 的景觀設計，中庭仿造林地生態，以水景、大樹與花圃構成四季變化的自然核心。</p>
+      </div>
+
+      <div class="client-box">
+        <h4>客戶溝通語句 / Client Translation</h4>
+        <blockquote>「我們希望住宅不只是一個庇護所，而是讓居住者依然感受到城市脈動的地方——開放的走廊設計讓日常的相遇自然而然，共用廚房與花園讓人有理由聚在一起，這才是真正的家。」</blockquote>
+      </div>
+
+      <a href="https://www.dezeen.com/2025/10/16/appleby-blue-almshouse-riba-stirling-prize-2025/" target="_blank" rel="noopener" class="source-link">
+        查看原始頁面 →
+      </a>
     </article>
     <article class="card">
-      <div class="card-num">02</div>
-      <div class="card-body">
-        <div class="badge" style="background:#c9a227">AIA Housing Award 2026</div>
-        <h2 class="card-title"><a href="https://www.johnsenschmaling.com/projects/spoonbill-ranch" target="_blank">Spoonbill Ranch</a></h2>
-        <p class="card-zh">草原農場宅</p>
-        <dl class="card-meta">
-          <dt>建築師</dt><dd>Johnsen Schmaling Architects</dd>
-          <dt>地點</dt><dd>Braddock, ND, USA</dd>
-          <dt>年份</dt><dd>2026</dd>
-          <dt>類別</dt><dd>Residential – Single-Family Detached</dd>
-        </dl>
-        <p class="card-desc">A solitary 3,360-sqft dwelling embedded in an 8,000-acre tallgrass prairie restoration in North Dakota's Prairie Pothole Region. The emphatically horizontal form centres on a sheltered courtyard; a continuous green roof extends the prairie across the structure. Envelope of concrete, black-oxide stainless steel, and glass endures scorching summers and frigid winters.</p>
-        <p class="photo-credit">Photo: Johnsen Schmaling Architects</p>
+      <div class="card-header">
+        <span class="source-badge">AIA Housing Award</span>
+        <span class="year-badge">2025</span>
       </div>
+
+      <h2 class="card-title">
+        <a href="https://www.archdaily.com/1019088/the-rose-apartments-brooks-plus-scarpa" target="_blank" rel="noopener">The Rose Apartments</a>
+      </h2>
+      <h3 class="card-title-zh">玫瑰公寓</h3>
+
+      <div class="meta">
+        <span class="architect">⬜ Brooks + Scarpa Architects</span>
+        <span class="location">📍 Venice, California, USA</span>
+        <span class="category">🏆 AIA Housing Award 2025</span>
+      </div>
+
+      <div class="photos">
+        
+            <div class="photo-wrapper">
+              <img src="https://images.adsttc.com/media/images/669a/5eaa/c8b7/c801/7c2d/b095/newsletter/the-rose-apartments-brooks-plus-scarpa-photo.jpg"
+                   alt="The Rose Apartments"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://images.adsttc.com/media/images/669a/602b/c8b7/c801/7c2d/b0b4/newsletter/the-rose-apartments-brooks-plus-scarpa-context.jpg"
+                   alt="The Rose Apartments"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://images.adsttc.com/media/images/669a/5eaa/df91/fa75/338c/3bb0/newsletter/the-rose-apartments-brooks-plus-scarpa-courtyard.jpg"
+                   alt="The Rose Apartments"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://images.adsttc.com/media/images/669a/602b/df91/fa01/7cb7/15ba/newsletter/the-rose-apartments-brooks-plus-scarpa-facade.jpg"
+                   alt="The Rose Apartments"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+      </div>
+
+      <div class="atomic-box">
+        <p class="atomic-label">空間核心 / Core Concept</p>
+        <p class="atomic-text">以扇貝波浪塗抹立面取代防禦性實牆，將底層商業與抬升中庭整合為街區錨點，讓平價住宅同時成為社區客廳。</p>
+      </div>
+
+      <div class="section">
+        <h4>設計閱讀 / Design Reading</h4>
+        <p class="reading-text">Brooks + Scarpa 面對平價住宅的挑戰時，選擇以「公共廣場」取代「防禦性邊界」。地面層商業空間為立面創造活力基座，而將中庭抬高一層則在城市尺度上製造出被保護卻開放的社交空間。外牆的扇貝浮雕波浪不僅是美學選擇，更是用最低廉的材料——水泥灰泥——達到豐富視覺效果的策略。閃爍礦物顆粒讓建築在不同光線條件下呈現不同面貌，讓平價住宅擺脫灰暗的制度化印象。每戶均享有中庭採光與自然通風，回應了被動式設計原則。這棟建築從多個獎項來看，已成為美國平價住宅設計典範。</p>
+      </div>
+
+      <div class="client-box">
+        <h4>客戶溝通語句 / Client Translation</h4>
+        <blockquote>「平價住宅不必是無臉的背景建築——波浪形立面讓這棟樓成為街區的地標，抬高的中庭讓住戶有了真正屬於自己的戶外空間，這才是真正的尊嚴居住。」</blockquote>
+      </div>
+
+      <a href="https://www.archdaily.com/1019088/the-rose-apartments-brooks-plus-scarpa" target="_blank" rel="noopener" class="source-link">
+        查看原始頁面 →
+      </a>
     </article>
     <article class="card">
-      <div class="card-num">03</div>
-      <div class="card-body">
-        <div class="badge" style="background:#c9a227">AIA Housing Award 2026</div>
-        <h2 class="card-title"><a href="https://www.aia.org/design-excellence/award-winners/housing-award-2026" target="_blank">Tinyleaf</a></h2>
-        <p class="card-zh">微葉小屋</p>
-        <dl class="card-meta">
-          <dt>建築師</dt><dd>GO'C</dd>
-          <dt>地點</dt><dd>Winthrop, WA, USA</dd>
-          <dt>年份</dt><dd>2026</dd>
-          <dt>類別</dt><dd>Residential – Single-Family Detached</dd>
-        </dl>
-        <p class="card-desc">A compact high-performance cabin in Washington's Methow Valley, designed as a launchpad for cross-country skiing and outdoor recreation. Boat-like built-ins maximise efficiency within minimal square footage, blending maritime precision with mountain vernacular.</p>
-        <p class="photo-credit">Photo: GO'C</p>
+      <div class="card-header">
+        <span class="source-badge">World Architecture Festival</span>
+        <span class="year-badge">2025</span>
       </div>
+
+      <h2 class="card-title">
+        <a href="https://exagono.es/en/terrazas-para-la-vida-by-urbanitree-regenerative-architecture-in-response-to-the-climate-social-and-urban-crises/" target="_blank" rel="noopener">Terrazas para la vida</a>
+      </h2>
+      <h3 class="card-title-zh">生命露台</h3>
+
+      <div class="meta">
+        <span class="architect">⬜ Urbanitree (Vicente Guallart & Daniel Ibáñez)</span>
+        <span class="location">📍 Verneda i La Pau, Barcelona, Spain</span>
+        <span class="category">🏆 WAF World Architecture Festival 2025 – Highly Commended Housing</span>
+      </div>
+
+      <div class="photos">
+        
+            <div class="photo-wrapper">
+              <img src="https://cdn.designboom.com/wp-content/uploads/2025/11/terrazas-para-la-vida-urbanitree-barcelona-designboom-1.jpg"
+                   alt="Terrazas para la vida"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://cdn.designboom.com/wp-content/uploads/2025/11/terrazas-para-la-vida-urbanitree-barcelona-designboom-2.jpg"
+                   alt="Terrazas para la vida"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://cdn.designboom.com/wp-content/uploads/2025/11/terrazas-para-la-vida-urbanitree-barcelona-designboom-3.jpg"
+                   alt="Terrazas para la vida"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://cdn.designboom.com/wp-content/uploads/2025/11/terrazas-para-la-vida-urbanitree-barcelona-designboom-4.jpg"
+                   alt="Terrazas para la vida"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+      </div>
+
+      <div class="atomic-box">
+        <p class="atomic-label">空間核心 / Core Concept</p>
+        <p class="atomic-text">以 CLT 交叉層壓木板取代混凝土，配合超大露台將集合住宅的每層平面延伸至戶外，實現負碳足跡的社會住宅原型。</p>
+      </div>
+
+      <div class="section">
+        <h4>設計閱讀 / Design Reading</h4>
+        <p class="reading-text">Urbanitree 創辦人 Vicente Guallart 與 Daniel Ibáñez 以「再生建築」框架回應氣候、社會與都市三重危機。以 CLT 工業化結構達到負碳排放，但同時不犧牲空間品質——每戶寬幅露台不只是陽台，而是設計為「延伸的戶外客廳」，可容納戶外烹飪、種植與休憩。所有公寓均面向中庭，採光與通風兼顧。CLT 結構的可拆卸性也回應了未來城市材料循環的需求，讓建築本身成為「都市礦山」的一部分。這個方案既回應了巴塞隆納的住宅負擔能力危機，也提供了一個工業化木構高層的實驗原型。</p>
+      </div>
+
+      <div class="client-box">
+        <h4>客戶溝通語句 / Client Translation</h4>
+        <blockquote>「露台不只是附加的陽台——我們將它設計為戶外客廳，讓住戶可以在那裡烹飪、種植、與鄰居交流。這是讓高密度社會住宅也能有院子生活感的方法。」</blockquote>
+      </div>
+
+      <a href="https://exagono.es/en/terrazas-para-la-vida-by-urbanitree-regenerative-architecture-in-response-to-the-climate-social-and-urban-crises/" target="_blank" rel="noopener" class="source-link">
+        查看原始頁面 →
+      </a>
     </article>
     <article class="card">
-      <div class="card-num">04</div>
-      <div class="card-body">
-        <div class="badge" style="background:#6e8faf">RIBA House of the Year 2025</div>
-        <h2 class="card-title"><a href="https://www.dezeen.com/2025/12/10/riba-house-of-the-year-2025/" target="_blank">Caochan na Creige</a></h2>
-        <p class="card-zh">岩礁靜居</p>
-        <dl class="card-meta">
-          <dt>建築師</dt><dd>Izat Arundell (Eilidh Izat + Jack Arundell)</dd>
-          <dt>地點</dt><dd>Harris, Outer Hebrides, Scotland, UK</dd>
-          <dt>年份</dt><dd>2025</dd>
-          <dt>類別</dt><dd>Self-Build Residential</dd>
-        </dl>
-        <p class="card-desc">RIBA House of the Year 2025. A self-built timber-frame house clad in Lewisian Gneiss, wrapping at 135 degrees around existing rock formations for shelter. Named 'little quiet one by the rock' in Gaelic, delivered on a tight budget by architect-owners with local contractors. Unanimously awarded for climatic response, material honesty, and embodied restraint. Photography by Richard Gaston.</p>
-        <p class="photo-credit">Photo: Richard Gaston</p>
+      <div class="card-header">
+        <span class="source-badge">Aga Khan Award for Architecture</span>
+        <span class="year-badge">2025</span>
       </div>
+
+      <h2 class="card-title">
+        <a href="https://the.akdn/en/how-we-work/our-agencies/aga-khan-trust-culture/aga-khan-award-for-architecture/aga-khan-award-for-architecture-2023-2025-cycle/aga-khan-award-for-architecture-2025-winners" target="_blank" rel="noopener">Khudi Bari</a>
+      </h2>
+      <h3 class="card-title-zh">小小家</h3>
+
+      <div class="meta">
+        <span class="architect">⬜ Marina Tabassum Architects</span>
+        <span class="location">📍 Various locations, Bangladesh</span>
+        <span class="category">🏆 Aga Khan Award for Architecture 2025</span>
+      </div>
+
+      <div class="photos">
+        
+            <div class="photo-wrapper">
+              <img src="https://cdn.architecture.live/wp-content/uploads/2025/09/khudi-bari-marina-tabassum-1.jpg"
+                   alt="Khudi Bari"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://cdn.architecture.live/wp-content/uploads/2025/09/khudi-bari-marina-tabassum-2.jpg"
+                   alt="Khudi Bari"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://cdn.architecture.live/wp-content/uploads/2025/09/khudi-bari-marina-tabassum-3.jpg"
+                   alt="Khudi Bari"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://cdn.architecture.live/wp-content/uploads/2025/09/khudi-bari-marina-tabassum-4.jpg"
+                   alt="Khudi Bari"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+      </div>
+
+      <div class="atomic-box">
+        <p class="atomic-label">空間核心 / Core Concept</p>
+        <p class="atomic-text">以鋼節點連接竹桿搭建可在三天內組裝、三小時拆卸的雙層避難居所，讓每個 450 美元的單元成為洪災前的生命線。</p>
+      </div>
+
+      <div class="section">
+        <h4>設計閱讀 / Design Reading</h4>
+        <p class="reading-text">Marina Tabassum 以近乎赤貧的材料預算完成了一個既有尊嚴又具技術創新的設計。Khudi Bari 的關鍵創新在於標準化鋼節點——它讓竹材（一種傳統上難以預製的材料）能夠精確地重複組裝，同時降低了對技術工人的依賴。雙層設計不只是功能分離，更是洪災韌性的空間策略：低層的開放性讓水流通過，高層在緊急時提供乾燥的避難層。這種「可以帶走的家」哲學回應了氣候難民不斷移動的現實，而非試圖固著一個在洪患中終將失落的場所。Aga Khan 評審團特別指出此案「以簡單結構表達了美感，提醒我們為生存而設計不必犧牲建築品質。」</p>
+      </div>
+
+      <div class="client-box">
+        <h4>客戶溝通語句 / Client Translation</h4>
+        <blockquote>「好的住宅不一定要永久——當家需要跟著人遷移的時候，能在三天內建起、三小時內拆走的家，反而比固定的建築更有尊嚴。這是為生命韌性設計的建築。」</blockquote>
+      </div>
+
+      <a href="https://the.akdn/en/how-we-work/our-agencies/aga-khan-trust-culture/aga-khan-award-for-architecture/aga-khan-award-for-architecture-2023-2025-cycle/aga-khan-award-for-architecture-2025-winners" target="_blank" rel="noopener" class="source-link">
+        查看原始頁面 →
+      </a>
     </article>
     <article class="card">
-      <div class="card-num">05</div>
-      <div class="card-body">
-        <div class="badge" style="background:#b8860b">AIA Architecture Award 2026</div>
-        <h2 class="card-title"><a href="https://www.patkau.ca/projects/arbour-house" target="_blank">Arbour House</a></h2>
-        <p class="card-zh">木廊之家</p>
-        <dl class="card-meta">
-          <dt>建築師</dt><dd>Patkau Architects</dd>
-          <dt>地點</dt><dd>Victoria, BC, Canada</dd>
-          <dt>年份</dt><dd>2026</dd>
-          <dt>類別</dt><dd>Residential – Single-Family Detached</dd>
-        </dl>
-        <p class="card-desc">A 6,000-sqft pavilion-like dwelling overlooking Cadboro Bay, Victoria. A rhythmic pleated wooden arbour ceiling suspended below arrays of operable skylights coheres the interior. Retractable glass walls, geothermal heat pumps, and 60 rooftop solar panels achieve exemplary energy performance. Patkau Architects' fifth AIA Architecture Award. Photography by James Dow.</p>
-        <p class="photo-credit">Photo: James Dow / Patkau Architects</p>
+      <div class="card-header">
+        <span class="source-badge">Wallpaper* Design Awards</span>
+        <span class="year-badge">2025</span>
       </div>
+
+      <h2 class="card-title">
+        <a href="https://www.dezeen.com/2025/11/11/studio-weave-south-barn/" target="_blank" rel="noopener">South Barn</a>
+      </h2>
+      <h3 class="card-title-zh">南方穀倉</h3>
+
+      <div class="meta">
+        <span class="architect">⬜ Studio Weave (Je Ahn)</span>
+        <span class="location">📍 Isle of Wight, UK</span>
+        <span class="category">🏆 Wallpaper* Architect of the Year 2026</span>
+      </div>
+
+      <div class="photos">
+        
+            <div class="photo-wrapper">
+              <img src="https://static.dezeen.com/uploads/2025/11/studio-weave-south-barn/dezeen_studio-weave-south-barn_1.jpg"
+                   alt="South Barn"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://static.dezeen.com/uploads/2025/11/studio-weave-south-barn/dezeen_studio-weave-south-barn_2.jpg"
+                   alt="South Barn"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://static.dezeen.com/uploads/2025/11/studio-weave-south-barn/dezeen_studio-weave-south-barn_3.jpg"
+                   alt="South Barn"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://static.dezeen.com/uploads/2025/11/studio-weave-south-barn/dezeen_studio-weave-south-barn_4.jpg"
+                   alt="South Barn"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+      </div>
+
+      <div class="atomic-box">
+        <p class="atomic-label">空間核心 / Core Concept</p>
+        <p class="atomic-text">以「深度再利用」為核，保留農業穀倉的風蝕紋理與骨架，讓新的生活層次在歷史材料中悄然積澱而非取而代之。</p>
+      </div>
+
+      <div class="section">
+        <h4>設計閱讀 / Design Reading</h4>
+        <p class="reading-text">Je Ahn 在 South Barn 中實踐了一個近乎禪宗的設計立場：你無法設計出一棟歷經50年風雨的建築的「氣質」，所以最好的辦法就是留著它。拆除、清潔、重建的衝動被「開放、積澱、容許時間說話」所取代。外牆選用與原有浪板鐵皮呼應的水泥波紋板，使新材料成為舊材料的回聲而非對立。廚房以「公共空間」邏輯設計——開放式大中島讓這個私人住宅的心臟具有一種半公共的廣場感。景觀策略同樣極簡：廢混凝土砸碎就地作為覆根碎石，連廢料都成了材料。整個項目幾乎沒有產生任何需要運離現場的廢棄物。</p>
+      </div>
+
+      <div class="client-box">
+        <h4>客戶溝通語句 / Client Translation</h4>
+        <blockquote>「改建老建築最難的不是技術，而是克制——克制想要清空重來的衝動。我們在穀倉裡留下了幾十年的生活痕跡，只是讓它更適合新的使用方式，這才是對場所的真正尊重。」</blockquote>
+      </div>
+
+      <a href="https://www.dezeen.com/2025/11/11/studio-weave-south-barn/" target="_blank" rel="noopener" class="source-link">
+        查看原始頁面 →
+      </a>
     </article>
     <article class="card">
-      <div class="card-num">06</div>
-      <div class="card-body">
-        <div class="badge" style="background:#9a7d3a">AIA Small Project Award 2026</div>
-        <h2 class="card-title"><a href="https://www.archdaily.com/1042199/camp-meeker-cabin-renee-del-gaudio-architecture" target="_blank">Camp Meeker Cabin</a></h2>
-        <p class="card-zh">麥克峰小屋</p>
-        <dl class="card-meta">
-          <dt>建築師</dt><dd>Renee del Gaudio Architecture</dd>
-          <dt>地點</dt><dd>Allenspark, CO, USA</dd>
-          <dt>年份</dt><dd>2026</dd>
-          <dt>類別</dt><dd>Small Project (under 5,000 sqft)</dd>
-        </dl>
-        <p class="card-desc">A zero-carbon multi-generational family cabin at the base of Mount Meeker in Colorado's Rocky Mountains. A raw, direct design language uses locally sourced materials to minimise embodied carbon while serving as a gathering retreat and meeting net-zero energy targets.</p>
-        <p class="photo-credit">Photo: Renee del Gaudio Architecture</p>
+      <div class="card-header">
+        <span class="source-badge">A' Design Award</span>
+        <span class="year-badge">2025</span>
       </div>
+
+      <h2 class="card-title">
+        <a href="https://competition.adesignaward.com/ada-winner-design.php?ID=164807" target="_blank" rel="noopener">Fuma House</a>
+      </h2>
+      <h3 class="card-title-zh">風馬住宅</h3>
+
+      <div class="meta">
+        <span class="architect">⬜ Matsuyama Architect and Associates (Masakatsu Matsuyama)</span>
+        <span class="location">📍 Fukuoka, Fukuoka Prefecture, Japan</span>
+        <span class="category">🏆 A' Design Award 2025 – Platinum (Architecture, Building & Structure)</span>
+      </div>
+
+      <div class="photos">
+        
+            <div class="photo-wrapper">
+              <img src="https://images.adesignaward.com/images/164807/164807-1.jpg"
+                   alt="Fuma House"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://images.adesignaward.com/images/164807/164807-2.jpg"
+                   alt="Fuma House"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://images.adesignaward.com/images/164807/164807-3.jpg"
+                   alt="Fuma House"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://images.adesignaward.com/images/164807/164807-4.jpg"
+                   alt="Fuma House"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+      </div>
+
+      <div class="atomic-box">
+        <p class="atomic-label">空間核心 / Core Concept</p>
+        <p class="atomic-text">在鐵道噪音與洪水雙重威脅下，以鋼筋混凝土懸挑二樓創造「浮空的平房生活」，並以貫穿三層的植栽梯田對抗惡劣都市環境。</p>
+      </div>
+
+      <div class="section">
+        <h4>設計閱讀 / Design Reading</h4>
+        <p class="reading-text">Matsuyama 的設計出發點是城市逆境：鐵道噪音、振動、洪水的複合威脅讓這塊基地「不適宜居住」，但這恰好成為設計創新的壓力源。混凝土作為結構選材是噪音隔絕的必要回應，而懸挑策略則讓二樓脫離地面層的噪音傳導，創造出「浮在城市之上」的靜謐生活層。植栽貫穿全棟的策略不只是美化——它在視覺上軟化了混凝土量體的壓迫感，也創造了四季變化的立面。A' Design Award 評審特別讚揚這個方案在惡劣條件下仍維持了「建築的詩意」。此案展示了如何將環境限制轉化為設計特色的日本建築傳統。</p>
+      </div>
+
+      <div class="client-box">
+        <h4>客戶溝通語句 / Client Translation</h4>
+        <blockquote>「我們知道這塊地有聲音和洪水的問題，但我們不想放棄它。建築師用混凝土解決了結構問題，用懸挑讓主要生活空間遠離噪音，用綠色植栽讓我們每天開窗都像看到森林——這比我們想像的還好。」</blockquote>
+      </div>
+
+      <a href="https://competition.adesignaward.com/ada-winner-design.php?ID=164807" target="_blank" rel="noopener" class="source-link">
+        查看原始頁面 →
+      </a>
     </article>
     <article class="card">
-      <div class="card-num">07</div>
-      <div class="card-body">
-        <div class="badge" style="background:#7fa87f">Australian National Architecture Awards 2025</div>
-        <h2 class="card-title"><a href="https://www.kennedynolan.com.au/work/gunn-ridge-house" target="_blank">Gunn Ridge House</a></h2>
-        <p class="card-zh">甘恩山脊宅</p>
-        <dl class="card-meta">
-          <dt>建築師</dt><dd>Kennedy Nolan</dd>
-          <dt>地點</dt><dd>Toorak, VIC, Australia</dd>
-          <dt>年份</dt><dd>2025</dd>
-          <dt>類別</dt><dd>Residential – Houses (Alterations and Additions)</dd>
-        </dl>
-        <p class="card-desc">National Award for Residential Architecture – Alterations and Additions. A respectful reimagining of a 1967 Merchant Builders residence by Graeme Gunn on Wurundjeri Country. Kennedy Nolan added a sunken children's wing and timber-clad pavilion while preserving the courtyard logic. Landscape by Fiona Brockhoff. Photography by Derek Swalwell.</p>
-        <p class="photo-credit">Photo: Derek Swalwell</p>
+      <div class="card-header">
+        <span class="source-badge">Australian Institute of Architects</span>
+        <span class="year-badge">2025</span>
       </div>
+
+      <h2 class="card-title">
+        <a href="https://architectureau.com/articles/Mapleton-House-by-Atelier-Chen-Hung/" target="_blank" rel="noopener">Mapleton House</a>
+      </h2>
+      <h3 class="card-title-zh">梅普頓山脊住宅</h3>
+
+      <div class="meta">
+        <span class="architect">⬜ Atelier Chen Hung</span>
+        <span class="location">📍 Mapleton, Queensland, Australia</span>
+        <span class="category">🏆 AIA National Architecture Awards 2025 – Residential Architecture (Houses New)</span>
+      </div>
+
+      <div class="photos">
+        
+            <div class="photo-wrapper">
+              <img src="https://cdn.architectureau.com/media/2025/11/mapleton-house-atelier-chen-hung-david-chatfield-1.jpg"
+                   alt="Mapleton House"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://cdn.architectureau.com/media/2025/11/mapleton-house-atelier-chen-hung-david-chatfield-2.jpg"
+                   alt="Mapleton House"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://cdn.architectureau.com/media/2025/11/mapleton-house-atelier-chen-hung-david-chatfield-3.jpg"
+                   alt="Mapleton House"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://cdn.architectureau.com/media/2025/11/mapleton-house-atelier-chen-hung-david-chatfield-4.jpg"
+                   alt="Mapleton House"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+      </div>
+
+      <div class="atomic-box">
+        <p class="atomic-label">空間核心 / Core Concept</p>
+        <p class="atomic-text">以兩棟量體沿山脊線分置，讓建築在視覺上如從丘陵地質生長而出，同時以本地木材與砂岩將地域材料意識提升至精準工藝層次。</p>
+      </div>
+
+      <div class="section">
+        <h4>設計閱讀 / Design Reading</h4>
+        <p class="reading-text">Atelier Chen Hung 在 Mapleton House 展現了「讓建築屬於地形」的設計哲學。孿生量體的雙棟策略不只是形式選擇，而是讓建築體積適應山脊坡度、同時保留山脊視野穿透的環境決策。刻意後退的配置使街道行人能從縫隙中看見遠山，讓私人住宅成為公共視野的一部分。材料選擇將本地地質史引入室內：Silver Ash 的紋理、Hoop Pine 的溫暖、Helidon 砂岩的量感，都是對昆士蘭生態地景的直接回應。建築評審稱其「幾乎像從山坡地質中生長出來」，這正是 Atelier Chen Hung 在形式與材料之間達成的對話。</p>
+      </div>
+
+      <div class="client-box">
+        <h4>客戶溝通語句 / Client Translation</h4>
+        <blockquote>「我們最喜歡的是站在房子裡往外看，可以同時看到兩座山，但房子本身又完全不搶那個景色。建築師用木材和砂岩讓室內有一種大地的溫度，每次回到家都覺得踏實。」</blockquote>
+      </div>
+
+      <a href="https://architectureau.com/articles/Mapleton-House-by-Atelier-Chen-Hung/" target="_blank" rel="noopener" class="source-link">
+        查看原始頁面 →
+      </a>
     </article>
     <article class="card">
-      <div class="card-num">08</div>
-      <div class="card-body">
-        <div class="badge" style="background:#7fa87f">Australian National Architecture Awards 2025</div>
-        <h2 class="card-title"><a href="https://www.tbarch.com.au/projects/thestopover" target="_blank">The Stopover</a></h2>
-        <p class="card-zh">驛站之家</p>
-        <dl class="card-meta">
-          <dt>建築師</dt><dd>Taylor Buchtmann Architecture</dd>
-          <dt>地點</dt><dd>Cooke Plains, SA, Australia</dd>
-          <dt>年份</dt><dd>2025</dd>
-          <dt>類別</dt><dd>Residential – Houses (Alterations and Additions)</dd>
-        </dl>
-        <p class="card-desc">National Award for Residential Architecture – Alterations and Additions. An adaptive reuse of a disused stone grain store on a remote South Australian sheep station on Ngarrindjeri Country. Two timber-lined living capsules inserted into the preserved stone envelope create a thermally protected interior. Reclaimed timber, stone, brass, and river stones enforce low embodied energy.</p>
-        <p class="photo-credit">Photo: Taylor Buchtmann Architecture</p>
+      <div class="card-header">
+        <span class="source-badge">Residential Design Magazine</span>
+        <span class="year-badge">2025</span>
       </div>
+
+      <h2 class="card-title">
+        <a href="https://residentialdesignmagazine.com/2025-rdaa-project-of-the-year-alterstudio-architecture-pecan-grove-residence/" target="_blank" rel="noopener">Pecan Grove Residence</a>
+      </h2>
+      <h3 class="card-title-zh">山核桃林住宅</h3>
+
+      <div class="meta">
+        <span class="architect">⬜ Alterstudio Architecture</span>
+        <span class="location">📍 Austin, Texas, USA</span>
+        <span class="category">🏆 Residential Design Architecture Awards 2025 – Project of the Year</span>
+      </div>
+
+      <div class="photos">
+        
+            <div class="photo-wrapper">
+              <img src="https://residentialdesignmagazine.com/wp-content/uploads/2025/06/pecan-grove-residence-alterstudio-casey-dunn-1.jpg"
+                   alt="Pecan Grove Residence"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://residentialdesignmagazine.com/wp-content/uploads/2025/06/pecan-grove-residence-alterstudio-casey-dunn-2.jpg"
+                   alt="Pecan Grove Residence"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://residentialdesignmagazine.com/wp-content/uploads/2025/06/pecan-grove-residence-alterstudio-casey-dunn-3.jpg"
+                   alt="Pecan Grove Residence"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+            <div class="photo-wrapper">
+              <img src="https://residentialdesignmagazine.com/wp-content/uploads/2025/06/pecan-grove-residence-alterstudio-casey-dunn-4.jpg"
+                   alt="Pecan Grove Residence"
+                   loading="lazy"
+                   onerror="this.parentElement.style.display='none'">
+            </div>
+      </div>
+
+      <div class="atomic-box">
+        <p class="atomic-label">空間核心 / Core Concept</p>
+        <p class="atomic-text">在奧斯丁密集城區以沉降式客廳將視線錨定於既有山核桃樹冠層，以最小佔地換取最大景深，讓自然成為空間主角。</p>
+      </div>
+
+      <div class="section">
+        <h4>設計閱讀 / Design Reading</h4>
+        <p class="reading-text">Alterstudio Architecture 選擇「反容積率最大化」：在地產壓力下，他們選擇以更小的建築面積換取更大的自然體驗。這個決定的核心是「沉降客廳」——讓主要生活空間降至地面層以下半個樓層，使坐在沙發上的視線恰好與戶外山核桃樹的樹幹根部齊平，讓人彷彿身處林中空地。剖面設計製造了層次豐富的室內天際線，同時避免了與街道的直接視線交換，以植物帷幕提供隔私。手工磚與石灰抹面呼應奧斯丁城市歷史肌理，也讓建築在新舊混雜的街區中獲得一種「已在此存在多年」的從容感。RDAA 評審一語中的：「在極小的足跡內作出了大量智慧的決定。」</p>
+      </div>
+
+      <div class="client-box">
+        <h4>客戶溝通語句 / Client Translation</h4>
+        <blockquote>「我們家最特別的地方是沉降的客廳——坐在那裡你看到的不是對面的牆，而是院子裡的山核桃樹根。建築師用一個剖面設計讓我們在市中心也有了森林生活。」</blockquote>
+      </div>
+
+      <a href="https://residentialdesignmagazine.com/2025-rdaa-project-of-the-year-alterstudio-architecture-pecan-grove-residence/" target="_blank" rel="noopener" class="source-link">
+        查看原始頁面 →
+      </a>
     </article>
-</main>
-<footer>
-  <p>由住宅設計得獎案收集機器人自動生成 &middot; 2026-06-27T08:00:00+08:00</p>
-  <p style="margin-top:.4rem">yulife1289-dev.github.io/design-awards-public</p>
-</footer>
+
+  </main>
+
+  <footer class="cta-footer">
+    <p>查看完整日報與歷史案例</p>
+    <a href="https://yulife1289-dev.github.io/design-awards-public/2026-06-29.html" class="cta-btn">前往完整日報</a>
+    <div class="footer-meta">
+      Generated at 2026-06-29T06:16:42+08:00 · yulife1289-dev.github.io/design-awards-public
+    </div>
+  </footer>
+
 </body>
 </html>
