@@ -3,5 +3,5 @@
 Public publishing repo for the residential design awards digest.
 
 - Latest: https://yulife1289-dev.github.io/design-awards-public/
-- Dated archive: https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-07-05.html
-- Generated at: 2026-07-05T06:00:06.202843+08:00
+- Dated archive: https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-07-06.html
+- Generated at: 2026-07-06T06:00:04.185174+08:00
