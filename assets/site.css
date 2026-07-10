@@ -159,6 +159,35 @@ a:focus-visible,button:focus-visible{outline:2px solid #000;outline-offset:4px}
 .dd-meta .dd-sources ul{margin:0 0 14px;padding-left:1.1rem;font-size:12px}
 .dd-meta .dd-sources li{margin:0 0 6px;word-break:break-all}
 .dd-meta .copyright{margin:0;font-size:11px;color:#888;line-height:1.6}
+/* ============ awards day page: per-case left images / right article ============ */
+.awards-day{background:var(--paper)}
+.awards-intro{padding:clamp(48px,7vw,96px) clamp(20px,4vw,72px) clamp(30px,4vw,56px);border-bottom:1px solid var(--line)}
+.awards-intro .kicker{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#666}
+.awards-intro h1{margin:14px 0 0;font:700 clamp(48px,9vw,120px)/.8 var(--cond);letter-spacing:-.05em;text-transform:uppercase}
+.awards-intro p{max-width:780px;margin:22px 0 0;font-size:clamp(16px,1.6vw,21px);line-height:1.5}
+.awards-intro .digest-meta{display:flex;flex-wrap:wrap;gap:12px;margin-top:22px;color:#666;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.awards-case{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:start;border-bottom:1px solid var(--line)}
+.ac-gallery{display:flex;flex-direction:column;background:var(--fog)}
+.ac-shot{margin:0;position:relative}
+.ac-shot img{width:100%;height:auto;display:block}
+.ac-shot figcaption{position:absolute;left:0;right:0;bottom:0;padding:10px 14px;background:linear-gradient(transparent,rgba(0,0,0,.72));color:#fff;font-size:11px;line-height:1.4;letter-spacing:.02em}
+.ac-article{padding:clamp(38px,4.5vw,80px) clamp(20px,4vw,68px);max-width:760px}
+.ac-crumb{margin:0;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#888}
+.ac-title{margin:12px 0 0;font:700 clamp(26px,3.4vw,46px)/1 var(--cond);letter-spacing:-.02em}
+.ac-title small{display:block;margin-top:12px;font:500 11px/1.6 var(--sans);letter-spacing:.06em;text-transform:uppercase;color:#666}
+.ac-lead{margin:20px 0 0;font-size:clamp(17px,1.7vw,22px);line-height:1.45;border-left:2px solid var(--ink);padding-left:16px}
+.ac-sec{padding:22px 0 0}
+.ac-sec h3{margin:0 0 8px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#777}
+.ac-sec p{margin:0 0 12px;font-size:clamp(15px,1.15vw,17px);line-height:1.72}
+.ac-sec ul{margin:0;padding-left:1.2rem}
+.ac-sec li{margin:0 0 8px;line-height:1.65}
+.ac-grammar{display:grid;gap:12px;margin-top:6px}
+.ac-grammar .gi{border-top:1px solid var(--ink);padding-top:10px}
+.ac-grammar .gi strong{display:block;margin-bottom:5px;font-size:14px}
+.ac-grammar .gi span{display:block;font-size:13px;color:#555;line-height:1.5}
+.ac-meta{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);font-size:11px;letter-spacing:.05em;color:#777}
+.ac-meta a{margin-right:14px}
+@media(max-width:900px){.awards-case{grid-template-columns:1fr}}
 /* ============ gallery index (awards / designers) ============ */
 .gallery-page{display:grid;grid-template-columns:minmax(220px,26%) 1fr;align-items:start}
 .gal-side{position:sticky;top:66px;padding:clamp(40px,5vw,80px) clamp(20px,2.5vw,40px);border-right:1px solid var(--line)}
