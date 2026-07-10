@@ -3,585 +3,144 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-04</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-04 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-04</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-04 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 6 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-04.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-04.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-frame-api-122221">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212730/9-DMA_Martis1_DSF4133.jpg" class="slide active" alt="Martis Camp 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212737/Martis-Camp-Residence-Plan_1.jpg" class="slide" alt="Martis Camp 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212738/Martis-Camp-Residence-Plan_2.jpg" class="slide" alt="Martis Camp 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212721/1-DMA_Martis1_DSF4273.jpg" class="slide" alt="Martis Camp 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212722/2-DMA_Martis1_DSF4422.jpg" class="slide" alt="Martis Camp 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212723/3-DMA_Martis1_DSF4104.jpg" class="slide" alt="Martis Camp 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212724/4-DMA_Martis1_DSF4129.jpg" class="slide" alt="Martis Camp 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212725/4-DMA_Martis1_DSF4399.jpg" class="slide" alt="Martis Camp 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212726/5-DMA_Martis1_DSF4361.jpg" class="slide" alt="Martis Camp 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212727/6-DMA_Martis1_DSF4320.jpg" class="slide" alt="Martis Camp 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212728/7-DMA_Martis1_DSF4079.jpg" class="slide" alt="Martis Camp 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212729/8-DMA_Martis1_DSF4527.jpg" class="slide" alt="Martis Camp 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212731/10-DMA_Martis1_DSF4556.jpg" class="slide" alt="Martis Camp 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212732/11-DMA_Martis1_DSF4577.jpg" class="slide" alt="Martis Camp 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212733/12-DMA_Martis1_DSF4689.jpg" class="slide" alt="Martis Camp 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212734/13-DMA_Martis1_DSF4648.jpg" class="slide" alt="Martis Camp 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212736/15-DMA_Martis1_DSF4714.jpg" class="slide" alt="Martis Camp 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>7951 Fleur Du Lac, 特拉基, CA 96161, 美國</span>
-                  </div>
-                  <h3 class="card-title">Martis Camp</h3>
-                  <p class="card-by">Dumican Mosey Architects</p>
-                  <p class="card-desc">在共同完成他們在舊金山的主要住宅後，這個四口之家回到杜米肯·莫西建築師事務所 (DMA) 開展一個新項目：在太浩湖北部著名的 Martis Camp 社區建造一個精緻而宜居的度假勝地。 Martis Camp 周圍環繞著自然美景，鼓勵對環境敏感的建築，而不規定明確的風格。為了應對這些條件，DMA 設計了一座當代的兩層住宅，該住宅經過深思熟慮地融入場地，提供讓居住者沉浸在景觀中的室內體驗。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Martis Camp 的強度在於它沒有把 住宅室內 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>House</span><span>7951 Fleur Du Lac, 特拉基, CA 96161, 美國</span><span>發佈日期: 2026 年 6 月 3 日</span><span>標籤： 獎項 / dumican-mosey-architects / fa26 / 住宅</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/martis-camp" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-japanese-houses-ka-me-ra-book">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_sq-1-852x852.jpg" class="slide active" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2025/11/tadao-ando-sketches-drawings-book-architecture-roundup_dezeen_1704_sq-1-191x191.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_col_11-scaled.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_col_12.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_col_9.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_extra.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_col_2.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_col_0.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 8" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_col_5-scaled.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 9" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_col_3.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 10" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_col_4.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 11" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_col_6-scaled.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 12" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_col_8-scaled.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 13" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_col_1-scaled.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 14" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/ka-me-ra-ari-seligmann-architecture-photography-books_dezeen_2364_col_7-scaled.jpg" class="slide" alt="Eleven iconic Japanese houses seen through the photographer&#x27;s lens 圖片 15" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 15</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>建築書籍</span>
-                  </div>
-                  <h3 class="card-title">Eleven iconic Japanese houses seen through the photographer&#x27;s lens</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">在本篇綜述中，作者 Ari Seligmann 重點介紹了日本一些頂尖攝影師拍攝的 11 座標誌性房屋，這些房屋也是他最新著作《Ka Me Ra》的焦點。這些特色住宅是《Ka Me Ra：攝影師鏡頭下的現代日本建築》一書中的眾多地標建築之一，作者塞利格曼在 Dezeen 上首次出現了「透過攝影師鏡頭」看到的 11 座標誌性日本建築。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Eleven iconic Japanese houses seen through the photographer&#x27;s lens 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>建築書籍</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/06/02/japanese-houses-ka-me-ra-book/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-122439">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/210925/H&amp;E_Koala_Pl_Avalon_260925445244.jpg" class="slide active" alt="Avalon House 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/210932/Koala-Place_Drawings-2.jpg" class="slide" alt="Avalon House 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/210924/H&amp;E_Koala_Pl_Avalon_260925445354.jpg" class="slide" alt="Avalon House 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/210926/H&amp;E_Koala_Pl_Avalon_260925445274.jpg" class="slide" alt="Avalon House 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/210927/H&amp;E_Koala_Pl_Avalon_260925445365.jpg" class="slide" alt="Avalon House 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/210928/H&amp;E_Koala_Pl_Avalon_260925445417.jpg" class="slide" alt="Avalon House 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/210929/H&amp;E_Koala_Pl_Avalon_260925445522.jpg" class="slide" alt="Avalon House 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/210930/H&amp;E_Koala_Pl_Avalon_260925445643.jpg" class="slide" alt="Avalon House 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/210931/H&amp;E_Koala_Pl_Avalon_260925445811.jpg" class="slide" alt="Avalon House 圖片 9" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 9</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>阿瓦隆海灘 NSW 2107, 澳大利亞</span>
-                  </div>
-                  <h3 class="card-title">Avalon House</h3>
-                  <p class="card-by">H&amp;E Architects</p>
-                  <p class="card-desc">阿瓦隆之家 (Avalon House) 是一座沿海住宅，由雪梨北部海灘的叢林環境塑造而成。該項目借鑒其直接環境，使用克制的調色板和仔細的空間規劃來創造一個平靜和腳踏實地的生活環境。內裝的特點是清晰度和一致性。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Avalon House 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>House</span><span>阿瓦隆海灘 NSW 2107, 澳大利亞</span><span>發佈日期: 2026 年 6 月 3 日</span><span>標籤： 澳洲 / 獎項 / 克里斯-格林漢姆 / fa26</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/avalon-house" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-earth-lines-hilltop-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/05/hilltop-earth-lines-architecture-residential-houses-bali_dezeen_2364_sq2-852x852.jpg" class="slide active" alt="Earth Lines draws on vernacular materials and forms for Bali home 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/hilltop-earth-lines-architecture-residential-houses-bali_dezeen_2364_col_5-scaled.jpg" class="slide" alt="Earth Lines draws on vernacular materials and forms for Bali home 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/hilltop-earth-lines-architecture-residential-houses-bali_dezeen_2364_col_6-scaled.jpg" class="slide" alt="Earth Lines draws on vernacular materials and forms for Bali home 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/hilltop-earth-lines-architecture-residential-houses-bali_dezeen_2364_col_7-scaled.jpg" class="slide" alt="Earth Lines draws on vernacular materials and forms for Bali home 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/hilltop-earth-lines-architecture-residential-houses-bali_dezeen_2364_col_13.jpg" class="slide" alt="Earth Lines draws on vernacular materials and forms for Bali home 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2025/12/villa-omah-prana-alexis-dornier-architecture-residential-houses-bali_dezeen_2364_sq-191x191.jpg" class="slide" alt="Earth Lines draws on vernacular materials and forms for Bali home 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/hilltop-earth-lines-architecture-residential-houses-bali_dezeen_2364_col_19-scaled.jpg" class="slide" alt="Earth Lines draws on vernacular materials and forms for Bali home 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/hilltop-earth-lines-architecture-residential-houses-bali_dezeen_2364_col_32.jpg" class="slide" alt="Earth Lines draws on vernacular materials and forms for Bali home 圖片 8" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 8</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>印尼房屋</span>
-                  </div>
-                  <h3 class="card-title">Earth Lines draws on vernacular materials and forms for Bali home</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">印尼工作室 Earth Lines 在峇裡島建造了 Hilltop 房屋，採用回收的原生木材製成，並透過超大的山牆屋頂遮擋陽光和雨水。這座 280 平方公尺的住宅位於烏魯瓦圖，取代了廢棄的建築，可欣賞海洋和周圍森林的壯麗景色。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Earth Lines draws on vernacular materials and forms for Bali home 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」調整空間氣質，最後透過「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>印尼房屋</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/05/11/earth-lines-hilltop-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2025-village-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325977197mk27_Casa_Vila_fernando_guerra_Medium___64.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Village House 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325978354Vila_House_plans-1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325978423Vila_House_plans-2.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325978597village_house_diagrams_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325978676village_house_diagrams_2.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325978827village_house_diagrams_3.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325979014village_house_diagrams_4.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325973227mk27_Casa_Vila_fernando_guerra_Medium___4.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325973229mk27_Casa_Vila_fernando_guerra_Medium___6.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325975280mk27_Casa_Vila_fernando_guerra_Medium___7.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325975291mk27_Casa_Vila_fernando_guerra_Medium___19.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325975563mk27_Casa_Vila_fernando_guerra_Medium___23.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325975644mk27_Casa_Vila_fernando_guerra_Medium___30.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325976117mk27_Casa_Vila_fernando_guerra_Medium___36.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325976363mk27_Casa_Vila_fernando_guerra_Medium___41.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325976438mk27_Casa_Vila_fernando_guerra_Medium___45.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325976744mk27_Casa_Vila_fernando_guerra_Medium___49.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325976784mk27_Casa_Vila_fernando_guerra_Medium___50.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325977164mk27_Casa_Vila_fernando_guerra_Medium___54.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745325977520mk27_Casa_Vila_fernando_guerra_Medium___74.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Village House 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2025 年 A+Awards，住宅 &gt; 住宅室內設計（&gt;3000 平方英尺）</span>
-                    <span>2025</span>
-                    <span>巴西費利斯港</span>
-                  </div>
-                  <h3 class="card-title">Village House</h3>
-                  <p class="card-by">Studio MK27</p>
-                  <p class="card-desc">Village House 位於聖保羅鄉村的一個大牧場內，融合了 mk27 最重要的價值觀之一：消除室內和室外之間的限制。該計劃圍繞著人們流動的流動性進行組織，在共同的侯爵夫人統治下塑造了一個集體村莊。厚厚的石牆決定了功能性的盒子，可以容納家庭活動，保持親密感和神秘感。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Village House 的強度在於它沒有把 住宅室內 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2025 年 A+Awards，住宅 &gt; 住宅室內設計（&gt;3000 平方英尺）</span><span>巴西費利斯港</span><span>資料來源：Architizer A+Awards 2025</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/village-house-5/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2025-uzv">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727081090527_H6A9334-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="UZV 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727080897523_H6A0012-Enhanced-NR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727080897524_H6A0088-HDR-Pano.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727080925938_H6A0148-Enhanced-NR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727080929561_H6A0242-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727080958591_H6A0290-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727080958825_H6A0299-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727080988601_H6A0302-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727080992839_H6A0398-Enhanced-NR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727081014538_H6A0415-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727081034144_H6A0448-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727081054493_H6A0496-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727081058725_H6A0511-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727081090340_H6A9207-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727081128847_H6A9743-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727081147696_H6A9901-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727081180115_H6A9934-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1727081187530_H6A9976-HDR.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="UZV 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（M 2000 - 4000 平方英尺）</span>
-                    <span>2025</span>
-                    <span>拉脫維亞烏札瓦</span>
-                  </div>
-                  <h3 class="card-title">UZV</h3>
-                  <p class="card-by">Open Architecture Design</p>
-                  <p class="card-desc">蘇聯時期，整個海邊都是軍事設施主導的禁區。如今，除了现有建筑地基外，禁止在沙丘地区进行施工——这是我们在 UZV 项目中实施的方法。该网站包含五个基金会；其中一座住宅已经建成，接下来还将计划建造宾馆、凉亭和桑拿房。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">UZV 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（M 2000 - 4000 平方英尺）</span><span>拉脫維亞烏札瓦</span><span>資料來源：Architizer A+Awards 2025</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/uzv/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-frame-api-122221" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_01 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Martis Camp<small>Dumican Mosey Architects<br>7951 Fleur Du Lac, 特拉基, CA 96161, 美國<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">Martis Camp 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Martis Camp 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_01 · </p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-japanese-houses-ka-me-ra-book" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_02 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Eleven iconic Japanese houses seen through the photographer&#x27;s lens<small>Unknown architect<br>建築書籍<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">Eleven iconic Japanese houses seen through the photographer&#x27;s lens 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Eleven iconic Japanese houses seen through the photographer&#x27;s lens 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_02 · </p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-122439" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Avalon House<small>H&amp;E Architects<br>阿瓦隆海灘 NSW 2107, 澳大利亞<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">Avalon House 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Avalon House 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · </p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-earth-lines-hilltop-house" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Earth Lines draws on vernacular materials and forms for Bali home<small>Unknown architect<br>印尼房屋<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">Earth Lines draws on vernacular materials and forms for Bali home 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Earth Lines draws on vernacular materials and forms for Bali home 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · </p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2025-village-house" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/25_05 · Architizer / 2025</p>
+        <h2 class="ac-title reveal">Village House<small>Studio MK27<br>巴西費利斯港<br>大眾選擇獎得主，2025 年 A+Awards，住宅 &gt; 住宅室內設計（&gt;3000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">Village House 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Village House 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/25_05 · </p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2025-uzv" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/25_06 · Architizer / 2025</p>
+        <h2 class="ac-title reveal">UZV<small>Open Architecture Design<br>拉脫維亞烏札瓦<br>2025 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（M 2000 - 4000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">UZV 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>UZV 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/25_06 · </p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

@@ -3,643 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-21</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-21 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-21</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-21 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-21.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-21.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adus-a-stainless-steel-wall-organizes-this-710-square-foot-paris-apartment">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38ca/16:9/w_2560%2Cc_limit/LIEU_CHAZELLES_JBT-21.jpg" class="slide active" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38cb/master/w_1600%2Cc_limit/LIEU_CHAZELLES_JBT-5.jpg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38cc/master/w_1600%2Cc_limit/LIEU_CHAZELLES_JBT-7.jpg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29bc13da7246eac0456845/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(8).jpeg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29bc14df1f73f38e8ae9cb/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(3).jpeg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29bc14a0195ec90b806042/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(2).jpeg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29bc12e8cb9ee9232d866b/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(9).jpeg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38cd/master/w_1600%2Cc_limit/LIEU_CHAZELLES_JBT-9.jpg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38ce/master/w_1600%2Cc_limit/LIEU_CHAZELLES_JBT-13.jpg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29bc13bfc185cea3aa00af/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(4).jpeg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29bc137e4460c2af53cdfc/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(7).jpeg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38cf/master/w_1600%2Cc_limit/LIEU_CHAZELLES_JBT-12.jpg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38d0/master/w_1600%2Cc_limit/LIEU_CHAZELLES_JBT-3.jpg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29bc1324ed5d661839de40/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(6).jpeg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29bc13df1f73f38e8ae9c5/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(5).jpeg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38d1/master/w_1600%2Cc_limit/LIEU_CHAZELLES_JBT-14.jpg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38d2/master/w_1600%2Cc_limit/LIEU_CHAZELLES_JBT-17.jpg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29bc14a0195ec90b806040/3:4/w_748%2Cc_limit/Product%2520Image%2520Template.jpeg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29bc141ce24e77ec8f257b/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(1).jpeg" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 19" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38d3/master/w_1600%2Cc_limit/Capture%2520d%25E2%2580%2599e%25CC%2581cran%25202026-04-21%2520a%25CC%2580%252015.40.53.png" class="slide" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘公寓之旅</span>
-                    <span>2026</span>
-                    <span>Paris</span>
-                  </div>
-                  <h3 class="card-title">Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">火車車廂風格的酒吧和橙色的套間浴室簡直酷極了</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>建築文摘公寓之旅</span><span>Paris</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/a-stainless-steel-wall-organizes-this-710-square-foot-paris-apartment" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-122879">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214088/Aranda-Lasch_GA-8.jpg" class="slide active" alt="Garden Apartment 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214116/Aranda-Lasch_GA-Section.jpg" class="slide" alt="Garden Apartment 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214117/Aranda-Lasch_GA-Plan.png" class="slide" alt="Garden Apartment 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214086/Aranda-Lasch_GA-6.jpg" class="slide" alt="Garden Apartment 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214087/Aranda-Lasch_GA-7.jpg" class="slide" alt="Garden Apartment 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214089/Aranda-Lasch_GA-9.jpg" class="slide" alt="Garden Apartment 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214091/Aranda-Lasch_GA-10.jpg" class="slide" alt="Garden Apartment 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214092/Aranda-Lasch_GA-11.jpg" class="slide" alt="Garden Apartment 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214094/Aranda-Lasch_GA-13.jpg" class="slide" alt="Garden Apartment 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214095/Aranda-Lasch_GA-14.jpg" class="slide" alt="Garden Apartment 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214096/Aranda-Lasch_GA-15.jpg" class="slide" alt="Garden Apartment 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214097/Aranda-Lasch_GA-16.jpg" class="slide" alt="Garden Apartment 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214098/Aranda-Lasch_GA-17.jpg" class="slide" alt="Garden Apartment 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214099/Aranda-Lasch_GA-1.jpg" class="slide" alt="Garden Apartment 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214100/Aranda-Lasch_GA-2.jpg" class="slide" alt="Garden Apartment 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214102/Aranda-Lasch_GA-4.jpg" class="slide" alt="Garden Apartment 圖片 16" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 16</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，大型公寓</span>
-                    <span>2026</span>
-                    <span>美國紐約州紐約市</span>
-                  </div>
-                  <h3 class="card-title">Garden Apartment</h3>
-                  <p class="card-by">Aranda\Lasch</p>
-                  <p class="card-desc">Aranda\Lasch 最近在曼哈頓完成了一個住宅項目，一對夫婦希望擴大他們的公寓以滿足不斷成長的家庭的需求。該作品對該公司 15 年前翻新的一套緊湊的紐約公寓進行了擴展和改造。新的設計以住宅與花園的連結為中心——這在城市中是一個難得的機會。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Garden Apartment 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>大型公寓</span><span>美國紐約州紐約市</span><span>發售日期：2026 年 6 月 20 日</span><span>標籤： arandalasch / 獎項 / fa26 / 大型公寓</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/garden-apartment" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-123527">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216163/LIVING-2.jpg" class="slide active" alt="Riverplace Apartments 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216171/BEFORE-FLOORPLAN.jpg" class="slide" alt="Riverplace Apartments 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216172/AFTER-FLOORPLAN.jpg" class="slide" alt="Riverplace Apartments 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216165/LIVING-4.jpg" class="slide" alt="Riverplace Apartments 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216156/BATH1.jpg" class="slide" alt="Riverplace Apartments 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216157/BATH2.jpg" class="slide" alt="Riverplace Apartments 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216158/BEDROOM-2.jpg" class="slide" alt="Riverplace Apartments 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216159/BEDROOM1.jpg" class="slide" alt="Riverplace Apartments 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216160/ISLAND-:-DINING-1.jpg" class="slide" alt="Riverplace Apartments 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216168/LIVING1.jpg" class="slide" alt="Riverplace Apartments 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216161/ISLAND-1.jpg" class="slide" alt="Riverplace Apartments 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216162/ISLAND-2.jpg" class="slide" alt="Riverplace Apartments 圖片 12" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 12</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，小型公寓</span>
-                    <span>2026</span>
-                    <span>新加坡 169659</span>
-                  </div>
-                  <h3 class="card-title">Riverplace Apartments</h3>
-                  <p class="card-by">Artistroom</p>
-                  <p class="card-desc">該項目透過優先考慮開放性、適應性和社交互動的策略性空間重新配置，重新定義了傳統的一房公寓。該設計並未將緊湊的佔地面積視為一種限制，而是將其轉化為一個機會，創造一個適合業主不斷變化的生活方式的流動且多功能的環境。現有的內牆被拆除，以消除碎片化，並在廚房、餐廳、起居和學習區域之間建立無縫連接。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Riverplace Apartments 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「透過壓縮、分層與多重使用提高空間記憶密度，讓小尺度住宅仍然具有完整敘事」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>小公寓</span><span>新加坡 169659</span><span>發佈日期: 2026 年 6 月 16 日</span><span>標籤： 藝術家室 / 獎項 / fa26 / 生活</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/riverplace-apartments" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-antonio-bessa-cruz-architects-agramonte-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/05/agramonte-house-abca-architecture-residential-adaptive-reuse-porto_dezeen_2364_sq-852x852.jpg" class="slide active" alt="António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/agramonte-house-abca-architecture-residential-adaptive-reuse-porto_dezeen_2364_col_8.jpg" class="slide" alt="António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/agramonte-house-abca-architecture-residential-adaptive-reuse-porto_dezeen_2364_col_27.jpg" class="slide" alt="António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2024/02/fala-atelier-house-of-many-faces-warehouse-porto-square_dezeen_2364_col_0-191x191.jpg" class="slide" alt="António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/agramonte-house-abca-architecture-residential-adaptive-reuse-porto_dezeen_2364_col_15-scaled.jpg" class="slide" alt="António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/agramonte-house-abca-architecture-residential-adaptive-reuse-porto_dezeen_2364_col_1.jpg" class="slide" alt="António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home 圖片 6" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 6</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>葡萄牙</span>
-                  </div>
-                  <h3 class="card-title">António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">裸露的混凝土、鋼框窗戶和手工磚塊參考了 Agramonte House 的前工業場地，這是葡萄牙的一棟住宅，由當地工作室 António Bessa Cruz Architects 設計。該房屋位於波爾圖阿格拉蒙特公墓旁的一個前汽車修理廠的舊址上，客戶最初計劃將其改造成後安東尼奧·貝薩·克魯斯建築師用工業主題住宅取代了波爾圖汽車修理廠，這首先出現在 Dezeen 上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home 不是靠單一造型取勝，而是把 舊屋改造 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>葡萄牙</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/05/12/antonio-bessa-cruz-architects-agramonte-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-apollo-architects-associates-eternity-courtyard-home-tokyo">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/05/apollo-architects-associates-eternity-courtyard-home-tokyo-sq_dezeen_2364_col_1-852x852.jpg" class="slide active" alt="Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/apollo-architects-associates-eternity-courtyard-home-tokyo_dezeen_2364_col_20.jpg" class="slide" alt="Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/apollo-architects-associates-eternity-courtyard-home-tokyo_dezeen_2364_col_1.jpg" class="slide" alt="Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/apollo-architects-associates-eternity-courtyard-home-tokyo_dezeen_2364_col_5.jpg" class="slide" alt="Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/apollo-architects-associates-eternity-courtyard-home-tokyo_dezeen_2364_col_7.jpg" class="slide" alt="Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/ynas-house-in-miyakonojo-japan-sq_dezeen_2364_col_4-191x191.jpg" class="slide" alt="Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home 圖片 6" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 6</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>阿波羅建築事務所</span>
-                  </div>
-                  <h3 class="card-title">Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">這座位於東京的住宅由當地工作室 Apollo Architects &amp; Associates 設計，其樸素的外觀由堆疊的混凝土體量組成，內部隱藏著雙層高的庭院和種滿植物的露台。該住宅名為“永恆”，位於東京澀谷區兩條道路的拐角處，其黑暗、封閉的外觀由堆疊的直線體量組成，阿波羅建築事務所優先考慮東京住宅的“安全和隱私”，首先出現在 Dezeen 上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>阿波羅建築事務所</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/05/27/apollo-architects-associates-eternity-courtyard-home-tokyo/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-rita-hayworth-at-home-the-golden-age-goddess-in-photos">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/69136d3e3a71330ebfc3799c/1:1/w_120%2Cc_limit/GettyImages-3244173.jpg" class="slide active" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/69137f6159f4305a178a05a8/master/w_320%2Cc_limit/GettyImages-517255438.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/69139308fc7af68dea4523df/master/w_320%2Cc_limit/GettyImages-1077141744.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/691394318b3526fd2d7ae5c4/master/w_320%2Cc_limit/GettyImages-530793104.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/691394f0a9492ae244758ddd/master/w_320%2Cc_limit/GettyImages-106755861.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/691395c659f4305a178a05e5/master/w_320%2Cc_limit/GettyImages-3312082.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6913a0d235a6acc01fdf1361/master/w_320%2Cc_limit/GettyImages-3239416.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/691397aba9492ae244758ddf/master/w_320%2Cc_limit/GettyImages-514974838.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/691398e6fc7af68dea4523ec/master/w_320%2Cc_limit/GettyImages-541076549.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69139acc886503f2e78cfc89/master/w_320%2Cc_limit/GettyImages-104417608.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69139c2733b03a682f67905a/master/w_320%2Cc_limit/GettyImages-1048022044.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69139d8135a6acc01fdf135b/master/w_320%2Cc_limit/GettyImages-515582396.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1ee62b831b4c3f5426191d/master/w_320%2Cc_limit/GettyImages-517757006.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a21972e8d490185139596f7/master/w_320%2Cc_limit/GettyImages-514976960.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a21a2015a4ba4186dc0b05c/master/w_320%2Cc_limit/GettyImages-515457458.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a21a2d7f4a63bd0207d06a8/master/w_320%2Cc_limit/GettyImages-517820388.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69139e32fc7af68dea4523f2/master/w_320%2Cc_limit/GettyImages-517766626.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a21a5695a4ba4186dc0b0c6/master/w_320%2Cc_limit/GettyImages-515182190.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69139efda9492ae244758de8/master/w_320%2Cc_limit/GettyImages-2081451229.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 19" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6913afc059f4305a178a05f8/master/w_320%2Cc_limit/GettyImages-2081450635.jpg" class="slide" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2025</span>
-                    <span>時髦的曼哈頓</span>
-                  </div>
-                  <h3 class="card-title">Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">麗塔·海華斯 (Rita Hayworth) 在成為現實生活中的皇室成員之前曾是好萊塢皇室成員，在東西海岸以及法國裡維埃拉都擁有房產</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。麗塔·海華斯 (Rita Hayworth) 在成為現實生活中的皇室成員之前曾是好萊塢皇室成員，在東西海岸以及法國裡維埃拉都擁有房產</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>時髦的曼哈頓</span><span>資料來源：《建築文摘 2025》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/gallery/rita-hayworth-at-home-the-golden-age-goddess-in-photos" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-130-william">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100503745WST_N680_mid.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="130 William 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100477093WST_N319_mid.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="130 William 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100484753WST_N325_mid.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="130 William 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100513026WST_N682_mid.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="130 William 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100525572WST_N384_mid.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="130 William 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100533023WST_N597_mid.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="130 William 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100537688WST_N598_mid.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="130 William 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100542166WST_N621_mid.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="130 William 圖片 8" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 8</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2023 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 高層（16 層以上）</span>
-                    <span>2023</span>
-                    <span>紐約, 紐約州, 美國</span>
-                  </div>
-                  <h3 class="card-title">130 William</h3>
-                  <p class="card-by">Adjaye Associates</p>
-                  <p class="card-desc">130 William 是該公司在美國的第一座高層住宅大樓。這座 66 層樓的豪華公寓高 800 英尺，優雅地融入曼哈頓密集的城市景觀，在城市標誌性的天際線上雕刻出獨特的輪廓。 130 William 的計畫被設想為一座垂直微型城市，包括 242 套住宅、寬敞的兩層零售店、健身俱樂部、健身中心、電影院、戶外露台、屋頂觀景台和一個新的公共廣場公園——所有這些都支持該建築的住宅社區，並致力於重新定義垂直城市社區的可能性。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">130 William 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2023 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 高層（16 層以上）</span><span>紐約, 紐約州, 美國</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/130-william/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-apartment-v">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682059850697Park_Apartment0086_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Apartment V 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682059851089Park_Apartment0950_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Apartment V 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682059851850Park_Apartment92412_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Apartment V 圖片 3" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 3</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2023 年 A+Awards 評審團得獎者，住宅 &gt; 公寓</span>
-                    <span>2023</span>
-                    <span>新加坡</span>
-                  </div>
-                  <h3 class="card-title">Apartment V</h3>
-                  <p class="card-by">Park + Associates</p>
-                  <p class="card-desc">如果沒有拆除牆壁和重新配置房間的奢侈，如何在公寓單元內創造不同且獨特的空間體驗？如何在不保留舊美學的情況下重新思考、重複利用和更新空間中已有的東西？如何迴避主題設計趨勢，而將注意力純粹放在對功能需求的回應上？</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Apartment V 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2023 年 A+Awards 評審團得獎者，住宅 &gt; 公寓</span><span>新加坡</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/apartment-v/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adus-a-stainless-steel-wall-organizes-this-710-square-foot-paris-apartment" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38ca/16:9/w_2560%2Cc_limit/LIEU_CHAZELLES_JBT-21.jpg" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38cb/master/w_1600%2Cc_limit/LIEU_CHAZELLES_JBT-5.jpg" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38cc/master/w_1600%2Cc_limit/LIEU_CHAZELLES_JBT-7.jpg" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29bc13da7246eac0456845/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(8).jpeg" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29bc14df1f73f38e8ae9cb/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(3).jpeg" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29bc14a0195ec90b806042/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(2).jpeg" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29bc12e8cb9ee9232d866b/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(9).jpeg" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38cd/master/w_1600%2Cc_limit/LIEU_CHAZELLES_JBT-9.jpg" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1d9dd1e4d9de4a9fbf38ce/master/w_1600%2Cc_limit/LIEU_CHAZELLES_JBT-13.jpg" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29bc13bfc185cea3aa00af/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(4).jpeg" alt="Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_01 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">Inside a 710-Square-Foot Paris Apartment Organized by a Stainless Steel Wall<small>AD editorial<br>Paris<br>建築文摘公寓之旅</small></h2>
+        <p class="ac-lead reveal">火車車廂風格的酒吧和橙色的套間浴室簡直酷極了</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>火車車廂風格的酒吧和橙色的套間浴室簡直酷極了</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_01 · <a href="https://www.architecturaldigest.com/story/a-stainless-steel-wall-organizes-this-710-square-foot-paris-apartment" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-122879" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214088/Aranda-Lasch_GA-8.jpg" alt="Garden Apartment image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214116/Aranda-Lasch_GA-Section.jpg" alt="Garden Apartment image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214117/Aranda-Lasch_GA-Plan.png" alt="Garden Apartment image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214086/Aranda-Lasch_GA-6.jpg" alt="Garden Apartment image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214087/Aranda-Lasch_GA-7.jpg" alt="Garden Apartment image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214089/Aranda-Lasch_GA-9.jpg" alt="Garden Apartment image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214091/Aranda-Lasch_GA-10.jpg" alt="Garden Apartment image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214092/Aranda-Lasch_GA-11.jpg" alt="Garden Apartment image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214094/Aranda-Lasch_GA-13.jpg" alt="Garden Apartment image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214095/Aranda-Lasch_GA-14.jpg" alt="Garden Apartment image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Garden Apartment<small>Aranda\Lasch<br>美國紐約州紐約市<br>FRAME 獎，大型公寓</small></h2>
+        <p class="ac-lead reveal">Aranda\Lasch 最近在曼哈頓完成了一個住宅項目，一對夫婦希望擴大他們的公寓以滿足不斷成長的家庭的需求。該作品對該公司 15 年前翻新的一套緊湊的紐約公寓進行了擴展和改造。新的設計以住宅與花園的連結為中心——這在城市中是一個難得的機會。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Aranda\Lasch 最近在曼哈頓完成了一個住宅項目，一對夫婦希望擴大他們的公寓以滿足不斷成長的家庭的需求。該作品對該公司 15 年前翻新的一套緊湊的紐約公寓進行了擴展和改造。新的設計以住宅與花園的連結為中心——這在城市中是一個難得的機會。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/garden-apartment" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-123527" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216163/LIVING-2.jpg" alt="Riverplace Apartments image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216171/BEFORE-FLOORPLAN.jpg" alt="Riverplace Apartments image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216172/AFTER-FLOORPLAN.jpg" alt="Riverplace Apartments image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216165/LIVING-4.jpg" alt="Riverplace Apartments image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216156/BATH1.jpg" alt="Riverplace Apartments image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216157/BATH2.jpg" alt="Riverplace Apartments image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216158/BEDROOM-2.jpg" alt="Riverplace Apartments image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216159/BEDROOM1.jpg" alt="Riverplace Apartments image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216160/ISLAND-:-DINING-1.jpg" alt="Riverplace Apartments image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216168/LIVING1.jpg" alt="Riverplace Apartments image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Riverplace Apartments<small>Artistroom<br>新加坡 169659<br>FRAME 獎，小型公寓</small></h2>
+        <p class="ac-lead reveal">該項目透過優先考慮開放性、適應性和社交互動的策略性空間重新配置，重新定義了傳統的一房公寓。該設計並未將緊湊的佔地面積視為一種限制，而是將其轉化為一個機會，創造一個適合業主不斷變化的生活方式的流動且多功能的環境。現有的內牆被拆除，以消除碎片化，並在廚房、餐廳、起居和學習區域之間建立無縫連接。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>該項目透過優先考慮開放性、適應性和社交互動的策略性空間重新配置，重新定義了傳統的一房公寓。該設計並未將緊湊的佔地面積視為一種限制，而是將其轉化為一個機會，創造一個適合業主不斷變化的生活方式的流動且多功能的環境。現有的內牆被拆除，以消除碎片化，並在廚房、餐廳、起居和學習區域之間建立無縫連接。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · <a href="https://frameweb.com/project/riverplace-apartments" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-antonio-bessa-cruz-architects-agramonte-house" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/agramonte-house-abca-architecture-residential-adaptive-reuse-porto_dezeen_2364_sq-852x852.jpg" alt="António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/agramonte-house-abca-architecture-residential-adaptive-reuse-porto_dezeen_2364_col_8.jpg" alt="António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/agramonte-house-abca-architecture-residential-adaptive-reuse-porto_dezeen_2364_col_27.jpg" alt="António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2024/02/fala-atelier-house-of-many-faces-warehouse-porto-square_dezeen_2364_col_0-191x191.jpg" alt="António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/agramonte-house-abca-architecture-residential-adaptive-reuse-porto_dezeen_2364_col_15-scaled.jpg" alt="António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/agramonte-house-abca-architecture-residential-adaptive-reuse-porto_dezeen_2364_col_1.jpg" alt="António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">António Bessa Cruz Architects replaces Porto car workshop with industrial-themed home<small>Unknown architect<br>葡萄牙<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">裸露的混凝土、鋼框窗戶和手工磚塊參考了 Agramonte House 的前工業場地，這是葡萄牙的一棟住宅，由當地工作室 António Bessa Cruz Architects 設計。該房屋位於波爾圖阿格拉蒙特公墓旁的一個前汽車修理廠的舊址上，客戶最初計劃將其改造成後安東尼奧·貝薩·克魯斯建築師用工業主題住宅取代了</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>裸露的混凝土、鋼框窗戶和手工磚塊參考了 Agramonte House 的前工業場地，這是葡萄牙的一棟住宅，由當地工作室 António Bessa Cruz Architects 設計。該房屋位於波爾圖阿格拉蒙特公墓旁的一個前汽車修理廠的舊址上，客戶最初計劃將其改造成後安東尼奧·貝薩·克魯斯建築師用工業主題住宅取代了波爾圖汽車修理廠，這首先出現在 Dezeen 上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · <a href="https://www.dezeen.com/2026/05/12/antonio-bessa-cruz-architects-agramonte-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-apollo-architects-associates-eternity-courtyard-home-tokyo" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/apollo-architects-associates-eternity-courtyard-home-tokyo-sq_dezeen_2364_col_1-852x852.jpg" alt="Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/apollo-architects-associates-eternity-courtyard-home-tokyo_dezeen_2364_col_20.jpg" alt="Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/apollo-architects-associates-eternity-courtyard-home-tokyo_dezeen_2364_col_1.jpg" alt="Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/apollo-architects-associates-eternity-courtyard-home-tokyo_dezeen_2364_col_5.jpg" alt="Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/apollo-architects-associates-eternity-courtyard-home-tokyo_dezeen_2364_col_7.jpg" alt="Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/ynas-house-in-miyakonojo-japan-sq_dezeen_2364_col_4-191x191.jpg" alt="Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_05 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Apollo Architects &amp; Associates prioritises security and privacy for Tokyo home<small>Unknown architect<br>阿波羅建築事務所<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">這座位於東京的住宅由當地工作室 Apollo Architects &amp; Associates 設計，其樸素的外觀由堆疊的混凝土體量組成，內部隱藏著雙層高的庭院和種滿植物的露台。該住宅名為“永恆”，位於東京澀谷區兩條道路的拐角處，其黑暗、封閉的外觀由堆疊的直線體量組成，阿波羅建築事務所優先考慮東京住宅的“安全和隱私”，首</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>這座位於東京的住宅由當地工作室 Apollo Architects &amp; Associates 設計，其樸素的外觀由堆疊的混凝土體量組成，內部隱藏著雙層高的庭院和種滿植物的露台。該住宅名為“永恆”，位於東京澀谷區兩條道路的拐角處，其黑暗、封閉的外觀由堆疊的直線體量組成，阿波羅建築事務所優先考慮東京住宅的“安全和隱私”，首先出現在 Dezeen 上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_05 · <a href="https://www.dezeen.com/2026/05/27/apollo-architects-associates-eternity-courtyard-home-tokyo/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-rita-hayworth-at-home-the-golden-age-goddess-in-photos" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69136d3e3a71330ebfc3799c/1:1/w_120%2Cc_limit/GettyImages-3244173.jpg" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69137f6159f4305a178a05a8/master/w_320%2Cc_limit/GettyImages-517255438.jpg" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69139308fc7af68dea4523df/master/w_320%2Cc_limit/GettyImages-1077141744.jpg" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/691394318b3526fd2d7ae5c4/master/w_320%2Cc_limit/GettyImages-530793104.jpg" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/691394f0a9492ae244758ddd/master/w_320%2Cc_limit/GettyImages-106755861.jpg" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/691395c659f4305a178a05e5/master/w_320%2Cc_limit/GettyImages-3312082.jpg" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6913a0d235a6acc01fdf1361/master/w_320%2Cc_limit/GettyImages-3239416.jpg" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/691397aba9492ae244758ddf/master/w_320%2Cc_limit/GettyImages-514974838.jpg" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/691398e6fc7af68dea4523ec/master/w_320%2Cc_limit/GettyImages-541076549.jpg" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69139acc886503f2e78cfc89/master/w_320%2Cc_limit/GettyImages-104417608.jpg" alt="Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/25_06 · AD (US) / 2025</p>
+        <h2 class="ac-title reveal">Rita Hayworth at Home: 20 Photos of Golden Age Love Goddess’ Domestic Life<small>AD editorial<br>時髦的曼哈頓<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">麗塔·海華斯 (Rita Hayworth) 在成為現實生活中的皇室成員之前曾是好萊塢皇室成員，在東西海岸以及法國裡維埃拉都擁有房產</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>麗塔·海華斯 (Rita Hayworth) 在成為現實生活中的皇室成員之前曾是好萊塢皇室成員，在東西海岸以及法國裡維埃拉都擁有房產</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/25_06 · <a href="https://www.architecturaldigest.com/gallery/rita-hayworth-at-home-the-golden-age-goddess-in-photos" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-130-william" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100503745WST_N680_mid.jpg?w=1680&amp;q=60&amp;auto=format" alt="130 William image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100477093WST_N319_mid.jpg?w=1680&amp;q=60&amp;auto=format" alt="130 William image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100484753WST_N325_mid.jpg?w=1680&amp;q=60&amp;auto=format" alt="130 William image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100513026WST_N682_mid.jpg?w=1680&amp;q=60&amp;auto=format" alt="130 William image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100525572WST_N384_mid.jpg?w=1680&amp;q=60&amp;auto=format" alt="130 William image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100533023WST_N597_mid.jpg?w=1680&amp;q=60&amp;auto=format" alt="130 William image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100537688WST_N598_mid.jpg?w=1680&amp;q=60&amp;auto=format" alt="130 William image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682100542166WST_N621_mid.jpg?w=1680&amp;q=60&amp;auto=format" alt="130 William image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_07 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">130 William<small>Adjaye Associates<br>紐約, 紐約州, 美國<br>2023 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 高層（16 層以上）</small></h2>
+        <p class="ac-lead reveal">130 William 是該公司在美國的第一座高層住宅大樓。這座 66 層樓的豪華公寓高 800 英尺，優雅地融入曼哈頓密集的城市景觀，在城市標誌性的天際線上雕刻出獨特的輪廓。 130 William 的計畫被設想為一座垂直微型城市，包括 242 套住宅、寬敞的兩層零售店、健身俱樂部、健身中心、電影院、戶外露台、屋頂觀</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>130 William 是該公司在美國的第一座高層住宅大樓。這座 66 層樓的豪華公寓高 800 英尺，優雅地融入曼哈頓密集的城市景觀，在城市標誌性的天際線上雕刻出獨特的輪廓。 130 William 的計畫被設想為一座垂直微型城市，包括 242 套住宅、寬敞的兩層零售店、健身俱樂部、健身中心、電影院、戶外露台、屋頂觀景台和一個新的公共廣場公園——所有這些都支持該建築的住宅社區，並致力於重新定義垂直城市社區的可能性。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_07 · <a href="https://architizer.com/projects/130-william/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-apartment-v" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682059850697Park_Apartment0086_.jpg?w=1680&amp;q=60&amp;auto=format" alt="Apartment V image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682059851089Park_Apartment0950_.jpg?w=1680&amp;q=60&amp;auto=format" alt="Apartment V image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682059851850Park_Apartment92412_.jpg?w=1680&amp;q=60&amp;auto=format" alt="Apartment V image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_08 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">Apartment V<small>Park + Associates<br>新加坡<br>2023 年 A+Awards 評審團得獎者，住宅 &gt; 公寓</small></h2>
+        <p class="ac-lead reveal">如果沒有拆除牆壁和重新配置房間的奢侈，如何在公寓單元內創造不同且獨特的空間體驗？如何在不保留舊美學的情況下重新思考、重複利用和更新空間中已有的東西？如何迴避主題設計趨勢，而將注意力純粹放在對功能需求的回應上？</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>如果沒有拆除牆壁和重新配置房間的奢侈，如何在公寓單元內創造不同且獨特的空間體驗？如何在不保留舊美學的情況下重新思考、重複利用和更新空間中已有的東西？如何迴避主題設計趨勢，而將注意力純粹放在對功能需求的回應上？</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_08 · <a href="https://architizer.com/projects/apartment-v/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

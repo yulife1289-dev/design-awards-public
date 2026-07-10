@@ -3,643 +3,144 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-07-09</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-07-09 06:00</span>
-        <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-07-09.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-07-09</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-07-09 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
+        <span>共 6 件作品</span>
+        <span>Architizer、Dezeen、FRAME</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-07-09.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-frame-api-124312">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/221037/HERO---House-129---Izen-Architecture---Scott-Norsworthy--2.jpg" class="slide active" alt="House 129 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/221038/House-129---Izen-Architecture---Ground-Floor-Plan.jpg" class="slide" alt="House 129 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222306/House-129-Floorplans-02.jpg" class="slide" alt="House 129 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222307/House-129-Floorplans-01.jpg" class="slide" alt="House 129 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/219608/House-129---Izen-Architecture---Scott-Norsworthy-8.jpg" class="slide" alt="House 129 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222303/House-129---Izen-Architecture---Scott-Norsworthy-12.jpg" class="slide" alt="House 129 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/221032/House-129---Izen-Architecture---Scott-Norsworthy--3.jpg" class="slide" alt="House 129 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/221031/House-129---Izen-Architecture---Scott-Norsworthy--1.jpg" class="slide" alt="House 129 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222304/House-129---Izen-Architecture---Scott-Norsworthy-6.jpg" class="slide" alt="House 129 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/219609/House-129---Izen-Architecture---Scott-Norsworthy-11.jpg" class="slide" alt="House 129 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/221027/House-129---Izen-Architecture---Scott-Norsworthy-9.jpg" class="slide" alt="House 129 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/221029/House-129---Izen-Architecture---Scott-Norsworthy-16.jpg" class="slide" alt="House 129 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/221030/House-129---Izen-Architecture---Scott-Norsworthy-17.jpg" class="slide" alt="House 129 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/221033/House-129---Izen-Architecture---Scott-Norsworthy---5.jpg" class="slide" alt="House 129 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/221034/House-129---Izen-Architecture---Scott-Norsworthy-5.jpg" class="slide" alt="House 129 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/219607/House-129---Izen-Architecture---Scott-Norsworthy-7.jpg" class="slide" alt="House 129 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222305/House-129---Izen-Architecture---Scott-Norsworthy-16a.jpg" class="slide" alt="House 129 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>129 Lord Seaton Rd, 北約克, ON M2P 1K8, 加拿大</span>
-                  </div>
-                  <h3 class="card-title">House 129</h3>
-                  <p class="card-by">Izen Architecture</p>
-                  <p class="card-desc">這座 6,000 平方英尺的住宅坐落在一個角度獨特的城市地塊上，一開始就是與城市環境的直接對話。建築物沒有對抗場地的限制，而是擁抱它們：佔地面積遵循場地的不規則幾何形狀，而後立面則向南旋轉，以優化自然光和被動太陽能增益。結果產生了一個複雜的平面圖，從鉸接的體積到固定房屋的雕塑廚房島，角幾何形狀成為整個建築中反覆出現的主題。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">House 129 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>House</span><span>129 Lord Seaton Rd, 北約克, ON M2P 1K8, 加拿大</span><span>發佈日期: 2026 年 7 月 8 日</span><span>標籤： 獎項 / 加拿大 / fa26 / house</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/house-129" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-best-bathroom-wall-cabinets">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/69eb7e91490ba633fe77b24d/16:9/w_2560%2Cc_limit/014%2520Bethany%2520Adams%2520Interiors%2520and%2520J.L.%2520Jordan%2520Photography%2520-%2520Modern%2520Tudor.jpg" class="slide active" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/69bdbc6e16a2c7ce57e1e122/1:1/w_640%2Cc_limit/interiors-58-Edit.jpg" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6944254069aaa0d5c04baaf0/3:4/w_748%2Cc_limit/Product%2520Image-1%2520(5).jpeg" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69eb9a4be051a85230928bf5/3:4/w_748%2Cc_limit/Ikea%2520White.png" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69eb9b51490ba633fe77b54d/3:4/w_748%2Cc_limit/Ferm.png" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69eb9d6dc7ea9a2f6daf706e/3:4/w_748%2Cc_limit/Pippa.png" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69eb9e77c21374ac7ae93656/3:4/w_748%2Cc_limit/PB.png" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69eb9f997024ecf1de70caab/3:4/w_748%2Cc_limit/Dwr.png" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69eba0705d1b9fd8f525d2b0/3:4/w_748%2Cc_limit/Magnolia.png" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69eba177c7ea9a2f6daf717b/3:4/w_748%2Cc_limit/Mustard%2520Made.png" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6967f2726d223785ba16c500/1:1/w_640%2Cc_limit/AD0724_GREENE_5.jpg" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69bc68fb8993e3dada181b73/1:1/w_640%2Cc_limit/0212-AD-WEIS-08.jpg" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69e7a2b678857f8e35cbf3c3/1:1/w_640%2Cc_limit/1011-AD-INEZ-05.jpg" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69e91c710883fd53ae4b5839/1:1/w_640%2Cc_limit/AD0124_HENDERSON_DN_15.jpg" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69e13d44851f4c94ce6d9045/1:1/w_640%2Cc_limit/AD0422_NEEDLEMAN_11.jpg" class="slide" alt="The Best Bathroom Wall Cabinets to Save Space in Style (2026) 圖片 15" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 15</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>最佳浴室牆</span>
-                  </div>
-                  <h3 class="card-title">The Best Bathroom Wall Cabinets to Save Space in Style (2026)</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">這些是最好的浴室壁櫃，可以節省地面空間而不犧牲風格。尋找適合極簡主義者、極簡主義者等的儲存選項</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">The Best Bathroom Wall Cabinets to Save Space in Style (2026) 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。這些是最好的浴室壁櫃，可以節省地面空間而不犧牲風格。尋找適合極簡主義者、極簡主義者等的儲存選項</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>最佳浴室牆</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/best-bathroom-wall-cabinets" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-estudio-futuro-ph-gainza">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/07/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_sq-852x852.jpg" class="slide active" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_col_3-scaled.jpg" class="slide" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_col_10-scaled.jpg" class="slide" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_col_2.jpg" class="slide" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_33-SQ-191x191.jpg" class="slide" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_col_14.jpg" class="slide" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_col_6-scaled.jpg" class="slide" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_col_19.jpg" class="slide" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios 圖片 8" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 8</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>阿根廷</span>
-                  </div>
-                  <h3 class="card-title">Estudio Futuro renovates compact Argentinian home around terracotta-paved patios</h3>
-                  <p class="card-by">Estudio Futuro</p>
-                  <p class="card-desc">阿根廷建築事務所 Estudio Futuro 翻新了 PH Gainza，這是一座位於布宜諾斯艾利斯的 20 世紀 50 年代的房屋，其原有的混凝土結構與清爽的白鋼結構形成鮮明對比。現有的住宅是一種當地類型的住宅，被稱為 Propiedad Horizo​​ntal 或 Horizo​​ntal Property（簡稱 PH），其中幾棟低層住宅聚集在一起。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Estudio Futuro renovates compact Argentinian home around terracotta-paved patios 的強度在於它沒有把 住宅室內 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「透過壓縮、分層與多重使用提高空間記憶密度，讓小尺度住宅仍然具有完整敘事」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>阿根廷</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/07/08/estudio-futuro-ph-gainza/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-mxarchitecture-2in1-houses-noisy-le-sec-back-to-back">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_col_0a-852x852.jpg" class="slide active" alt="MXarchitecture installs back-to-back homes in Paris suburb 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_sq_0.jpg" class="slide" alt="MXarchitecture installs back-to-back homes in Paris suburb 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_col_4-scaled.jpg" class="slide" alt="MXarchitecture installs back-to-back homes in Paris suburb 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_col_8-scaled.jpg" class="slide" alt="MXarchitecture installs back-to-back homes in Paris suburb 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_col_5.jpg" class="slide" alt="MXarchitecture installs back-to-back homes in Paris suburb 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/01/paris-house-hauvette-madani-sq2-191x191.jpg" class="slide" alt="MXarchitecture installs back-to-back homes in Paris suburb 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_col_6.jpg" class="slide" alt="MXarchitecture installs back-to-back homes in Paris suburb 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_col_7.jpg" class="slide" alt="MXarchitecture installs back-to-back homes in Paris suburb 圖片 8" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 8</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>Paris</span>
-                  </div>
-                  <h3 class="card-title">MXarchitecture installs back-to-back homes in Paris suburb</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">巴黎工作室 MXarchitecture 建造了 2in1 Houses，這是在法國首都東部郊區的一塊地塊上相互對接的兩棟三居室住宅。 Noisy-le-Sec 的二合一住宅被設計為家庭住宅，每棟三層樓和一個地下室。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">MXarchitecture installs back-to-back homes in Paris suburb 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>Paris</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/03/03/mxarchitecture-2in1-houses-noisy-le-sec-back-to-back/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-is-your-home-missing-an-it-factor-it-may-need-more-dec-aura-points">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/69e0e4f4b1653e6574672226/16:9/w_2560%2Cc_limit/1.jpg" class="slide active" alt="Dec-Aura Points Are the Secret to a Stylish Home 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/69e0e4f4b76c584196303d6b/master/w_1600%2Cc_limit/ZFD_Cahill1_02502darker.jpg" class="slide" alt="Dec-Aura Points Are the Secret to a Stylish Home 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/69e0e4f35b085604252d6237/master/w_1600%2Cc_limit/9.jpg" class="slide" alt="Dec-Aura Points Are the Secret to a Stylish Home 圖片 3" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 3</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>提升你的最佳方式</span>
-                  </div>
-                  <h3 class="card-title">Dec-Aura Points Are the Secret to a Stylish Home</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">設計師權衡微妙的調整和設計主題，賦予家居不可否認的光環</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Dec-Aura Points Are the Secret to a Stylish Home 最值得注意的不是外觀，而是它如何透過 光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>提升你的最佳方式</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/is-your-home-missing-an-it-factor-it-may-need-more-dec-aura-points" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-117438">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194590/1_living-room_Corpus-architects_Harmony.jpg" class="slide active" alt="Apartment Harmony 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194592/4_living-room_Corpus-architects_Harmony.jpg" class="slide" alt="Apartment Harmony 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194593/7_kitchen_Corpus-architects_Harmony.jpg" class="slide" alt="Apartment Harmony 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194594/8_kitchen_Corpus-architects_Harmony.jpg" class="slide" alt="Apartment Harmony 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194595/9_kitchen_Corpus-architects_Harmony.jpg" class="slide" alt="Apartment Harmony 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194596/12_kitchen_Corpus-architects_Harmony.jpg" class="slide" alt="Apartment Harmony 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194597/12a_kitchen_Corpus-architects_Harmony.jpg" class="slide" alt="Apartment Harmony 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194598/13а_kitchen_Corpus-architects_Harmony.jpg" class="slide" alt="Apartment Harmony 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194600/16_living-room_Corpus-architects_Harmony.jpg" class="slide" alt="Apartment Harmony 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194601/20_living-room_Corpus-architects_Harmony.jpg" class="slide" alt="Apartment Harmony 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194602/21_relax-zone_Corpus-architects_Harmony-SMALL.jpg" class="slide" alt="Apartment Harmony 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194603/23_relax-zone_Corpus-architects_Harmony.jpg" class="slide" alt="Apartment Harmony 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194604/24_relax-zone_Corpus-architects_Harmony.jpg" class="slide" alt="Apartment Harmony 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194605/27_relax-zone_Corpus-architects_Harmony.jpg" class="slide" alt="Apartment Harmony 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194609/32_korridor_Corpus-architects_Harmony.jpg" class="slide" alt="Apartment Harmony 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194589/План_разпределение_апартамен-Harmony_Corpus-architects.jpg" class="slide" alt="Apartment Harmony 圖片 16" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 16</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，大型公寓</span>
-                    <span>2025</span>
-                    <span>保加利亞瓦爾納</span>
-                  </div>
-                  <h3 class="card-title">Apartment Harmony</h3>
-                  <p class="card-by">Corpus Architects</p>
-                  <p class="card-desc">位於保加利亞瓦爾納的頂層公寓的室內設計項目。公寓位於公寓大樓的最後一層。有一個單獨的私人電梯可直接通往公寓的門廳。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Apartment Harmony 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>大型公寓</span><span>保加利亞瓦爾納</span><span>發佈日期: 2025 年 9 月 22 日</span><span>標籤： 獎項 / 保加利亞 / construmax / corpus-architects</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/apartment-harmony" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2022-kastelaz-hof">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243478531405_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Kastelaz Hof 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243477996302_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Kastelaz Hof 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243477996101_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Kastelaz Hof 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243478439903_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Kastelaz Hof 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243478460904_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Kastelaz Hof 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243478681306_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Kastelaz Hof 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243478965007_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Kastelaz Hof 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243479245108_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Kastelaz Hof 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243479388609_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Kastelaz Hof 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243479702411_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Kastelaz Hof 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243479625810_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Kastelaz Hof 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243479874012_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Kastelaz Hof 圖片 12" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 12</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2022 年 A+Awards 評審團得獎者，住宅 &gt; 私人住宅（L 4000-6000 平方英尺）</span>
-                    <span>2022</span>
-                    <span>葡萄酒大街特拉明, 義大利</span>
-                  </div>
-                  <h3 class="card-title">Kastelaz Hof</h3>
-                  <p class="card-by">Peter Pichler Architecture</p>
-                  <p class="card-desc">Peter Pichler Architecture 在義大利北部的葡萄園設計了以景觀為靈感的別墅。新別墅位於義大利北部的南蒂羅爾，坐落在泰爾梅諾美麗的阿爾卑斯山景觀中，這裡以瓊瑤漿葡萄酒的產地而聞名。 2018 年，PPA 贏得了一項邀請競賽，將「Kastelaz」葡萄園頂部的現有舊建築替換為一棟新別墅，該別墅由該地區一個著名的葡萄酒生產家族擁有。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Kastelaz Hof 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2022 年 A+Awards 評審團得獎者，住宅 &gt; 私人住宅（L 4000-6000 平方英尺）</span><span>葡萄酒大街特拉明, 義大利</span><span>資料來源：Architizer A+Awards 2022</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/kastelaz-hof/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2022-house-at-the-owl-forest">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651732489175011_haus-am-eulenwald_kremstal.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="HOUSE AT THE OWL FOREST 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1663252768348018_haus-am-eulenwald_kremstal.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="HOUSE AT THE OWL FOREST 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1663252775108049_haus-am-eulenwald_kremstal.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="HOUSE AT THE OWL FOREST 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651732507682015_haus-am-eulenwald_kremstal.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="HOUSE AT THE OWL FOREST 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1663252772431034_haus-am-eulenwald_kremstal.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="HOUSE AT THE OWL FOREST 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651732543622025_haus-am-eulenwald_kremstal.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="HOUSE AT THE OWL FOREST 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1663252768350024_haus-am-eulenwald_kremstal_.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="HOUSE AT THE OWL FOREST 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1663252771666028_haus-am-eulenwald_kremstal.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="HOUSE AT THE OWL FOREST 圖片 8" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 8</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2022 年 A+ 獎，住宅 &gt; 私人住宅（面積 1000-2000 平方英尺）</span>
-                    <span>2022</span>
-                    <span>奧地利克雷姆斯明斯特</span>
-                  </div>
-                  <h3 class="card-title">HOUSE AT THE OWL FOREST</h3>
-                  <p class="card-by">BERKTOLD WEBER Architekten</p>
-                  <p class="card-desc">貓頭鷹森林安靜邊緣的山坡上有一棟簡單、清晰的木屋。村莊居住區的郊區在此結束，這個新物體塑造了定居點與自然之間的過渡。車庫的樓梯通往山坡上房屋的入口。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">HOUSE AT THE OWL FOREST 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2022 年 A+ 獎，住宅 &gt; 私人住宅（面積 1000-2000 平方英尺）</span><span>奧地利克雷姆斯明斯特</span><span>資料來源：Architizer A+Awards 2022</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/house-at-the-owl-forest/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-frame-api-124312" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/221037/HERO---House-129---Izen-Architecture---Scott-Norsworthy--2.jpg" alt="House 129 image 1" loading="eager"><figcaption>圖1｜主視覺外觀——觀察量體如何以銳角切分、南向立面旋轉角度與開窗比例。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/221038/House-129---Izen-Architecture---Ground-Floor-Plan.jpg" alt="House 129 image 2" loading="lazy"><figcaption>圖2｜一樓平面圖——判讀基地不規則邊界與室內斜牆如何順應，中島定位。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222306/House-129-Floorplans-02.jpg" alt="House 129 image 3" loading="lazy"><figcaption>圖3｜樓層平面圖之二——看上層房間錯位與動線如何延續角度母題。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222307/House-129-Floorplans-01.jpg" alt="House 129 image 4" loading="lazy"><figcaption>圖4｜樓層平面圖之一——核對整體量體鉸接關係與朝向軸線。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/219608/House-129---Izen-Architecture---Scott-Norsworthy-8.jpg" alt="House 129 image 5" loading="lazy"><figcaption>圖5｜室內或外觀照——觀察斜面牆體收邊工藝與光影在非直角面上的表現。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222303/House-129---Izen-Architecture---Scott-Norsworthy-12.jpg" alt="House 129 image 6" loading="lazy"><figcaption>圖6｜空間照——留意廚房中島的雕塑造型與其在平面中的錨定作用。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/221032/House-129---Izen-Architecture---Scott-Norsworthy--3.jpg" alt="House 129 image 7" loading="lazy"><figcaption>圖7｜室內照——檢視斜牆下的家具擺放與對角視線關係。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/221031/House-129---Izen-Architecture---Scott-Norsworthy--1.jpg" alt="House 129 image 8" loading="lazy"><figcaption>圖8｜外觀或街景——看建築如何回應角度基地與周邊城市紋理。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222304/House-129---Izen-Architecture---Scott-Norsworthy-6.jpg" alt="House 129 image 9" loading="lazy"><figcaption>圖9｜細部照——觀察材質交接、窗洞深度與遮陽/採光處理。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/219609/House-129---Izen-Architecture---Scott-Norsworthy-11.jpg" alt="House 129 image 10" loading="lazy"><figcaption>圖10｜整體或夜景照——判讀量體體積感與開窗透光後的層次。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_01 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">House 129<small>Izen Architecture<br>129 Lord Seaton Rd, 北約克, ON M2P 1K8, 加拿大<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">以基地不規則銳角幾何為母題，從量體、平面到廚房中島層層貫穿的獨棟住宅。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>House 129 位於加拿大北約克一塊角度特殊的城市地塊，佔地約 6,000 平方英尺。Izen Architecture 的策略核心是「不對抗、而擁抱」基地限制：建築佔地順著地塊本身的不規則多邊形展開，後立面則刻意向南旋轉，以爭取自然採光與被動式太陽能得熱。這個決定同時是氣候回應也是形式生成器——銳角幾何從此不再是缺陷，而成為全屋一以貫之的設計語彙，從建築量體的鉸接、房間的錯位到室內雕塑感廚房中島都在複述同一組角度邏輯。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>平面因順應基地銳角而變得複雜，量體被切分成數個「鉸接」的體塊，靠角度轉折彼此咬合而非正交排列。後段向南旋轉的立面把主要起居空間導向陽光，形成朝向與動線的雙重軸線。廚房中島被當作「錨定全屋」的雕塑核心，等於把最日常的機能點升格為空間定位器——動線與視線都繞著它組織，是把幾何母題從外殼一路帶進生活核心的關鍵手法。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>從案名與框架獎脈絡判斷，材質走現代精緻路線，重點在銳角收邊的精準度：斜切牆面、非直角天花與地坪交接處，收邊工藝決定成敗。南向旋轉立面應搭配大面開窗處理被動得熱，需同時解決眩光與夏季過熱，推測有遮陽或深窗洞。光線是此案的主動設計參數而非附屬效果——朝向本身就是為了讓光成為塑形工具，讓斜面在一天中因光影變化而被讀出體積。（實際色彩與材料清單原文未提供，以幾何與採光策略為主要可判讀線索。）</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>6,000 平方英尺屬大坪數獨棟，生活場景圍繞雕塑中島展開——中島既是烹飪與社交焦點，也是室內量體的視覺重心。銳角平面使各房間不落入方正格局，家具佈置需順應斜牆，容易產生具張力的對角視線與非典型的傢俱擺放節奏。比例上以中島為錨、量體鉸接為骨，空間層次靠角度而非隔間堆疊。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>把基地不規則銳角當成設計母題而非缺陷</strong><span>效果：限制轉為識別性，全屋語彙統一</span><span>可應用於：畸零地、三角窗、退縮地塊住宅</span><span>注意事項：斜角空間家具與收納效率低，須先驗證可用性</span></div><div class="gi"><strong>後立面向南旋轉爭取採光與被動得熱</strong><span>效果：朝向即氣候策略，光成為塑形工具</span><span>可應用於：台灣坐向不佳的透天與別墅</span><span>注意事項：台灣夏季須反向處理西曬與過熱，旋轉朝南前要算遮陽</span></div><div class="gi"><strong>以雕塑廚房中島錨定全屋</strong><span>效果：日常機能升格為空間定位核心</span><span>可應用於：開放式公領域、LDK 一體規劃</span><span>注意事項：中島須有真實機能，避免只是造型；動線繞島要留足淨寬</span></div><div class="gi"><strong>量體鉸接（切分咬合）取代正交堆疊</strong><span>效果：以角度製造層次與張力</span><span>可應用於：多量體別墅、坡地住宅</span><span>注意事項：鉸接處防水與結構節點複雜，成本與工序上升</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>畸零地與三角窗在台灣極常見，把銳角當母題而非硬塞方正格局，是可直接借鑑的思路。</li><li>朝向即氣候策略——台灣應反轉此案邏輯，優先處理西曬遮陽與通風，而非一味爭取日照。</li><li>以中島錨定開放式 LDK 的手法適合台灣透天公領域，但須確保中島有真實烹飪與收納機能。</li><li>斜牆空間先做家具與收納可用性驗證，避免大坪數換來低使用效率。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>6,000 平方英尺與獨立地塊為前提，台灣一般住宅坪數與基地條件難以複製。</li><li>銳角量體鉸接處的防水、結構節點與斜面收邊工序複雜，造價與施工難度顯著偏高。</li><li>斜角房間的家具擺放與收納效率天生較差，需客製化才能兼顧美感與實用。</li><li>南向大面開窗在台灣氣候易導致過熱與眩光，直接照搬朝向策略有反效果。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_01 · <a href="https://frameweb.com/project/house-129" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-estudio-futuro-ph-gainza" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/07/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_sq-852x852.jpg" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios image 1" loading="lazy"><figcaption>圖1｜封面方圖：綜觀新舊材質對比，注意白鋼構件與混凝土牆的並置關係與整體色調配比。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_col_3-scaled.jpg" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios image 2" loading="lazy"><figcaption>圖2｜主情境圖：觀察中庭陶磚鋪面如何連續延伸進室內，以及日光落在磚面上的色溫與陰影。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_col_10-scaled.jpg" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios image 3" loading="lazy"><figcaption>圖3｜留意白鋼樓梯／框架的纖細型鋼比例與節點做法，如何與厚重混凝土形成輕重對比。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_col_2.jpg" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios image 4" loading="lazy"><figcaption>圖4｜看室內外邊界的處理：開口尺度、門窗框與地坪高差，判斷內外過渡是否連續。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_33-SQ-191x191.jpg" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios image 5" loading="lazy"><figcaption>圖5｜此圖檔名為 corner-shop（墨爾本另一案），與本住宅無關，判讀時應排除。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_col_14.jpg" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios image 6" loading="lazy"><figcaption>圖6｜觀察家具低量體與留白策略，如何讓混凝土與鋼構線條成為視覺主角。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_col_6-scaled.jpg" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios image 7" loading="lazy"><figcaption>圖7｜檢視中庭作為採光井的天空開口位置，以及光線深入室內的路徑與角度。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/estudio-futuro-ph-gainza-home-renovation-argentina_dezeen_2364_col_19.jpg" alt="Estudio Futuro renovates compact Argentinian home around terracotta-paved patios image 8" loading="lazy"><figcaption>圖8｜留意收邊細節：新舊結構脫開處的縫隙與陰影線，確認新介入層的獨立閱讀。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_02 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Estudio Futuro renovates compact Argentinian home around terracotta-paved patios<small>Estudio Futuro<br>阿根廷<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">以陶磚中庭串起採光與動線，用白色鋼構輕巧介入 1950 年代 PH 混凝土老屋的改造案。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>PH Gainza 位於布宜諾斯艾利斯，是阿根廷特有的 Propiedad Horizontal（水平產權集合住宅）類型：數棟低層住宅共享基地、彼此緊鄰，多半縱深長、臨街面窄、內部易缺光。Estudio Futuro 面對的是一棟 1950 年代的混凝土結構老屋，理念不是抹去歷史，而是保留原有粗獷混凝土的量體與痕跡，再以一套外顯的白色鋼構作為新介入層，讓「舊承重／新輕構」在視覺上明確可辨。改造核心是重新組織中庭與內部院落，用陶磚鋪面的 patio 作為住宅的組織骨架，解決 PH 常見的採光與通風困境。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>策略是把院落當成配置的主軸而非剩餘空間。長向縱深的量體被中庭切分，室內外交錯排列，讓每個主要生活區都貼近一處採光開口，縮短光線深入室內的距離。新增的白鋼結構（樓梯、雨庇、框架）獨立於原混凝土牆體，形成可讀的疊加關係——結構不假裝與老屋一體，而是坦率地並置。動線環繞中庭展開，室內外邊界被刻意模糊，庭院同時是採光井、通風道與生活延伸。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料採三層對比：原有的灰調混凝土（粗糙、承重、歷史）、新的白色鋼構（輕、精確、當代）、以及暖色陶磚鋪面（地面的觸感與色溫錨點）。陶磚的紅陶色平衡了混凝土與白鋼的冷硬，並在中庭連續鋪展，把室內外地坪視覺縫合。光線主要靠中庭與院落的天空開口引入，日光落在陶磚與混凝土上產生質感與陰影變化。收邊上，白鋼構件多以纖細型鋼與清晰節點呈現，刻意不與混凝土做齊平隱藏，而是保留縫隙與陰影線，強化新舊分離的閱讀。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景圍繞中庭鋪開：起居、用餐可直接向陶磚院落開放，形成半戶外的日常延伸。家具偏向低量體、留白，讓混凝土牆面與鋼構線條成為空間主角，避免與強烈的結構語彙爭奪視覺。比例上，窄而高的 PH 縱深被水平的陶磚地坪與中庭開口壓平、拉寬，緩解狹長帶來的壓迫感。白鋼樓梯等垂直元素則作為輕盈的比例對位，串起樓層而不阻斷視線。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>新舊結構坦率並置（混凝土保留＋白鋼外加）</strong><span>效果：歷史層與介入層清楚可讀，改造誠實而有張力</span><span>可應用於：老屋、老公寓、透天翻新，需保留原結構痕跡者</span><span>注意事項：新結構需獨立計算並確實與舊體脫開，接點防水與熱橋要處理</span></div><div class="gi"><strong>以中庭／院落作為配置主軸</strong><span>效果：解決長縱深住宅深處採光通風不足</span><span>可應用於：台灣狹長街屋、長型透天、老公寓天井重整</span><span>注意事項：犧牲部分室內面積換取光與風，需與屋主權衡坪效</span></div><div class="gi"><strong>陶磚鋪面室內外連續</strong><span>效果：縫合內外地坪、加暖色溫、平衡冷硬材質</span><span>可應用於：半戶外過渡區、庭院與客廳交界</span><span>注意事項：室內外陶磚需注意防滑、洩水與門檻高差銜接</span></div><div class="gi"><strong>纖細鋼構配清晰節點與陰影線</strong><span>效果：以最少量體達成結構表現，不遮蔽舊牆</span><span>可應用於：增建樓梯、雨庇、夾層框架</span><span>注意事項：外露鋼構需防鏽塗裝與定期維護，海島潮濕氣候更甚</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>台灣狹長街屋與老公寓最缺光通風，PH Gainza 以中庭切分縱深的做法可直接借鑑，用天井或內院換取深處採光。</li><li>老屋翻新不必全遮全包，保留原混凝土結構、以獨立輕構介入，能省成本又保有場所記憶。</li><li>陶磚（或紅陶／二丁掛地磚）作暖色錨點，能平衡台灣常見的水泥粉光冷調，且耐潮好清理。</li><li>外露鋼構在潮濕海島需加強防鏽與維護規劃，選材與塗裝要先設定保養週期。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>犧牲室內面積換中庭，在寸土寸金的台灣都會坪效壓力下不一定可行。</li><li>外露白鋼構在高濕、鹽害或多雨環境維護成本高，易鏽蝕變色。</li><li>新舊結構脫開的接點防水與熱橋若處理不當，易漏水與結露。</li><li>混凝土裸露與大量半戶外中庭在台灣夏季濕熱、多蚊蟲、颱風飄雨情境下舒適度需再評估。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_02 · <a href="https://www.dezeen.com/2026/07/08/estudio-futuro-ph-gainza/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-mxarchitecture-2in1-houses-noisy-le-sec-back-to-back" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_col_0a-852x852.jpg" alt="MXarchitecture installs back-to-back homes in Paris suburb image 1" loading="lazy"><figcaption>圖1｜主外觀：讀兩戶量體如何嵌合、共享牆位置與各自入口方向，判斷背對背錯位的實際幾何。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_sq_0.jpg" alt="MXarchitecture installs back-to-back homes in Paris suburb image 2" loading="lazy"><figcaption>圖2｜方形封面圖：看整體立面比例、開窗節奏與外皮材質收邊。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_col_4-scaled.jpg" alt="MXarchitecture installs back-to-back homes in Paris suburb image 3" loading="lazy"><figcaption>圖3｜全景外觀：觀察量體與街道／鄰房的關係、退縮尺度與屋頂形式。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_col_8-scaled.jpg" alt="MXarchitecture installs back-to-back homes in Paris suburb image 4" loading="lazy"><figcaption>圖4｜另一角度外觀：確認兩戶開窗面是否確實朝相反方位，驗證隱私配置。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_col_5.jpg" alt="MXarchitecture installs back-to-back homes in Paris suburb image 5" loading="lazy"><figcaption>圖5｜室內或入口：看樓梯井位置、公共層開放度與採光進入方式。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/01/paris-house-hauvette-madani-sq2-191x191.jpg" alt="MXarchitecture installs back-to-back homes in Paris suburb image 6" loading="lazy"><figcaption>圖6｜相關案例縮圖（Hauvette Madani）：屬延伸連結，非本案，判讀時排除。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_col_6.jpg" alt="MXarchitecture installs back-to-back homes in Paris suburb image 7" loading="lazy"><figcaption>圖7｜室內細部：材質暖調、牆面處理與家具佈局的實際尺度。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/2in1-houses-noisy-le-sec_dezeen_2364_col_7.jpg" alt="MXarchitecture installs back-to-back homes in Paris suburb image 8" loading="lazy"><figcaption>圖8｜空間端景或樓梯：檢視縱深方向的通透與端景窗如何補光。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_03 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">MXarchitecture installs back-to-back homes in Paris suburb<small>Unknown architect<br>Paris<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">在同一塊郊區地塊上，用背對背錯位嵌合的兩棟三層透天，把「一地兩戶」的密度題做成互不干擾的獨立生活單元。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>MXarchitecture 在巴黎東郊 Noisy-le-Sec 的一塊地上設計 2in1 Houses：兩棟各含三間臥室、地上三層加地下室的家庭住宅，以背對背（back-to-back）方式相接。這是典型的近郊土地分割題——一塊原本蓋一棟的地，透過共享一道背牆、把兩戶的入口與採光面各自朝向相反方位，讓兩個家庭在同一基地上取得各自完整的透天體驗，而不是切成左右對稱的雙拼。理念核心是密度與獨立性的平衡：不靠公寓化解決地價與土地稀缺，而是用剖面（三層＋地下室）向上向下要空間，用背向配置換取彼此的隱私與獨立入口。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>關鍵動作是「背對背錯位」而非「並排鏡射」。兩戶共用中央那道背牆，把樓梯、浴廁、儲藏等服務性核心貼向這道共享牆，讓兩戶各自把主要起居與臥室推向相反的外側開放面。這樣一牆之隔的兩家，開窗方向相反、視線不對望、入口各自獨立，隱私由配置本身保證而非靠事後遮擋。垂直向：地下室吸納機能與儲藏，一樓公共（客餐廚），上兩層分配三間臥室，用層層堆疊在小基地上換取足夠的三房面積。服務核心集中貼牆，也讓每層樓的臨外側盡量留成完整、可彈性使用的方正空間。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>從圖面可讀到外立面採用素樸的塗料或抹灰量體搭配大面開窗，收邊乾淨、線腳極簡，讓體量本身成為語言。因兩戶開窗面相反，各戶都能取得單向但穩定的日光，避免背對背常見的暗房問題——採光策略是把「窗開在沒有鄰戶對望的那一側」，用配置換自然光。室內傾向淺色牆面配木質暖調，讓縱向樓梯井把光帶入樓層深處。收邊重點在共享牆的隔音與防火分戶處理，以及各戶獨立入口的雨庇與門洞收整。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>每戶是一個完整垂直生活序列：進門層是家庭公共活動，往上是私密臥室層，地下室做機能與收納或彈性房。三房配置對應核心家庭（父母＋兩到三個小孩）。因為是透天而非公寓，家具佈局享有整層的自由度——一樓可做開放式客餐廚一體，臥室層則每間對外開窗。樓梯是每戶動線與空間節奏的主軸，串起地下到頂層。比例上，狹長基地讓每層平面偏深，需靠樓梯井與端景窗維持縱深方向的通透感。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>背對背共享牆、服務核心貼牆</strong><span>效果：兩戶開窗面相反，視線不對望，隱私由配置保證</span><span>可應用於：同一基地分兩戶、雙拼透天、狹長地退縮受限的案例</span><span>注意事項：共享牆必須做足分戶隔音與防火，否則生活噪音直接穿透</span></div><div class="gi"><strong>剖面向上下要空間（三層＋地下室）</strong><span>效果：小基地取得完整三房面積，不必攤大占地</span><span>可應用於：地價高、基地小、需完整房數的都市透天</span><span>注意事項：地下室防水、採光與逃生動線是成本與法規重點</span></div><div class="gi"><strong>各戶獨立入口分置相反向</strong><span>效果：兩家心理上是各自的獨棟，而非分租的一戶兩門</span><span>可應用於：親屬雙戶、投資型雙拼、代間共居</span><span>注意事項：入口需各自可達，基地退縮與人車動線要在配置期先算清</span></div><div class="gi"><strong>素量體＋大開窗的極簡外皮</strong><span>效果：以體量與洞口比例取代裝飾，維持近郊街廓的低調</span><span>可應用於：預算有限但想要當代感的自地自建</span><span>注意事項：抹灰立面在多雨氣候易髒污掛痕，需注意滴水線與收頭</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>台灣常見的一地二建、兄弟分戶或雙併透天，可直接借鑑「服務核心貼共享牆、公共面朝外」的配置邏輯來換取隱私與採光。</li><li>狹長街屋基地用剖面（地下室＋多層）要空間的思路，適合都市高地價的自地自建，但地下室防水與逃生須提前規劃。</li><li>背對背配置解決台灣連棟透天最痛的『鄰戶對望』與『暗房』問題，值得在配置階段就把開窗方向錯開。</li><li>分戶牆的隔音與防火在台灣法規與生活品質上都是關鍵，此案把它當成設計核心而非事後補強，值得學習。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>背對背意味著每戶多為單向採光，若基地朝向不佳，另一側樓層深處易偏暗，須靠樓梯井與天窗補救。</li><li>共享牆一旦隔音施工不確實，兩戶生活噪音互擾，後期難補救。</li><li>地下室在台灣多雨高地下水位地區防水與潮濕風險高，成本與維護負擔大。</li><li>三層透天對高齡或行動不便者不友善，缺電梯時垂直動線是長期使用痛點。</li><li>抹灰素量體在潮濕多雨氣候易產生掛污與壁癌，須慎選外牆材與滴水收頭。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_03 · <a href="https://www.dezeen.com/2026/03/03/mxarchitecture-2in1-houses-noisy-le-sec-back-to-back/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-117438" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194590/1_living-room_Corpus-architects_Harmony.jpg" alt="Apartment Harmony image 1" loading="lazy"><figcaption>圖1｜圖 1 客廳主視角：看沙發組如何朝向採光／視野配置，天花高度與窗面比例，判斷公共帶的主軸方向與留白量</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194592/4_living-room_Corpus-architects_Harmony.jpg" alt="Apartment Harmony image 2" loading="lazy"><figcaption>圖2｜圖 2 客廳次視角：觀察座談島與其他區的過渡、地毯範圍如何界定坐臥區，以及背牆的材質層次</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194593/7_kitchen_Corpus-architects_Harmony.jpg" alt="Apartment Harmony image 3" loading="lazy"><figcaption>圖3｜圖 3 廚房：檢視開放廚房與客廳的邊界處理（中島或吧台），立面是否做到家具化、電器是否齊平隱藏</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194594/8_kitchen_Corpus-architects_Harmony.jpg" alt="Apartment Harmony image 4" loading="lazy"><figcaption>圖4｜圖 4 廚房：看檯面材質與櫃體木皮的搭配、把手五金邏輯，以及備餐檯與用餐落點的關係</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194595/9_kitchen_Corpus-architects_Harmony.jpg" alt="Apartment Harmony image 5" loading="lazy"><figcaption>圖5｜圖 5 廚房：觀察光線落在檯面的反射控制、上櫃或層板的收邊，判斷收納量是否被完整藏起</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194596/12_kitchen_Corpus-architects_Harmony.jpg" alt="Apartment Harmony image 6" loading="lazy"><figcaption>圖6｜圖 6 廚房：中島尺度與周邊走道寬度、吊燈離檯面高度，評估人體尺度是否被拉回</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194597/12a_kitchen_Corpus-architects_Harmony.jpg" alt="Apartment Harmony image 7" loading="lazy"><figcaption>圖7｜圖 7 廚房細部：縫隙、踢腳、轉角收邊的一致性，這是判斷施工品質與 Harmony 成立與否的關鍵</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194598/13а_kitchen_Corpus-architects_Harmony.jpg" alt="Apartment Harmony image 8" loading="lazy"><figcaption>圖8｜圖 8 廚房細部：金屬或石材的接縫與端收，觀察材質交界如何處理不留突兀線條</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194600/16_living-room_Corpus-architects_Harmony.jpg" alt="Apartment Harmony image 9" loading="lazy"><figcaption>圖9｜圖 9 客廳：回看公共帶整體連續性，客廳與廚房兩端如何在同一畫面中維持同一套語彙</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/194601/20_living-room_Corpus-architects_Harmony.jpg" alt="Apartment Harmony image 10" loading="lazy"><figcaption>圖10｜圖 10 客廳：檢視入口／門廳與客廳的視線關係，確認到達序列是否有端景或屏隔，光線隨時間的變化痕跡</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/25_04 · FRAME / 2025</p>
+        <h2 class="ac-title reveal">Apartment Harmony<small>Corpus Architects<br>保加利亞瓦爾納<br>FRAME 獎，大型公寓</small></h2>
+        <p class="ac-lead reveal">私人電梯直入門廳的瓦爾納頂層公寓，把「大坪數」收斂成一條連續的客廳—廚房水平動線，靠比例與收邊維持安靜。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>案子是瓦爾納一棟公寓大樓的頂層住戶，重點資訊只有兩項：位於最後一層、以及一部專屬私人電梯直達住戶自己的門廳。這兩點決定了它的性格——它不是要跟鄰居共用梯廳的一般住宅，而是一個有明確入口儀式感、樓層獨占的私領域。設計團隊 Corpus Architects 把主題定為 Harmony，實務上就是不讓大坪數變成一堆各自表述的房間，而是讓客廳與開放廚房成為同一個水平場域的兩端。對頂層住宅來說，最值錢的資產是高度、採光與可以整面拉開的立面，理念層面是把這些先天優勢轉成日常可用的生活尺度，而不是拿來炫耀。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>從圖檔命名可讀出主軸是 living-room 與 kitchen 兩個群組交替出現，代表公共區是一條連續帶，而非被牆切開的獨立房。私人電梯進門廳、門廳再過渡到公共場域，是一段有層次的到達序列：電梯是壓縮點，門廳是緩衝，客廳是釋放。開放廚房被放進這條帶子裡，用中島或吧台當作客廳與備餐區的軟邊界，讓一個人做菜時仍在同一個社交場中。頂層的策略價值在於天花不需遷就樓上管線，因此可以做較高且乾淨的天花來拉開垂直比例，讓大進深的平面不顯壓迫。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>只有文字無實圖，材質判斷以類型推論並標為推測：頂層公寓這種等級通常走中性大面材質（石材檯面、木皮櫃體、霧面金屬收邊）配低彩度背景，讓窗外光線與天際線成為主角。光線是這類案子的核心資產——最後一層代表可以三面甚至四面採光、無對面樓遮擋，日光會隨時間掃過整條公共帶，因此地坪與牆面多半選能溫柔反射而不炫光的表面。收邊上，開放廚房與客廳共處一室時，最考驗的是廚具立面要做到「像家具而不像廚房」：把電器、抽油煙、儲藏都藏進齊平的櫃牆，用同一套踢腳與縫隙邏輯貫穿全區，才能維持 Harmony 想要的安靜。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景是一個以「招待與日常兼用」為前提的公共層：客廳沙發組面向最好的採光與視野，開放廚房中島同時是備餐、早餐與朋友聚集的落點。比例上，大坪數最容易出錯的是家具四散、留出過多無用走道，好的做法是用地毯、燈具與家具群把大空間切成幾個有向心力的島（座談島、用餐島、備餐島），彼此以留白相連而非以牆分隔。中島長度、沙發背與電視牆的距離、吊燈離檯面的高度，都是把大空間拉回人體尺度的關鍵旋鈕。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>私人電梯→門廳→公共區的到達序列</strong><span>效果：用壓縮再釋放製造入宅儀式感，讓大宅有明確的心理門檻</span><span>可應用於：有獨立入口的頂層戶、透天一樓玄關</span><span>注意事項：門廳需有實牆或端景擋住直視客廳，否則序列被看穿就失效</span></div><div class="gi"><strong>客廳與開放廚房共構為單一水平帶</strong><span>效果：大坪數不被切碎，社交與備餐同場不失連續性</span><span>可應用於：20 坪以上開放式公共層</span><span>注意事項：需解決油煙與收納，否則開放廚房會拖垮整區質感</span></div><div class="gi"><strong>廚具立面家具化（齊平櫃牆藏機能）</strong><span>效果：廚房在客廳視角中消失，維持低彩度的安靜背景</span><span>可應用於：任何客餐廚一體的住宅</span><span>注意事項：把手、縫隙、踢腳需全區同一套邏輯，五金一亂就破功</span></div><div class="gi"><strong>家具分島取代隔牆分區</strong><span>效果：保留大空間通透，同時給每個活動一個向心落點</span><span>可應用於：大平面客廳、Loft</span><span>注意事項：地毯與燈具定位要先於買家具，否則島與島之間走道會失控</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>台灣大坪數常犯家具四散病，可借鑑「先定地毯與燈具、再用家具分島」把大空間拉回人體尺度</li><li>客餐廚一體是台灣新成屋主流，這案的廚具家具化（齊平藏機能）值得直接照抄，重點在五金與縫隙全區統一</li><li>台灣少有私人電梯，但玄關→端景→客廳的到達序列可縮小移植，用一道端景牆擋住入門直視公共區</li><li>頂層／高樓層採光是台灣可複製的優勢，選溫柔反射的地坪材、避免炫光，讓窗景成為主角而非硬裝</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>本案僅有文字與圖檔名，材質、色彩、光線描述屬類型推論，非實圖確認，實際完成度需看原圖</li><li>私人電梯直入與頂層獨占是稀有前提，多數台灣公寓無法複製其入宅儀式與四面採光</li><li>開放廚房在台灣熱炒油煙下風險高，直接移植會犧牲實用性，需加獨立熱炒間或強力排煙</li><li>大坪數低彩度中性路線容易顯得冷、缺個性，若沒有窗景與光線支撐，安靜會變成單調</li></ul></div>
+        <p class="ac-meta">CODE FR/25_04 · <a href="https://frameweb.com/project/apartment-harmony" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2022-kastelaz-hof" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243478531405_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" alt="Kastelaz Hof image 1" loading="lazy"><figcaption>圖1｜主視角：看斜屋頂與葡萄園坡度的呼應關係，量體如何順等高線落位。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243477996302_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" alt="Kastelaz Hof image 2" loading="lazy"><figcaption>圖2｜外觀側面：讀屋面斜率兩端高低差，臨路壓低／面景抬高的剖面邏輯。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243477996101_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" alt="Kastelaz Hof image 3" loading="lazy"><figcaption>圖3｜外牆材質：木格柵／木屋面與石基座的分層，色彩如何融入環境。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243478439903_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" alt="Kastelaz Hof image 4" loading="lazy"><figcaption>圖4｜出簷與開口：看深出簷遮陽比例、玻璃與斜天花的交接收邊。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243478460904_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" alt="Kastelaz Hof image 5" loading="lazy"><figcaption>圖5｜泳池／平台：室內外地坪是否齊平、水平視線的連續性。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243478681306_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" alt="Kastelaz Hof image 6" loading="lazy"><figcaption>圖6｜起居室內：斜木天花走向、單邊高窗引光與挑高換來的空間感。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243478965007_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" alt="Kastelaz Hof image 7" loading="lazy"><figcaption>圖7｜餐廚一體：開放式排列與家具低背水平的配置，如何不擋窗景。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243479245108_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" alt="Kastelaz Hof image 8" loading="lazy"><figcaption>圖8｜室內材質近景：木、石、暖白的中性調搭配與紋理層次。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243479388609_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" alt="Kastelaz Hof image 9" loading="lazy"><figcaption>圖9｜臥室或私密區：較低天花的包覆感與公共區挑高的比例對比。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/164243479702411_Peter_Pichler_Architecture_Kastelaz_Hof_ph_Gustav_Willeit.jpg?w=1680&amp;q=60&amp;auto=format" alt="Kastelaz Hof image 10" loading="lazy"><figcaption>圖10｜黃昏／夜景：室內暖光透過大玻璃外洩，量體與地景的關係。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/22_05 · Architizer / 2022</p>
+        <h2 class="ac-title reveal">Kastelaz Hof<small>Peter Pichler Architecture<br>葡萄酒大街特拉明, 義大利<br>2022 年 A+Awards 評審團得獎者，住宅 &gt; 私人住宅（L 4000-6000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">以葡萄園梯田等高線為生成邏輯的斜屋頂別墅，把地形轉譯成量體與屋面的別墅語言。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Peter Pichler Architecture 於南蒂羅爾泰爾梅諾（Termeno/Tramin，瓊瑤漿產區）葡萄園頂端，替酒莊家族拆除舊建築後新建的私人別墅，2018 邀請競圖勝出、2022 完工並獲 Architizer A+Awards 評審團獎。核心理念不是把房子放進風景，而是讓房子成為地形的延伸：斜屋面呼應葡萄藤棚架與山勢坡度，量體順著等高線分節，讓建築在遠觀時融入梯田節奏、近看時又是清晰的居所。這是一棟服務生產家族的度假兼居住宅，因此兼顧景觀主導性與私密日常。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>以坡地為主軸，量體沿等高線水平延展並隨地勢分層，主要起居層抬到能俯瞰葡萄園與阿爾卑斯遠山的高度。斜屋頂不只是造型，而是決定剖面的關鍵：屋面斜率壓低臨路一側、抬高面景一側，讓公共空間獲得高側窗與挑高，臥室與服務空間退到低矮、內縮的一端。開放式起居—餐廚沿觀景面一字排開，落地開口把陽台、泳池平台與室內連成一條連續的水平視線；動線則貼著實牆側收整，把交通與收納壓到背景。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>外部以木構斜屋面／木格柵搭配大面積玻璃與淺色石材基座，讓量體在葡萄園的綠與棕之間顯得溫暖而不搶戲。室內延續木質天花的斜面，順著屋頂坡度外露結構節奏，牆面與地坪走低彩度中性調（暖白、淺石、原木），把色彩讓給窗外的葡萄藤與山景。光線策略靠斜屋面製造單邊高窗與深出簷：出簷擋掉夏季高角度直射、保留冬季低角度採光，天花斜面則把光反射進室內深處。收邊重點在屋面與玻璃的交接——無框或細框玻璃頂到斜天花，讓室內外的頂面看似連續。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景圍繞「一條望向葡萄園的水平視線」展開：早餐在開放廚房、白天在挑高起居區、傍晚移到泳池與陽台平台。家具走低背、水平延展的沙發與長桌，刻意壓低視覺高度以不干擾窗景，色調與木質天花、石地呼應。比例上，公共區靠斜屋頂拉出的挑高換得開闊感，私密臥室則以較低天花營造包覆與安定；泳池、平台與室內地坪盡量齊平，強化水平連續與內外一體。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>斜屋頂由地形坡度生成</strong><span>效果：量體遠觀融入梯田、近看單邊挑高，造型與剖面同源</span><span>可應用於：坡地基地或需與環境呼應的住宅</span><span>注意事項：斜面越大室內死角與結構跨距成本越高，需早期整合結構與設備路徑</span></div><div class="gi"><strong>單邊高側窗＋深出簷</strong><span>效果：引深層採光同時擋夏季直射，控制眩光與熱得</span><span>可應用於：面景住宅、西曬或高日照面</span><span>注意事項：出簷深度需依緯度日照角計算，台灣低緯需搭配外遮陽或 Low-E</span></div><div class="gi"><strong>外露斜木天花順屋面延伸</strong><span>效果：以天花斜率統一室內空間感、把光反射進深處</span><span>可應用於：挑高客餐廳、無梁露頂空間</span><span>注意事項：木天花需處理防潮與防火，接縫與燈具嵌入要預先排版</span></div><div class="gi"><strong>室內外地坪齊平、玻璃頂到斜天花</strong><span>效果：水平視線連續，泳池／平台與室內一體</span><span>可應用於：有戶外平台或景觀面的住宅</span><span>注意事項：齊平交接的排水與門檻防水是最大風險點，需洩水與截水溝設計</span></div><div class="gi"><strong>中性低彩度室內把色彩讓給窗景</strong><span>效果：四季葡萄園色相成為空間主色</span><span>可應用於：景觀資源強的住宅</span><span>注意事項：無景可借時此手法會顯得單薄，需以材質紋理補足層次</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>坡地建案可用屋面斜率同時解決造型、採光與排水，避免另做無意義裝飾屋頂。</li><li>深出簷＋單邊高窗是低緯度控熱控眩光的實用組合，比全面落地玻璃更耐用。</li><li>景觀面住宅用中性低彩度室內把主色讓給窗外，能降低裝修成本又不顯空。</li><li>室內外齊平的水平視線可放大小坪數陽台的開闊感，但要把防水與洩水做在前期。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>設計高度依賴葡萄園全景，都會缺景基地照搬會失去核心價值。</li><li>大斜屋面與外露木天花的結構跨距、防潮防火成本高，非一般預算可負擔。</li><li>室內外齊平交接是漏水熱點，施工品質不足時風險大於效益。</li><li>低緯度台灣的日照角與濕熱氣候，出簷與木構做法需重新計算與換材，不能直接複製。</li></ul></div>
+        <p class="ac-meta">CODE AR/22_05 · <a href="https://architizer.com/projects/kastelaz-hof/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2022-house-at-the-owl-forest" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651732489175011_haus-am-eulenwald_kremstal.jpg?w=1680&amp;q=60&amp;auto=format" alt="HOUSE AT THE OWL FOREST image 1" loading="lazy"><figcaption>圖1｜主形象照：確認木盒整體比例與立面板材方向，觀察屋頂形式與量體如何坐落於坡地。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1663252768348018_haus-am-eulenwald_kremstal.jpeg?w=1680&amp;q=60&amp;auto=format" alt="HOUSE AT THE OWL FOREST image 2" loading="lazy"><figcaption>圖2｜看建築與林緣、聚落的關係位置——量體是否確實作為聚落最後一排的收尾。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1663252775108049_haus-am-eulenwald_kremstal.jpeg?w=1680&amp;q=60&amp;auto=format" alt="HOUSE AT THE OWL FOREST image 3" loading="lazy"><figcaption>圖3｜觀察朝森林面的開口大小與樹冠背景，判斷主層景觀方向。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651732507682015_haus-am-eulenwald_kremstal.jpg?w=1680&amp;q=60&amp;auto=format" alt="HOUSE AT THE OWL FOREST image 4" loading="lazy"><figcaption>圖4｜檢視車庫層與樓梯入口的位置，理解上坡動線的起點。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1663252772431034_haus-am-eulenwald_kremstal.jpeg?w=1680&amp;q=60&amp;auto=format" alt="HOUSE AT THE OWL FOREST image 5" loading="lazy"><figcaption>圖5｜看基座與上部木盒的材質／重量差，確認『輕架於坡』的分層。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651732543622025_haus-am-eulenwald_kremstal.jpg?w=1680&amp;q=60&amp;auto=format" alt="HOUSE AT THE OWL FOREST image 6" loading="lazy"><figcaption>圖6｜觀察立面收邊與接縫細節，木板轉角與開口周邊的處理乾淨度。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1663252768350024_haus-am-eulenwald_kremstal_.jpeg?w=1680&amp;q=60&amp;auto=format" alt="HOUSE AT THE OWL FOREST image 7" loading="lazy"><figcaption>圖7｜若為室內：看起居餐廚的開放關係與對外窗景，家具與空間比例。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1663252771666028_haus-am-eulenwald_kremstal.jpeg?w=1680&amp;q=60&amp;auto=format" alt="HOUSE AT THE OWL FOREST image 8" loading="lazy"><figcaption>圖8｜看黃昏／夜間或不同角度下木立面的質感與燈光如何襯托量體。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/22_06 · Architizer / 2022</p>
+        <h2 class="ac-title reveal">HOUSE AT THE OWL FOREST<small>BERKTOLD WEBER Architekten<br>奧地利克雷姆斯明斯特<br>大眾選擇獎得主，2022 年 A+ 獎，住宅 &gt; 私人住宅（面積 1000-2000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">村莊聚落與森林交界的緩坡木屋，用一條穿越車庫的上坡動線把「進屋」變成一段離開村落、走進林緣的過渡儀式。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>案例位於奧地利克雷姆斯明斯特貓頭鷹森林安靜的緩坡邊緣，正好落在村莊住宅區的最後一排與自然林地的接縫上。BERKTOLD WEBER 的設定不是蓋一棟孤立的景觀屋，而是替聚落收尾——這棟木屋既是村子的最後一個量體，也是進入森林前的第一道門檻。理念核心在於處理『定居地與自然之間』的邊界關係，量體語彙刻意收斂成清晰、單純的木盒，用低調回應林緣，而非用造型去搶森林的戲。約 1000–2000 平方英尺（約 93–186 ㎡）的中小型規模，也逼設計把資源集中在動線與剖面，而非堆疊面積。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>最關鍵的策略是垂直動線與地形綁在一起：入口不在正面平地，而是先進到坡下的車庫，再由車庫的樓梯順著山坡爬升到主層入口。這讓『停車—上坡—進屋』被壓縮成同一段連續經驗，車庫不再是被藏起來的附屬空間，而是動線的起點與擋土基座。房子順坡而立，主要生活層被抬到坡上，等於用剖面換取林緣的視野與私密——朝村莊一側收斂、朝森林一側打開。這種『下車庫、上主層』的半層錯位，是在窄坡地上少見卻很有效的組織方式。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>外觀以木材為單一主調，木構立面直接對應『森林邊緣』的語境，讓建築在材質上與背景林木同構，而不是用對比去凸顯自己。清晰、單純的量體意味著收邊必須極乾淨：木立面靠板材方向、接縫與開口比例維持整體性，避免多餘線腳打斷木盒的完整感。坡地基座（車庫層）與上部木盒在材質上通常會做出重量差——下部厚實承重、上部輕質包覆——藉此在視覺上把房子輕輕架在坡上。光線隨剖面走：朝森林面開大窗引入穩定的北向／林間漫射光，朝聚落面則以較克制的開口維持私密。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活重心被安排在抬升後的主層，正對林緣的開口讓起居、用餐區擁有一整片森林作為固定背景，家具不需要爭主角，靠窗外的樹冠就完成了空間的情緒。中小坪數下，開放式起居—餐廚合一、以動線串聯而非隔牆切割，是維持空間感的關鍵。比例上木盒偏水平、開口偏橫向，呼應坡地與林線的水平延展；車庫—樓梯—主層的高差則提供了垂直節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>入口動線穿越車庫並沿坡上升</strong><span>效果：把停車與進屋整合成一段連續過渡，車庫升格為動線起點而非閒置附屬</span><span>可應用於：坡地基地、車庫需置於低層的獨棟住宅</span><span>注意事項：樓梯需採光與安全扶手，避免上坡入口變成陰暗甬道；老年使用要評估爬升負擔</span></div><div class="gi"><strong>單一材質木盒收斂量體</strong><span>效果：以材質與林緣同構，建築成為聚落到自然的柔性收尾而非突兀地標</span><span>可應用於：鄰近綠地、山林或需與環境融合的低密度住宅</span><span>注意事項：木材需考慮防潮、防腐與長期變色維護，接縫細節一失手整體感就崩</span></div><div class="gi"><strong>剖面抬升主層對森林開窗</strong><span>效果：用高差換取私密與景觀，朝聚落收、朝自然開</span><span>可應用於：單面景觀、單面臨路或臨鄰居的基地</span><span>注意事項：抬升層需處理無障礙與結構荷載，大面開窗要控制西曬與熱損失</span></div><div class="gi"><strong>以基座承重、上部輕包的重量分層</strong><span>效果：視覺上把量體輕架於坡上，強化『物件落在地形』的敘事</span><span>可應用於：擋土需求明確的坡地住宅</span><span>注意事項：基座防水與排水必須先解決，否則坡地滲水直接威脅車庫層</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>坡地基地把車庫當作動線起點與擋土基座，適合台灣山坡地、透天車庫層的整合設計，避免車庫淪為堆雜物的暗層。</li><li>中小坪數靠剖面高差與開放平面換空間感，比一味隔間更能放大實際使用感受。</li><li>朝景觀面開大窗、朝鄰居面收斂開口的『一收一放』策略，直接回應台灣密集街廓的私密難題。</li><li>單一材質收斂量體的紀律，提醒台灣住宅少用過多外飾材拼貼，靠比例與收邊取勝。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>木構外牆在台灣高溫多濕、多颱與白蟻環境下的耐久與維護成本遠高於奧地利，需慎選材種與塗裝並定期保養。</li><li>穿越車庫上坡的入口動線對長者、行動不便者不友善，缺乏無障礙備援時實用性受限。</li><li>大面朝景開窗在台灣須額外處理西曬、隔熱與颱風耐風壓，否則能耗與安全風險升高。</li><li>此案的成立高度依賴林緣基地與緩坡地形，平地或無景觀的都市基地難以直接移植其敘事。</li></ul></div>
+        <p class="ac-meta">CODE AR/22_06 · <a href="https://architizer.com/projects/house-at-the-owl-forest/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

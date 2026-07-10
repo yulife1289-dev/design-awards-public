@@ -3,643 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-29</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-29 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-29</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-29 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-29.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-29.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adus-a-blush-marble-floor-inspired-this-springlike-milan-apartment">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc41/16:9/w_2560%2Cc_limit/_00FRA3782.jpg" class="slide active" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc3d/master/w_1600%2Cc_limit/_08FRA3775%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc3e/master/w_1600%2Cc_limit/_05FRA3815.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc3f/master/w_1600%2Cc_limit/_01FRA3788%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc40/master/w_1600%2Cc_limit/_02FRA3804%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc42/master/w_1600%2Cc_limit/_06FRA3304%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc43/master/w_1600%2Cc_limit/_07FRA3758%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc44/master/w_1600%2Cc_limit/_04FRA3803%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc45/master/w_1600%2Cc_limit/_03FRA3798%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc46/master/w_1600%2Cc_limit/_17%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc47/master/w_1600%2Cc_limit/_09FRA3777%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc48/master/w_1600%2Cc_limit/_20FRA3821%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc49/master/w_1600%2Cc_limit/_16FRA3836%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc4a/master/w_1600%2Cc_limit/_11FRA3817%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc4b/master/w_1600%2Cc_limit/_12WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc4c/master/w_1600%2Cc_limit/_25WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc4d/master/w_1600%2Cc_limit/_21FRA3826%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc4e/master/w_1600%2Cc_limit/_22WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc4f/master/w_1600%2Cc_limit/_23WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" class="slide" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment 圖片 19" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 19</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘公寓之旅</span>
-                    <span>2026</span>
-                    <span>Milan</span>
-                  </div>
-                  <h3 class="card-title">A Blush Marble Floor Inspired This Springlike Milan Apartment</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">充足的自然光線和復古細節為這座 2,700 平方英尺的住宅增添了翠綠的氛圍</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">A Blush Marble Floor Inspired This Springlike Milan Apartment 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>建築文摘公寓之旅</span><span>Milan</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/a-blush-marble-floor-inspired-this-springlike-milan-apartment" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-119041">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198972/Midorigaoka-house-08.jpg" class="slide active" alt="Midorigaoka House 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198980/Midorigaoka-house-plan.jpg" class="slide" alt="Midorigaoka House 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198982/midorigaoka-house_section.jpg" class="slide" alt="Midorigaoka House 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198983/Midorigaoka-house_drawing.jpg" class="slide" alt="Midorigaoka House 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198965/Midorigaoka-house-01.jpg" class="slide" alt="Midorigaoka House 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198966/Midorigaoka-house-02.jpg" class="slide" alt="Midorigaoka House 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198967/Midorigaoka-house-03.jpg" class="slide" alt="Midorigaoka House 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198968/Midorigaoka-house-04.jpg" class="slide" alt="Midorigaoka House 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198969/Midorigaoka-house-05.jpg" class="slide" alt="Midorigaoka House 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198970/Midorigaoka-house-06.jpg" class="slide" alt="Midorigaoka House 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198971/Midorigaoka-house-07.jpg" class="slide" alt="Midorigaoka House 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198973/Midorigaoka-house-09.jpg" class="slide" alt="Midorigaoka House 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198974/Midorigaoka-house-10.jpg" class="slide" alt="Midorigaoka House 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198975/Midorigaoka-house-11.jpg" class="slide" alt="Midorigaoka House 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198976/Midorigaoka-house-12.jpg" class="slide" alt="Midorigaoka House 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198977/Midorigaoka-house-13.jpg" class="slide" alt="Midorigaoka House 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198978/Midorigaoka-house-14.jpg" class="slide" alt="Midorigaoka House 圖片 17" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198979/Midorigaoka-house-15.jpg" class="slide" alt="Midorigaoka House 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>日本愛知縣尾張旭市</span>
-                  </div>
-                  <h3 class="card-title">Midorigaoka House</h3>
-                  <p class="card-by">Tatsuya Kawamoto + Associates</p>
-                  <p class="card-desc">我們希望創造一個空間，讓人們可以在住宅區度過一段時光，而不用擔心周圍的環境，並感受到大量的室外空氣。角度不斷變化的「支撐」為空間帶來了節奏，其目的是創造一座在屋頂下擁有三維空間的住宅。當在住宅區尋求一個開放和私密的空間時，可以想像在二樓建造空間，從周圍很難看到，但為了充分利用場地面積，我們考慮在一樓建立一個與地面相連的整合的內部/外部空間。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Midorigaoka House 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>House</span><span>日本愛知縣尾張旭市</span><span>發售日期：2026 年 2 月 14 日</span><span>標籤： 獎項 / fa26 / house / 日本</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/midorigaoka-house-1" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-118859">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203743/Living-Room.jpg" class="slide active" alt="An Autobiography in Space 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203669/Gold-Leaf-Mansions_Layout-Plan.jpg" class="slide" alt="An Autobiography in Space 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203742/Kitchen.jpg" class="slide" alt="An Autobiography in Space 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203744/Mater-Bathroom.jpg" class="slide" alt="An Autobiography in Space 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203741/Dirning-Area.jpg" class="slide" alt="An Autobiography in Space 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203746/White-Jacket---Gold-Leaf-Mansions-2.jpg" class="slide" alt="An Autobiography in Space 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203747/White-Jacket---Gold-Leaf-Mansions-5.jpg" class="slide" alt="An Autobiography in Space 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203748/White-Jacket---Gold-Leaf-Mansions-12.jpg" class="slide" alt="An Autobiography in Space 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203749/White-Jacket---Gold-Leaf-Mansions-18.jpg" class="slide" alt="An Autobiography in Space 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203750/White-Jacket---Gold-Leaf-Mansions-21.jpg" class="slide" alt="An Autobiography in Space 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203751/White-Jacket---Gold-Leaf-Mansions-23.jpg" class="slide" alt="An Autobiography in Space 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203752/White-Jacket---Gold-Leaf-Mansions-25.jpg" class="slide" alt="An Autobiography in Space 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203753/White-Jacket---Gold-Leaf-Mansions-26.jpg" class="slide" alt="An Autobiography in Space 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203754/White-Jacket---Gold-Leaf-Mansions-31.jpg" class="slide" alt="An Autobiography in Space 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203756/Working-Area.jpg" class="slide" alt="An Autobiography in Space 圖片 15" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 15</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，大型公寓</span>
-                    <span>2026</span>
-                    <span>100 Lor M 直落古樓, 新加坡 425403</span>
-                  </div>
-                  <h3 class="card-title">An Autobiography in Space</h3>
-                  <p class="card-by">Studio P + White Jacket</p>
-                  <p class="card-desc">新加坡這座擁有 30 年歷史的低層公寓經過翻修，它不僅僅是一個家，它還是業主的自傳，是他們的旅程、熱情和不斷發展的自我的畫廊。每個空間都是一個章節，每個物體都是動態生活的註腳。業主經常出差。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">An Autobiography in Space 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>大型公寓</span><span>100 Lor M 直落古樓, 新加坡 425403</span><span>發售日期：2026 年 2 月 16 日</span><span>標籤： 獎項 / fa26 / 大公寓 / 生活</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/an-autobiography-in-space" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-casa-en-palmilla-los-cabos-estudio-ignacio-urquiza-ana-paula">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_sq2-852x852.jpg" class="slide active" alt="L-shaped roofs create generous shadows over Los Cabos residence 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_2364_col_3.jpg" class="slide" alt="L-shaped roofs create generous shadows over Los Cabos residence 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_2364_col_1-scaled.jpg" class="slide" alt="L-shaped roofs create generous shadows over Los Cabos residence 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_2364_col_10.jpg" class="slide" alt="L-shaped roofs create generous shadows over Los Cabos residence 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_2364_col_12.jpg" class="slide" alt="L-shaped roofs create generous shadows over Los Cabos residence 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2025/05/las-rocas_ignacio-urquiza_ana-paula-de-alba_dezeen_sq2-191x191.jpg" class="slide" alt="L-shaped roofs create generous shadows over Los Cabos residence 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_2364_col_14-scaled.jpg" class="slide" alt="L-shaped roofs create generous shadows over Los Cabos residence 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_2364_col_21.jpg" class="slide" alt="L-shaped roofs create generous shadows over Los Cabos residence 圖片 8" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 8</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>洛斯卡沃斯</span>
-                  </div>
-                  <h3 class="card-title">L-shaped roofs create generous shadows over Los Cabos residence</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">一對輕質 L 形屋頂位於墨西哥洛斯卡沃斯的這棟房子的四個體積之上，由 Estudio Ignacio Urquiza Ana Paula de Alba 設計。山頂的 Casa en Palmilla 由兩組兩卷組成，其排列方式在中間形成一個中央梯形庭院。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">L-shaped roofs create generous shadows over Los Cabos residence 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>洛斯卡沃斯</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/06/28/casa-en-palmilla-los-cabos-estudio-ignacio-urquiza-ana-paula-de-alba/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-david-kohn-architects-house-hill">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/06/house-on-a-hill-david-kohn-architects-architecture-residential-london-england-uk_dezeen_2364_sq-852x852.jpg" class="slide active" alt="David Kohn Architects designs London penthouse to resemble house on a hill 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/house-on-a-hill-david-kohn-architects-architecture-residential-london-england-uk_dezeen_2364_col_18.jpg" class="slide" alt="David Kohn Architects designs London penthouse to resemble house on a hill 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/house-on-a-hill-david-kohn-architects-architecture-residential-london-england-uk_dezeen_2364_col_5-scaled.jpg" class="slide" alt="David Kohn Architects designs London penthouse to resemble house on a hill 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/house-on-a-hill-david-kohn-architects-architecture-residential-london-england-uk_dezeen_2364_col_2.jpg" class="slide" alt="David Kohn Architects designs London penthouse to resemble house on a hill 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2022/09/red-house-david-kohn-architects_dezeen_2364_sq_0-191x191.jpg" class="slide" alt="David Kohn Architects designs London penthouse to resemble house on a hill 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/house-on-a-hill-david-kohn-architects-architecture-residential-london-england-uk_dezeen_2364_col_28.jpg" class="slide" alt="David Kohn Architects designs London penthouse to resemble house on a hill 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/house-on-a-hill-david-kohn-architects-architecture-residential-london-england-uk_dezeen_2364_col_40-scaled.jpg" class="slide" alt="David Kohn Architects designs London penthouse to resemble house on a hill 圖片 7" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 7</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>England</span>
-                  </div>
-                  <h3 class="card-title">David Kohn Architects designs London penthouse to resemble house on a hill</h3>
-                  <p class="card-by">David Kohn Architects</p>
-                  <p class="card-desc">弧形和棱角分明的凸窗使 House on a Hill 的階梯式立面充滿活力，這是倫敦市中心的一套頂層公寓，由當地工作室 David Kohn Architects 設計。這座三層樓的住宅坐落在考文特花園 Smarts Place 的維多利亞式倉庫建築頂上，被大衛·科恩建築師 (David Kohn Architects) 描述為「山上的房子」。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">David Kohn Architects designs London penthouse to resemble house on a hill 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>England</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/06/28/david-kohn-architects-house-hill/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-david-harbour-sold-new-york-loft-before-lily-allen-allegedly-sang-about-it">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/67a398ef49c431ecb64c3a95/1:1/w_90%2Cc_limit/00419_---.jpeg" class="slide active" alt="David Harbour Sold His New York Loft for $2.7 Million—Before Lily Allen Allegedly Sang About it on West End Girl 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a03a70a51aed7c2ba9cf285/16:9/w_2560%2Cc_limit/GettyImages-2268140823.jpg" class="slide" alt="David Harbour Sold His New York Loft for $2.7 Million—Before Lily Allen Allegedly Sang About it on West End Girl 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/5d8919b4a8aab30008abac21/1:1/pass/ad-pro.jpg" class="slide" alt="David Harbour Sold His New York Loft for $2.7 Million—Before Lily Allen Allegedly Sang About it on West End Girl 圖片 3" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 3</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘公寓之旅</span>
-                    <span>2026</span>
-                    <span>New York</span>
-                  </div>
-                  <h3 class="card-title">David Harbour Sold His New York Loft for $2.7 Million—Before Lily Allen Allegedly Sang About it on West End Girl</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">《怪奇物語》的主演大衛哈伯在他前妻的揭秘專輯發行之前，是否策略性地與平板電腦分道揚鑣？</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">David Harbour Sold His New York Loft for $2.7 Million—Before Lily Allen Allegedly Sang About it on West End Girl 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>建築文摘公寓之旅</span><span>New York</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/david-harbour-sold-new-york-loft-before-lily-allen-allegedly-sang-about-it" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-spruce-ridge-cabin">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916843364KI_SpruceRidgeRes-Samsel-04-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Spruce Ridge Cabin 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916858727KI_SpruceRidgeRes-Samsel-19-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916861225KI_SpruceRidgeRes-Samsel-22-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916845564KI_SpruceRidgeRes-Samsel-07-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916843263KI_SpruceRidgeRes-Samsel-03-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916853876KI_SpruceRidgeRes-Samsel-14-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916853786KI_SpruceRidgeRes-Samsel-13-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916855043KI_SpruceRidgeRes-Samsel-15-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916851474KI_SpruceRidgeRes-Samsel-12-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916858039KI_SpruceRidgeRes-Samsel-18-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916839057KI_SpruceRidgeRes-Samsel-01-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916863741KI_SpruceRidgeRes-Samsel-23-web.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916839059KI_SpruceRidgeRes-Samsel-02-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916851029KI_SpruceRidgeRes-Samsel-11-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916847673KI_SpruceRidgeRes-Samsel-09-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916846419KI_SpruceRidgeRes-Samsel-08-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916857102KI_SpruceRidgeRes-Samsel-17-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916856806KI_SpruceRidgeRes-Samsel-16-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916845353KI_SpruceRidgeRes-Samsel-06-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916861136KI_SpruceRidgeRes-Samsel-21-web_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Spruce Ridge Cabin 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2023 年 A+ 獎，住宅 &gt; 私人住宅（S 1000 - 2000 平方英尺）</span>
-                    <span>2023</span>
-                    <span>美國北卡羅來納州西爾瓦</span>
-                  </div>
-                  <h3 class="card-title">Spruce Ridge Cabin</h3>
-                  <p class="card-by">Altura Architects</p>
-                  <p class="card-desc">我們的客戶是一位狂熱的戶外運動愛好者和環保主義者，他帶著一塊位於海拔 5,700 英尺山脊上的紅雲杉森林中的獨特土地來到我們這裡。茂密的常綠森林和高海拔創造了支持稀有動植物物種的小氣候和棲息地。我們對客艙設計的共同願景是盡量減少對這個脆弱生態系統的影響。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Spruce Ridge Cabin 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2023 年 A+ 獎，住宅 &gt; 私人住宅（S 1000 - 2000 平方英尺）</span><span>美國北卡羅來納州西爾瓦</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/spruce-ridge-cabin/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-suspension-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542115476Main_Level.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Suspension House 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542759325Site_Plan.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542115472Lower_Plan.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542122041Roof_Plan.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542129504Section_Long_11x17_copy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542133392Section_Short.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542774441Sustainability_Diagram.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542780471Additional_Diagrams.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16825416342291.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16825416342322.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16825416426513.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16825416426884.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16825416457025.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16825416468006.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16825416488797.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16825416493668.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16825416504709.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168254165068210.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168254165199711.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168254165210512.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Suspension House 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2023 年 A+Awards 住宅類 &gt; 住宅翻新與擴建評審團得獎者</span>
-                    <span>2023</span>
-                    <span>美國加州</span>
-                  </div>
-                  <h3 class="card-title">Suspension House</h3>
-                  <p class="card-by">Fougeron Architecture</p>
-                  <p class="card-desc">這座改建的建築懸掛在兩座美麗的加州山丘之間，橫跨一條小溪，並在後院擁有一個瀑布。自然界中的人造物體可能和諧存在，也可能存在差異。目標是將該結構重新連接到環境中，同時為客戶充分利用這個特殊的場地。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Suspension House 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2023 年 A+Awards 住宅類 &gt; 住宅翻新與擴建評審團得獎者</span><span>美國加州</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/suspension-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adus-a-blush-marble-floor-inspired-this-springlike-milan-apartment" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc41/16:9/w_2560%2Cc_limit/_00FRA3782.jpg" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc3d/master/w_1600%2Cc_limit/_08FRA3775%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc3e/master/w_1600%2Cc_limit/_05FRA3815.jpg" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc3f/master/w_1600%2Cc_limit/_01FRA3788%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc40/master/w_1600%2Cc_limit/_02FRA3804%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc42/master/w_1600%2Cc_limit/_06FRA3304%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc43/master/w_1600%2Cc_limit/_07FRA3758%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc44/master/w_1600%2Cc_limit/_04FRA3803%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc45/master/w_1600%2Cc_limit/_03FRA3798%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fca83565e252e76bdcdc46/master/w_1600%2Cc_limit/_17%2520WEB%2520-%2520ValenciaBiscottini%2520Lamarmora%2520%25D0%2598%2520francesca%2520iovene.jpg" alt="A Blush Marble Floor Inspired This Springlike Milan Apartment image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_01 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">A Blush Marble Floor Inspired This Springlike Milan Apartment<small>AD editorial<br>Milan<br>建築文摘公寓之旅</small></h2>
+        <p class="ac-lead reveal">充足的自然光線和復古細節為這座 2,700 平方英尺的住宅增添了翠綠的氛圍</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>充足的自然光線和復古細節為這座 2,700 平方英尺的住宅增添了翠綠的氛圍</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_01 · <a href="https://www.architecturaldigest.com/story/a-blush-marble-floor-inspired-this-springlike-milan-apartment" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-119041" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198972/Midorigaoka-house-08.jpg" alt="Midorigaoka House image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198980/Midorigaoka-house-plan.jpg" alt="Midorigaoka House image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198982/midorigaoka-house_section.jpg" alt="Midorigaoka House image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198983/Midorigaoka-house_drawing.jpg" alt="Midorigaoka House image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198965/Midorigaoka-house-01.jpg" alt="Midorigaoka House image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198966/Midorigaoka-house-02.jpg" alt="Midorigaoka House image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198967/Midorigaoka-house-03.jpg" alt="Midorigaoka House image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198968/Midorigaoka-house-04.jpg" alt="Midorigaoka House image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198969/Midorigaoka-house-05.jpg" alt="Midorigaoka House image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198970/Midorigaoka-house-06.jpg" alt="Midorigaoka House image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Midorigaoka House<small>Tatsuya Kawamoto + Associates<br>日本愛知縣尾張旭市<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">我們希望創造一個空間，讓人們可以在住宅區度過一段時光，而不用擔心周圍的環境，並感受到大量的室外空氣。角度不斷變化的「支撐」為空間帶來了節奏，其目的是創造一座在屋頂下擁有三維空間的住宅。當在住宅區尋求一個開放和私密的空間時，可以想像在二樓建造空間，從周圍很難看到，但為了充分利用場地面積，我們考慮在一樓建立一個與地面相連的</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>我們希望創造一個空間，讓人們可以在住宅區度過一段時光，而不用擔心周圍的環境，並感受到大量的室外空氣。角度不斷變化的「支撐」為空間帶來了節奏，其目的是創造一座在屋頂下擁有三維空間的住宅。當在住宅區尋求一個開放和私密的空間時，可以想像在二樓建造空間，從周圍很難看到，但為了充分利用場地面積，我們考慮在一樓建立一個與地面相連的整合的內部/外部空間。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/midorigaoka-house-1" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-118859" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203743/Living-Room.jpg" alt="An Autobiography in Space image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203669/Gold-Leaf-Mansions_Layout-Plan.jpg" alt="An Autobiography in Space image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203742/Kitchen.jpg" alt="An Autobiography in Space image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203744/Mater-Bathroom.jpg" alt="An Autobiography in Space image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203741/Dirning-Area.jpg" alt="An Autobiography in Space image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203746/White-Jacket---Gold-Leaf-Mansions-2.jpg" alt="An Autobiography in Space image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203747/White-Jacket---Gold-Leaf-Mansions-5.jpg" alt="An Autobiography in Space image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203748/White-Jacket---Gold-Leaf-Mansions-12.jpg" alt="An Autobiography in Space image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203749/White-Jacket---Gold-Leaf-Mansions-18.jpg" alt="An Autobiography in Space image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203750/White-Jacket---Gold-Leaf-Mansions-21.jpg" alt="An Autobiography in Space image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">An Autobiography in Space<small>Studio P + White Jacket<br>100 Lor M 直落古樓, 新加坡 425403<br>FRAME 獎，大型公寓</small></h2>
+        <p class="ac-lead reveal">新加坡這座擁有 30 年歷史的低層公寓經過翻修，它不僅僅是一個家，它還是業主的自傳，是他們的旅程、熱情和不斷發展的自我的畫廊。每個空間都是一個章節，每個物體都是動態生活的註腳。業主經常出差。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>新加坡這座擁有 30 年歷史的低層公寓經過翻修，它不僅僅是一個家，它還是業主的自傳，是他們的旅程、熱情和不斷發展的自我的畫廊。每個空間都是一個章節，每個物體都是動態生活的註腳。業主經常出差。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · <a href="https://frameweb.com/project/an-autobiography-in-space" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-casa-en-palmilla-los-cabos-estudio-ignacio-urquiza-ana-paula" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_sq2-852x852.jpg" alt="L-shaped roofs create generous shadows over Los Cabos residence image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_2364_col_3.jpg" alt="L-shaped roofs create generous shadows over Los Cabos residence image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_2364_col_1-scaled.jpg" alt="L-shaped roofs create generous shadows over Los Cabos residence image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_2364_col_10.jpg" alt="L-shaped roofs create generous shadows over Los Cabos residence image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_2364_col_12.jpg" alt="L-shaped roofs create generous shadows over Los Cabos residence image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2025/05/las-rocas_ignacio-urquiza_ana-paula-de-alba_dezeen_sq2-191x191.jpg" alt="L-shaped roofs create generous shadows over Los Cabos residence image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_2364_col_14-scaled.jpg" alt="L-shaped roofs create generous shadows over Los Cabos residence image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-en-palmilla_estudio-ignacio-urquiza-ana-paula-de-alba_dezeen_2364_col_21.jpg" alt="L-shaped roofs create generous shadows over Los Cabos residence image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">L-shaped roofs create generous shadows over Los Cabos residence<small>Unknown architect<br>洛斯卡沃斯<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">一對輕質 L 形屋頂位於墨西哥洛斯卡沃斯的這棟房子的四個體積之上，由 Estudio Ignacio Urquiza Ana Paula de Alba 設計。山頂的 Casa en Palmilla 由兩組兩卷組成，其排列方式在中間形成一個中央梯形庭院。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>一對輕質 L 形屋頂位於墨西哥洛斯卡沃斯的這棟房子的四個體積之上，由 Estudio Ignacio Urquiza Ana Paula de Alba 設計。山頂的 Casa en Palmilla 由兩組兩卷組成，其排列方式在中間形成一個中央梯形庭院。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · <a href="https://www.dezeen.com/2026/06/28/casa-en-palmilla-los-cabos-estudio-ignacio-urquiza-ana-paula-de-alba/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-david-kohn-architects-house-hill" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/house-on-a-hill-david-kohn-architects-architecture-residential-london-england-uk_dezeen_2364_sq-852x852.jpg" alt="David Kohn Architects designs London penthouse to resemble house on a hill image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/house-on-a-hill-david-kohn-architects-architecture-residential-london-england-uk_dezeen_2364_col_18.jpg" alt="David Kohn Architects designs London penthouse to resemble house on a hill image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/house-on-a-hill-david-kohn-architects-architecture-residential-london-england-uk_dezeen_2364_col_5-scaled.jpg" alt="David Kohn Architects designs London penthouse to resemble house on a hill image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/house-on-a-hill-david-kohn-architects-architecture-residential-london-england-uk_dezeen_2364_col_2.jpg" alt="David Kohn Architects designs London penthouse to resemble house on a hill image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2022/09/red-house-david-kohn-architects_dezeen_2364_sq_0-191x191.jpg" alt="David Kohn Architects designs London penthouse to resemble house on a hill image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/house-on-a-hill-david-kohn-architects-architecture-residential-london-england-uk_dezeen_2364_col_28.jpg" alt="David Kohn Architects designs London penthouse to resemble house on a hill image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/house-on-a-hill-david-kohn-architects-architecture-residential-london-england-uk_dezeen_2364_col_40-scaled.jpg" alt="David Kohn Architects designs London penthouse to resemble house on a hill image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_05 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">David Kohn Architects designs London penthouse to resemble house on a hill<small>David Kohn Architects<br>England<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">弧形和棱角分明的凸窗使 House on a Hill 的階梯式立面充滿活力，這是倫敦市中心的一套頂層公寓，由當地工作室 David Kohn Architects 設計。這座三層樓的住宅坐落在考文特花園 Smarts Place 的維多利亞式倉庫建築頂上，被大衛·科恩建築師 (David Kohn Architect</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>弧形和棱角分明的凸窗使 House on a Hill 的階梯式立面充滿活力，這是倫敦市中心的一套頂層公寓，由當地工作室 David Kohn Architects 設計。這座三層樓的住宅坐落在考文特花園 Smarts Place 的維多利亞式倉庫建築頂上，被大衛·科恩建築師 (David Kohn Architects) 描述為「山上的房子」。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_05 · <a href="https://www.dezeen.com/2026/06/28/david-kohn-architects-house-hill/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-david-harbour-sold-new-york-loft-before-lily-allen-allegedly-sang-about-it" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/67a398ef49c431ecb64c3a95/1:1/w_90%2Cc_limit/00419_---.jpeg" alt="David Harbour Sold His New York Loft for $2.7 Million—Before Lily Allen Allegedly Sang About it on West End Girl image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a03a70a51aed7c2ba9cf285/16:9/w_2560%2Cc_limit/GettyImages-2268140823.jpg" alt="David Harbour Sold His New York Loft for $2.7 Million—Before Lily Allen Allegedly Sang About it on West End Girl image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/5d8919b4a8aab30008abac21/1:1/pass/ad-pro.jpg" alt="David Harbour Sold His New York Loft for $2.7 Million—Before Lily Allen Allegedly Sang About it on West End Girl image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_06 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">David Harbour Sold His New York Loft for $2.7 Million—Before Lily Allen Allegedly Sang About it on West End Girl<small>AD editorial<br>New York<br>建築文摘公寓之旅</small></h2>
+        <p class="ac-lead reveal">《怪奇物語》的主演大衛哈伯在他前妻的揭秘專輯發行之前，是否策略性地與平板電腦分道揚鑣？</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>《怪奇物語》的主演大衛哈伯在他前妻的揭秘專輯發行之前，是否策略性地與平板電腦分道揚鑣？</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_06 · <a href="https://www.architecturaldigest.com/story/david-harbour-sold-new-york-loft-before-lily-allen-allegedly-sang-about-it" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-spruce-ridge-cabin" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916843364KI_SpruceRidgeRes-Samsel-04-web_1.jpg?w=1680&amp;q=60&amp;auto=format" alt="Spruce Ridge Cabin image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916858727KI_SpruceRidgeRes-Samsel-19-web_1.jpg?w=1680&amp;q=60&amp;auto=format" alt="Spruce Ridge Cabin image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916861225KI_SpruceRidgeRes-Samsel-22-web_1.jpg?w=1680&amp;q=60&amp;auto=format" alt="Spruce Ridge Cabin image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916845564KI_SpruceRidgeRes-Samsel-07-web_1.jpg?w=1680&amp;q=60&amp;auto=format" alt="Spruce Ridge Cabin image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916843263KI_SpruceRidgeRes-Samsel-03-web_1.jpg?w=1680&amp;q=60&amp;auto=format" alt="Spruce Ridge Cabin image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916853876KI_SpruceRidgeRes-Samsel-14-web_1.jpg?w=1680&amp;q=60&amp;auto=format" alt="Spruce Ridge Cabin image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916853786KI_SpruceRidgeRes-Samsel-13-web_1.jpg?w=1680&amp;q=60&amp;auto=format" alt="Spruce Ridge Cabin image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916855043KI_SpruceRidgeRes-Samsel-15-web_1.jpg?w=1680&amp;q=60&amp;auto=format" alt="Spruce Ridge Cabin image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916851474KI_SpruceRidgeRes-Samsel-12-web_1.jpg?w=1680&amp;q=60&amp;auto=format" alt="Spruce Ridge Cabin image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681916858039KI_SpruceRidgeRes-Samsel-18-web_1.jpg?w=1680&amp;q=60&amp;auto=format" alt="Spruce Ridge Cabin image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_07 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">Spruce Ridge Cabin<small>Altura Architects<br>美國北卡羅來納州西爾瓦<br>大眾選擇獎得主，2023 年 A+ 獎，住宅 &gt; 私人住宅（S 1000 - 2000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">我們的客戶是一位狂熱的戶外運動愛好者和環保主義者，他帶著一塊位於海拔 5,700 英尺山脊上的紅雲杉森林中的獨特土地來到我們這裡。茂密的常綠森林和高海拔創造了支持稀有動植物物種的小氣候和棲息地。我們對客艙設計的共同願景是盡量減少對這個脆弱生態系統的影響。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>我們的客戶是一位狂熱的戶外運動愛好者和環保主義者，他帶著一塊位於海拔 5,700 英尺山脊上的紅雲杉森林中的獨特土地來到我們這裡。茂密的常綠森林和高海拔創造了支持稀有動植物物種的小氣候和棲息地。我們對客艙設計的共同願景是盡量減少對這個脆弱生態系統的影響。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_07 · <a href="https://architizer.com/projects/spruce-ridge-cabin/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-suspension-house" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542115476Main_Level.jpg?w=1680&amp;q=60&amp;auto=format" alt="Suspension House image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542759325Site_Plan.jpg?w=1680&amp;q=60&amp;auto=format" alt="Suspension House image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542115472Lower_Plan.jpg?w=1680&amp;q=60&amp;auto=format" alt="Suspension House image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542122041Roof_Plan.jpg?w=1680&amp;q=60&amp;auto=format" alt="Suspension House image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542129504Section_Long_11x17_copy.jpg?w=1680&amp;q=60&amp;auto=format" alt="Suspension House image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542133392Section_Short.jpg?w=1680&amp;q=60&amp;auto=format" alt="Suspension House image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542774441Sustainability_Diagram.jpg?w=1680&amp;q=60&amp;auto=format" alt="Suspension House image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682542780471Additional_Diagrams.jpg?w=1680&amp;q=60&amp;auto=format" alt="Suspension House image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16825416342291.jpg?w=1680&amp;q=60&amp;auto=format" alt="Suspension House image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16825416342322.jpg?w=1680&amp;q=60&amp;auto=format" alt="Suspension House image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_08 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">Suspension House<small>Fougeron Architecture<br>美國加州<br>2023 年 A+Awards 住宅類 &gt; 住宅翻新與擴建評審團得獎者</small></h2>
+        <p class="ac-lead reveal">這座改建的建築懸掛在兩座美麗的加州山丘之間，橫跨一條小溪，並在後院擁有一個瀑布。自然界中的人造物體可能和諧存在，也可能存在差異。目標是將該結構重新連接到環境中，同時為客戶充分利用這個特殊的場地。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>這座改建的建築懸掛在兩座美麗的加州山丘之間，橫跨一條小溪，並在後院擁有一個瀑布。自然界中的人造物體可能和諧存在，也可能存在差異。目標是將該結構重新連接到環境中，同時為客戶充分利用這個特殊的場地。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_08 · <a href="https://architizer.com/projects/suspension-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

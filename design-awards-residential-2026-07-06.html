@@ -3,643 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-07-06</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-07-06 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-07-06</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-07-06 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-07-06.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-07-06.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adus-a-19th-century-maine-home-evolves-around-a-familys-inherited-treasures">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/69f513f6a876b5f49b474b6c/16:9/w_2560%2Cc_limit/202508_028_InsidesStudio_StLawrence_0992_main%2520copy.jpg" class="slide active" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/69f4fe219cb02e8eec6146d3/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(40).jpeg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/688921134973512d6aefe10f/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(18).jpeg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f4fd36a61ec0a2eda433df/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(39).jpeg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69862b769a362421a593e8a4/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(3).jpeg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6893a7c006e66d413337dbd7/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(12).jpeg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f4fc8ba2b24d550066ae68/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(38).jpeg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f513ef99d45ea679e0e1bf/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0242_main%2520copy.jpg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f513f01ed0fe39eaa3f19d/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0298_main%2520copy.jpg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f513f0cb535134a38f84e6/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0344_main%2520copy.jpg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f513f043203ace0edf4460/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0403_main%2520copy.jpg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f513f066f35201328c3353/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0436_main%2520copy.jpg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f513efa876b5f49b474b61/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0476_main%2520copy.jpg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f513f366f35201328c335f/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0497_main%2520copy.jpg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f513f21ed0fe39eaa3f1a3/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0646_main%2520copy.jpg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f513f266f35201328c3359/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0685_main%2520copy.jpg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f513f43a47b26f1463c3a0/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0855_main%2520copy.jpg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f513f5cb535134a38f84ec/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0926_main%2520copy.jpg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f513f4e3c0d3df40936b32/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0811_main%2520copy.jpg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 19" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f513f6d3cd4b27c23bbb52/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_1044_main%2520copy.jpg" class="slide" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>Antique</span>
-                  </div>
-                  <h3 class="card-title">A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">在緬因州的這棟住宅中，Insides Studio 的廚房翻新已發展成為一個完整的項目，由傳家寶和房子的原始怪癖塑造而成</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>Antique</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/a-19th-century-maine-home-evolves-around-a-familys-inherited-treasures" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-118872">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198662/01_HouseCounterpoint_kottlorz_07.jpg" class="slide active" alt="House Counterpoint 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198677/1754_House-Counterpoint_floorplan.jpg" class="slide" alt="House Counterpoint 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198663/02_HouseCounterpoint_kottlorz_09.jpg" class="slide" alt="House Counterpoint 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198664/05_HouseCounterpoint_kottlorz_24.jpg" class="slide" alt="House Counterpoint 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198665/06_HouseCounterpoint_kottlorz_11.jpg" class="slide" alt="House Counterpoint 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198666/07_HouseCounterpoint_kottlorz_20.jpg" class="slide" alt="House Counterpoint 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198667/08_HouseCounterpoint_kottlorz_21.jpg" class="slide" alt="House Counterpoint 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198668/10_HouseCounterpoint_kottlorz_01.jpg" class="slide" alt="House Counterpoint 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198669/11_HouseCounterpoint_kottlorz_17.jpg" class="slide" alt="House Counterpoint 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198670/13_HouseCounterpoint_kottlorz_33.jpg" class="slide" alt="House Counterpoint 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198671/14_HouseCounterpoint_kottlorz_34.jpg" class="slide" alt="House Counterpoint 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198672/16_HouseCounterpoint_kottlorz_29.jpg" class="slide" alt="House Counterpoint 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198673/17_HouseCounterpoint_kottlorz_37.jpg" class="slide" alt="House Counterpoint 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198674/18_HouseCounterpoint_kottlorz_27.jpg" class="slide" alt="House Counterpoint 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198675/19_HouseCounterpoint_kottlorz_12.jpg" class="slide" alt="House Counterpoint 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198676/23_HouseCounterpoint_kottlorz_38.jpg" class="slide" alt="House Counterpoint 圖片 16" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 16</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>德國黑森林</span>
-                  </div>
-                  <h3 class="card-title">House Counterpoint</h3>
-                  <p class="card-by">Ippolito Fleitz Group – Identity Architects</p>
-                  <p class="card-desc">一位成功的企業家開始在家鄉黑森林中建造他的夢想家園。當他的商業生活繼續全速進行時，地塊已選定，建築已成型。從日常工作中退休後，他終於有時間考慮自己人生的下一個階段——以及能夠支持和激勵他生活的家。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">House Counterpoint 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。一位成功的企業家開始在家鄉黑森林中建造他的夢想家園。當他的商業生活繼續全速進行時，地塊已選定，建築已成型。從日常工作中退休後，他終於有時間考慮自己人生的下一個階段——以及能夠支持和激勵他生活的家。</p>
-                  <div class="card-facts"><span>House</span><span>德國黑森林</span><span>發售日期：2026 年 2 月 3 日</span><span>標籤： 獎項 / 黑森林 / fa26 / 德國</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/house-counterpoint" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-118453">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197463/main.jpg" class="slide active" alt="Noir Matière 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197454/livingb.jpg" class="slide" alt="Noir Matière 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197456/living.jpg" class="slide" alt="Noir Matière 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197457/stairss.jpg" class="slide" alt="Noir Matière 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197459/kitchen.jpg" class="slide" alt="Noir Matière 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197460/dining.jpg" class="slide" alt="Noir Matière 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197461/stairs.jpg" class="slide" alt="Noir Matière 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197455/entrance.jpg" class="slide" alt="Noir Matière 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197458/kit.jpg" class="slide" alt="Noir Matière 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197462/office.jpg" class="slide" alt="Noir Matière 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197464/lana.jpg" class="slide" alt="Noir Matière 圖片 11" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 11</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，大型公寓</span>
-                    <span>2026</span>
-                    <span>Marasi Dr - 商業灣 - 杜拜 - 阿拉伯聯合大公國</span>
-                  </div>
-                  <h3 class="card-title">Noir Matière</h3>
-                  <p class="card-by">Boobrook</p>
-                  <p class="card-desc">黑色天空中的野獸派避難所 Matière 是一個複式住宅室內設計，被設想為城市上方的避難所。該項目由 Dorchester Collection Lana Residences 的 Natacha Bouioukliev 和 Benjamin Vanopbroeke 設計並實現，透過克制、感官深度和情感平靜重新詮釋了野蠻主義。空間不強調紀念性，而是注重氛圍，與周遭城市天際線的強度形成對比。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Noir Matière 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>大型公寓</span><span>Marasi Dr - 商業灣 - 杜拜 - 阿拉伯聯合大公國</span><span>發售日期：2026 年 2 月 5 日</span><span>標籤： 獎項 / 黑色 / 布布魯克 / 杜拜</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/noir-matiere" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-lisbon-townhouse-mclean-quinlan-architecture">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_sq-2-852x852.jpg" class="slide active" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_12.jpg" class="slide" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_18.jpg" class="slide" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_31.jpg" class="slide" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_32.jpg" class="slide" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_21-scaled.jpg" class="slide" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_0.jpg" class="slide" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_3.jpg" class="slide" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel 圖片 8" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_28.jpg" class="slide" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel 圖片 9" loading="lazy"><img src="https://static.dezeen.com/uploads/2023/08/sq-lisbon-house-bak-gordon-arquitectos-concrete-green-tiles_dezeen_2364_col_0-191x191.jpg" class="slide" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel 圖片 10" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 10</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>內飾</span>
-                  </div>
-                  <h3 class="card-title">McLean Quinlan gives family townhouse in Lisbon a homelier feel</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">縮小的起居空間和花旗松細木工為里斯本的這座聯排別墅帶來了更親密的感覺，該聯排別墅由英國建築事務所 McLean Quinlan 進行了改造，並配有安尼什·卡普爾 (Anish Kapoor) 的藝術品。該房產最初設計為容納幾套公寓，但在 20 世紀 90 年代，它們被合併形成一棟獨特的聯排別墅。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">McLean Quinlan gives family townhouse in Lisbon a homelier feel 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>內飾</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/03/09/lisbon-townhouse-mclean-quinlan-architecture/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-of-architects-ignacio-galan-camp-alliances">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain-sq_dezeen_2364_col_0-852x852.jpg" class="slide active" alt="Camp Alliances house has reciprocal relationship with Spanish forest 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_7.jpg" class="slide" alt="Camp Alliances house has reciprocal relationship with Spanish forest 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_0.jpg" class="slide" alt="Camp Alliances house has reciprocal relationship with Spanish forest 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_9.jpg" class="slide" alt="Camp Alliances house has reciprocal relationship with Spanish forest 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_11.jpg" class="slide" alt="Camp Alliances house has reciprocal relationship with Spanish forest 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_14.jpg" class="slide" alt="Camp Alliances house has reciprocal relationship with Spanish forest 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2024/01/sq-ignacio-galan-beyond-the-family-kin-spain_dezeen_2364_col_0-191x191.jpg" class="slide" alt="Camp Alliances house has reciprocal relationship with Spanish forest 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_13.jpg" class="slide" alt="Camp Alliances house has reciprocal relationship with Spanish forest 圖片 8" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_18.jpg" class="slide" alt="Camp Alliances house has reciprocal relationship with Spanish forest 圖片 9" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 9</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>單坡屋頂</span>
-                  </div>
-                  <h3 class="card-title">Camp Alliances house has reciprocal relationship with Spanish forest</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">Camp Alliances 是由馬德里建築師工作室和建築師 Ignacio G Galán 設計的位於西班牙的家庭住宅，其角形形式覆蓋著綠色金屬色調。該住宅坐落在阿維拉的一片森林中，分為三層，包括位於其南端的地下一層，該樓層位於住宅的斜坡上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Camp Alliances house has reciprocal relationship with Spanish forest 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>單坡屋頂</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/03/12/of-architects-ignacio-galan-camp-alliances/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2022-daja-chuanchen-mansion">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180088524305YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="DAJA Chuanchen Mansion 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180087693401YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="DAJA Chuanchen Mansion 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180087693502YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="DAJA Chuanchen Mansion 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180088098703schranimage.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="DAJA Chuanchen Mansion 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180088184704YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="DAJA Chuanchen Mansion 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180088568306YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="DAJA Chuanchen Mansion 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180089028007YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="DAJA Chuanchen Mansion 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180089121908YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="DAJA Chuanchen Mansion 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180089421409schranimage.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="DAJA Chuanchen Mansion 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180089516910schranimage.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="DAJA Chuanchen Mansion 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180089800211schranimage.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="DAJA Chuanchen Mansion 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180089882812schranimage.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="DAJA Chuanchen Mansion 圖片 12" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 12</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2022 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 高層（16 層以上）</span>
-                    <span>2022</span>
-                    <span>中國杭州</span>
-                  </div>
-                  <h3 class="card-title">DAJA Chuanchen Mansion</h3>
-                  <p class="card-by">9M Design</p>
-                  <p class="card-desc">該項目是位於中國杭州市大運河文化生活圈內的住宅群。我們的團隊將區域及整個城市空間的特色融入設計中，旨在打造一個充滿活力的社區，滿足居民各方面的需求，有利於城市空間的建設。該項目的住宅設計考慮了該區域的整個城市界面，以白色和金色相結合而非冷色作為立面主色調，為該區域增添了溫暖，豐富了城市的建築形態和公共界面。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">DAJA Chuanchen Mansion 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>2022 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 高層（16 層以上）</span><span>中國杭州</span><span>資料來源：Architizer A+Awards 2022</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/daja-chuanchen-mansion/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2022-casa-malandra">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786704625CASA_MALANDRA_01-ONNIS_LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Casa Malandra 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786704627CASA_MALANDRA_02-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Malandra 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786711056CASA_MALANDRA_04-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Malandra 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786715689CASA_MALANDRA_05-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Malandra 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786716882CASA_MALANDRA_06-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Malandra 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786717121CASA_MALANDRA_07-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Malandra 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786717423CASA_MALANDRA_08-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Malandra 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786718691CASA_MALANDRA_09-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Malandra 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786719840CASA_MALANDRA_13-MARCOS_CALLEJA.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Malandra 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786720522CASA_MALANDRA_14-FRANCISCO_LARESGOIT.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Malandra 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786722937CASA_MALANDRA_15-MARCOS_CALLEJA.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Malandra 圖片 11" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 11</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2022 年 A+ 獎，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</span>
-                    <span>2022</span>
-                    <span>墨西哥埃斯孔迪多港</span>
-                  </div>
-                  <h3 class="card-title">Casa Malandra</h3>
-                  <p class="card-by">TAC</p>
-                  <p class="card-desc">兩個矩形體量在其中心匯聚，定義了典型庭院住宅的配置和動態，其中包含部分現有植被。我們加入了一面天然的水鏡，為場地創造一個新的小氣候。這兩件作品都是由混凝土牆和木質立面結構組裝而成，透過一個過濾庭院光線的涼棚連接起來。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Casa Malandra 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2022 年 A+ 獎，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</span><span>墨西哥埃斯孔迪多港</span><span>資料來源：Architizer A+Awards 2022</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/casa-malandra/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-tiny-home-airbnbs">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/67e6f8956679011deeaca594/1:1/w_120%2Cc_limit/9a48a56f-baf2-4499-8084-65e1c00b3ebf.jpeg" class="slide active" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/67bca808fba54dc2dff9b304/master/w_320%2Cc_limit/travel-edit-group-lede.jpg" class="slide" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/69b9a970517454065cd4b47e/1:1/w_90%2Cc_limit/_00A1177_R2.jpg" class="slide" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69d9149802790c3bb9efe9b4/1:1/w_640%2Cc_limit/imgi_1_imgi_81_e178b0bf-7fba-4a74-ac6e-3c7dabba21a8.jpg" class="slide" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69eb8c7fe051a852309289d4/1:1/w_640%2Cc_limit/imgi_1_73deec2e-cf55-4ad4-b6e5-e9387efbc540.jpeg" class="slide" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69e91b6a0883fd53ae4b5820/1:1/w_640%2Cc_limit/imgi_1_257f67be-d0c1-46e0-8260-3b4812761d33.jpeg" class="slide" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69ef9815a77a89bb81a7db35/1:1/w_640%2Cc_limit/California-Airbnbs_villa-rosa_%2520(1).jpg" class="slide" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69ea5c576f82b58258952041/1:1/w_640%2Cc_limit/imgi_1_e7cdcfe6-7a71-4e09-8e8c-3bfe106ed483.jpeg" class="slide" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) 圖片 8" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 8</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2021</span>
-                    <span>微型</span>
-                  </div>
-                  <h3 class="card-title">13 Best Tiny House Rentals Around the World on Airbnb (2026)</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">正在尋找最好的小房子出租嗎？探索日本、加拿大和紐約州北部等美麗目的地的建築奇觀</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">13 Best Tiny House Rentals Around the World on Airbnb (2026) 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。正在尋找最好的小房子出租嗎？探索日本、加拿大和紐約州北部等美麗目的地的建築奇觀</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>微型</span><span>資料來源：《建築文摘 2021》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/gallery/tiny-home-airbnbs" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adus-a-19th-century-maine-home-evolves-around-a-familys-inherited-treasures" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f513f6a876b5f49b474b6c/16:9/w_2560%2Cc_limit/202508_028_InsidesStudio_StLawrence_0992_main%2520copy.jpg" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f4fe219cb02e8eec6146d3/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(40).jpeg" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/688921134973512d6aefe10f/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(18).jpeg" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f4fd36a61ec0a2eda433df/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(39).jpeg" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69862b769a362421a593e8a4/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(3).jpeg" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6893a7c006e66d413337dbd7/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(12).jpeg" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f4fc8ba2b24d550066ae68/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(38).jpeg" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f513ef99d45ea679e0e1bf/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0242_main%2520copy.jpg" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f513f01ed0fe39eaa3f19d/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0298_main%2520copy.jpg" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f513f0cb535134a38f84e6/master/w_1600%2Cc_limit/202508_028_InsidesStudio_StLawrence_0344_main%2520copy.jpg" alt="A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_01 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">A 19th-Century Maine Home Evolves Around a Family’s Inherited Treasures<small>AD editorial<br>Antique<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">在緬因州的這棟住宅中，Insides Studio 的廚房翻新已發展成為一個完整的項目，由傳家寶和房子的原始怪癖塑造而成</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>在緬因州的這棟住宅中，Insides Studio 的廚房翻新已發展成為一個完整的項目，由傳家寶和房子的原始怪癖塑造而成</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_01 · <a href="https://www.architecturaldigest.com/story/a-19th-century-maine-home-evolves-around-a-familys-inherited-treasures" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-118872" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198662/01_HouseCounterpoint_kottlorz_07.jpg" alt="House Counterpoint image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198677/1754_House-Counterpoint_floorplan.jpg" alt="House Counterpoint image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198663/02_HouseCounterpoint_kottlorz_09.jpg" alt="House Counterpoint image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198664/05_HouseCounterpoint_kottlorz_24.jpg" alt="House Counterpoint image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198665/06_HouseCounterpoint_kottlorz_11.jpg" alt="House Counterpoint image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198666/07_HouseCounterpoint_kottlorz_20.jpg" alt="House Counterpoint image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198667/08_HouseCounterpoint_kottlorz_21.jpg" alt="House Counterpoint image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198668/10_HouseCounterpoint_kottlorz_01.jpg" alt="House Counterpoint image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198669/11_HouseCounterpoint_kottlorz_17.jpg" alt="House Counterpoint image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198670/13_HouseCounterpoint_kottlorz_33.jpg" alt="House Counterpoint image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">House Counterpoint<small>Ippolito Fleitz Group – Identity Architects<br>德國黑森林<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">一位成功的企業家開始在家鄉黑森林中建造他的夢想家園。當他的商業生活繼續全速進行時，地塊已選定，建築已成型。從日常工作中退休後，他終於有時間考慮自己人生的下一個階段——以及能夠支持和激勵他生活的家。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>一位成功的企業家開始在家鄉黑森林中建造他的夢想家園。當他的商業生活繼續全速進行時，地塊已選定，建築已成型。從日常工作中退休後，他終於有時間考慮自己人生的下一個階段——以及能夠支持和激勵他生活的家。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/house-counterpoint" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-118453" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197463/main.jpg" alt="Noir Matière image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197454/livingb.jpg" alt="Noir Matière image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197456/living.jpg" alt="Noir Matière image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197457/stairss.jpg" alt="Noir Matière image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197459/kitchen.jpg" alt="Noir Matière image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197460/dining.jpg" alt="Noir Matière image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197461/stairs.jpg" alt="Noir Matière image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197455/entrance.jpg" alt="Noir Matière image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197458/kit.jpg" alt="Noir Matière image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/197462/office.jpg" alt="Noir Matière image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Noir Matière<small>Boobrook<br>Marasi Dr - 商業灣 - 杜拜 - 阿拉伯聯合大公國<br>FRAME 獎，大型公寓</small></h2>
+        <p class="ac-lead reveal">黑色天空中的野獸派避難所 Matière 是一個複式住宅室內設計，被設想為城市上方的避難所。該項目由 Dorchester Collection Lana Residences 的 Natacha Bouioukliev 和 Benjamin Vanopbroeke 設計並實現，透過克制、感官深度和情感平靜重新詮釋了野</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>黑色天空中的野獸派避難所 Matière 是一個複式住宅室內設計，被設想為城市上方的避難所。該項目由 Dorchester Collection Lana Residences 的 Natacha Bouioukliev 和 Benjamin Vanopbroeke 設計並實現，透過克制、感官深度和情感平靜重新詮釋了野蠻主義。空間不強調紀念性，而是注重氛圍，與周遭城市天際線的強度形成對比。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · <a href="https://frameweb.com/project/noir-matiere" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-lisbon-townhouse-mclean-quinlan-architecture" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_sq-2-852x852.jpg" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_12.jpg" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_18.jpg" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_31.jpg" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_32.jpg" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_21-scaled.jpg" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_0.jpg" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_3.jpg" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/lisbon-townhouse-interiors-portugal-mclean-quinlan-architecture_dezeen_1704_col_28.jpg" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2023/08/sq-lisbon-house-bak-gordon-arquitectos-concrete-green-tiles_dezeen_2364_col_0-191x191.jpg" alt="McLean Quinlan gives family townhouse in Lisbon a homelier feel image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">McLean Quinlan gives family townhouse in Lisbon a homelier feel<small>Unknown architect<br>內飾<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">縮小的起居空間和花旗松細木工為里斯本的這座聯排別墅帶來了更親密的感覺，該聯排別墅由英國建築事務所 McLean Quinlan 進行了改造，並配有安尼什·卡普爾 (Anish Kapoor) 的藝術品。該房產最初設計為容納幾套公寓，但在 20 世紀 90 年代，它們被合併形成一棟獨特的聯排別墅。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>縮小的起居空間和花旗松細木工為里斯本的這座聯排別墅帶來了更親密的感覺，該聯排別墅由英國建築事務所 McLean Quinlan 進行了改造，並配有安尼什·卡普爾 (Anish Kapoor) 的藝術品。該房產最初設計為容納幾套公寓，但在 20 世紀 90 年代，它們被合併形成一棟獨特的聯排別墅。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · <a href="https://www.dezeen.com/2026/03/09/lisbon-townhouse-mclean-quinlan-architecture/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-of-architects-ignacio-galan-camp-alliances" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain-sq_dezeen_2364_col_0-852x852.jpg" alt="Camp Alliances house has reciprocal relationship with Spanish forest image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_7.jpg" alt="Camp Alliances house has reciprocal relationship with Spanish forest image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_0.jpg" alt="Camp Alliances house has reciprocal relationship with Spanish forest image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_9.jpg" alt="Camp Alliances house has reciprocal relationship with Spanish forest image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_11.jpg" alt="Camp Alliances house has reciprocal relationship with Spanish forest image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_14.jpg" alt="Camp Alliances house has reciprocal relationship with Spanish forest image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2024/01/sq-ignacio-galan-beyond-the-family-kin-spain_dezeen_2364_col_0-191x191.jpg" alt="Camp Alliances house has reciprocal relationship with Spanish forest image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_13.jpg" alt="Camp Alliances house has reciprocal relationship with Spanish forest image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/ozaeta-fidalgo-architects-ignacio-galan-camp-alliances-spain_dezeen_2364_col_18.jpg" alt="Camp Alliances house has reciprocal relationship with Spanish forest image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_05 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Camp Alliances house has reciprocal relationship with Spanish forest<small>Unknown architect<br>單坡屋頂<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">Camp Alliances 是由馬德里建築師工作室和建築師 Ignacio G Galán 設計的位於西班牙的家庭住宅，其角形形式覆蓋著綠色金屬色調。該住宅坐落在阿維拉的一片森林中，分為三層，包括位於其南端的地下一層，該樓層位於住宅的斜坡上。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Camp Alliances 是由馬德里建築師工作室和建築師 Ignacio G Galán 設計的位於西班牙的家庭住宅，其角形形式覆蓋著綠色金屬色調。該住宅坐落在阿維拉的一片森林中，分為三層，包括位於其南端的地下一層，該樓層位於住宅的斜坡上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_05 · <a href="https://www.dezeen.com/2026/03/12/of-architects-ignacio-galan-camp-alliances/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2022-daja-chuanchen-mansion" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180088524305YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" alt="DAJA Chuanchen Mansion image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180087693401YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" alt="DAJA Chuanchen Mansion image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180087693502YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" alt="DAJA Chuanchen Mansion image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180088098703schranimage.jpg?w=1680&amp;q=60&amp;auto=format" alt="DAJA Chuanchen Mansion image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180088184704YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" alt="DAJA Chuanchen Mansion image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180088568306YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" alt="DAJA Chuanchen Mansion image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180089028007YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" alt="DAJA Chuanchen Mansion image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180089121908YAO_LI.jpg?w=1680&amp;q=60&amp;auto=format" alt="DAJA Chuanchen Mansion image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180089421409schranimage.jpg?w=1680&amp;q=60&amp;auto=format" alt="DAJA Chuanchen Mansion image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165180089516910schranimage.jpg?w=1680&amp;q=60&amp;auto=format" alt="DAJA Chuanchen Mansion image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/22_06 · Architizer / 2022</p>
+        <h2 class="ac-title reveal">DAJA Chuanchen Mansion<small>9M Design<br>中國杭州<br>2022 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 高層（16 層以上）</small></h2>
+        <p class="ac-lead reveal">該項目是位於中國杭州市大運河文化生活圈內的住宅群。我們的團隊將區域及整個城市空間的特色融入設計中，旨在打造一個充滿活力的社區，滿足居民各方面的需求，有利於城市空間的建設。該項目的住宅設計考慮了該區域的整個城市界面，以白色和金色相結合而非冷色作為立面主色調，為該區域增添了溫暖，豐富了城市的建築形態和公共界面。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>該項目是位於中國杭州市大運河文化生活圈內的住宅群。我們的團隊將區域及整個城市空間的特色融入設計中，旨在打造一個充滿活力的社區，滿足居民各方面的需求，有利於城市空間的建設。該項目的住宅設計考慮了該區域的整個城市界面，以白色和金色相結合而非冷色作為立面主色調，為該區域增添了溫暖，豐富了城市的建築形態和公共界面。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/22_06 · <a href="https://architizer.com/projects/daja-chuanchen-mansion/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2022-casa-malandra" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786704625CASA_MALANDRA_01-ONNIS_LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Malandra image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786704627CASA_MALANDRA_02-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Malandra image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786711056CASA_MALANDRA_04-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Malandra image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786715689CASA_MALANDRA_05-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Malandra image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786716882CASA_MALANDRA_06-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Malandra image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786717121CASA_MALANDRA_07-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Malandra image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786717423CASA_MALANDRA_08-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Malandra image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786718691CASA_MALANDRA_09-ONNIS__LUQUE.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Malandra image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786719840CASA_MALANDRA_13-MARCOS_CALLEJA.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Malandra image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651786720522CASA_MALANDRA_14-FRANCISCO_LARESGOIT.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Malandra image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/22_07 · Architizer / 2022</p>
+        <h2 class="ac-title reveal">Casa Malandra<small>TAC<br>墨西哥埃斯孔迪多港<br>大眾選擇獎得主，2022 年 A+ 獎，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">兩個矩形體量在其中心匯聚，定義了典型庭院住宅的配置和動態，其中包含部分現有植被。我們加入了一面天然的水鏡，為場地創造一個新的小氣候。這兩件作品都是由混凝土牆和木質立面結構組裝而成，透過一個過濾庭院光線的涼棚連接起來。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>兩個矩形體量在其中心匯聚，定義了典型庭院住宅的配置和動態，其中包含部分現有植被。我們加入了一面天然的水鏡，為場地創造一個新的小氣候。這兩件作品都是由混凝土牆和木質立面結構組裝而成，透過一個過濾庭院光線的涼棚連接起來。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/22_07 · <a href="https://architizer.com/projects/casa-malandra/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-tiny-home-airbnbs" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/67e6f8956679011deeaca594/1:1/w_120%2Cc_limit/9a48a56f-baf2-4499-8084-65e1c00b3ebf.jpeg" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/67bca808fba54dc2dff9b304/master/w_320%2Cc_limit/travel-edit-group-lede.jpg" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69b9a970517454065cd4b47e/1:1/w_90%2Cc_limit/_00A1177_R2.jpg" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69d9149802790c3bb9efe9b4/1:1/w_640%2Cc_limit/imgi_1_imgi_81_e178b0bf-7fba-4a74-ac6e-3c7dabba21a8.jpg" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69eb8c7fe051a852309289d4/1:1/w_640%2Cc_limit/imgi_1_73deec2e-cf55-4ad4-b6e5-e9387efbc540.jpeg" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69e91b6a0883fd53ae4b5820/1:1/w_640%2Cc_limit/imgi_1_257f67be-d0c1-46e0-8260-3b4812761d33.jpeg" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69ef9815a77a89bb81a7db35/1:1/w_640%2Cc_limit/California-Airbnbs_villa-rosa_%2520(1).jpg" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69ea5c576f82b58258952041/1:1/w_640%2Cc_limit/imgi_1_e7cdcfe6-7a71-4e09-8e8c-3bfe106ed483.jpeg" alt="13 Best Tiny House Rentals Around the World on Airbnb (2026) image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/21_08 · AD (US) / 2021</p>
+        <h2 class="ac-title reveal">13 Best Tiny House Rentals Around the World on Airbnb (2026)<small>AD editorial<br>微型<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">正在尋找最好的小房子出租嗎？探索日本、加拿大和紐約州北部等美麗目的地的建築奇觀</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>正在尋找最好的小房子出租嗎？探索日本、加拿大和紐約州北部等美麗目的地的建築奇觀</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/21_08 · <a href="https://www.architecturaldigest.com/gallery/tiny-home-airbnbs" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

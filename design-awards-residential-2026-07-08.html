@@ -3,614 +3,161 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-07-08</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-07-08 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-07-08</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-07-08 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 7 件作品</span>
-        <span>Architizer 1 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-07-08.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-07-08.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adus-miami-modernist-home-designed-by-gachot">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/69ebaa3fb556930425a09de4/16:9/w_2560%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_0660%2520copy.jpg" class="slide active" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/69ebaa25c7ea9a2f6daf72d1/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_023-copy.jpg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/69ebaa23b556930425a09dc9/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_257-copy.jpg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69ebaa235d1b9fd8f525d3f4/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_235-copy.jpg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69ebaa23c7ea9a2f6daf72c6/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_297-copy.jpg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69ebaa25c21374ac7ae93711/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_151-copy.jpg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69ebaa2849569997bc3791f2/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_544-copy.jpg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69ebaa238f417da1dee3198f/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_164-copy.jpg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69e7d5d24d893b5edfdb0759/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(4).jpeg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69e7d5d01e54ea1187a6d3fe/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(6).jpeg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69ebaa277024ecf1de70cb9e/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_451-copy.jpg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69e7d5d2275cfa3f9a2042cf/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(11).jpeg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69e7d5d21e54ea1187a6d405/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(8).jpeg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69ebaa255d1b9fd8f525d400/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_084-copy.jpg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69e7d5d078857f8e35cbfb3c/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(9).jpeg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69e7d5d2275cfa3f9a2042d1/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(5).jpeg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69ebaa255d1b9fd8f525d3fa/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_207-copy.jpg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69ebaa25c7ea9a2f6daf72cd/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_008-copy.jpg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69ebaa23c21374ac7ae9370b/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_350-copy.jpg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 19" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69ebaa277024ecf1de70cba8/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_511-copy.jpg" class="slide" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>邁阿密現代主義</span>
-                  </div>
-                  <h3 class="card-title">These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home</h3>
-                  <p class="card-by">Raymond Jungles</p>
-                  <p class="card-desc">設計師約翰·加喬特 (John Gachot) 和克里斯汀·加喬特 (Christine Gachot) 以及建築師馬克斯·斯特朗 (Max Strang) 精心打造了一座大膽而宜居的度假勝地，以非凡的收藏品和協作精神打造而成</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。設計師約翰·加喬特 (John Gachot) 和克里斯汀·加喬特 (Christine Gachot) 以及建築師馬克斯·斯特朗 (Max Strang) 精心打造了一座大膽而宜居的度假勝地，以非凡的收藏品和協作精神打造而成</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>邁阿密現代主義</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/miami-modernist-home-designed-by-gachot" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-122145">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209551/casa-balma-murada-house-architecture-mesura-rory-gardiner-6.jpg" class="slide active" alt="Casa Balma Murada 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209557/casa-balma-murada-house-architecture-mesura-construction-axonometry.png" class="slide" alt="Casa Balma Murada 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209558/casa-balma-murada-house-architecture-mesura-construction-axonometry2.jpg" class="slide" alt="Casa Balma Murada 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209559/casa-balma-murada-house-architecture-mesura-construction-axonometry-2.png" class="slide" alt="Casa Balma Murada 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209560/casa-balma-murada-house-architecture-mesura-landscape-axonometry.png" class="slide" alt="Casa Balma Murada 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209561/casa-balma-murada-house-architecture-mesura-medieval-axonometry.png" class="slide" alt="Casa Balma Murada 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222568/Mesura-Casa-Balma-Murada--Rory-Gardiner_01.jpg" class="slide" alt="Casa Balma Murada 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222569/Mesura-Casa-Balma-Murada--Rory-Gardiner_02.jpg" class="slide" alt="Casa Balma Murada 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209550/casa-balma-murada-house-architecture-mesura-rory-gardiner-5.jpg" class="slide" alt="Casa Balma Murada 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209553/casa-balma-murada-house-architecture-mesura-rory-gardiner-12.jpg" class="slide" alt="Casa Balma Murada 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209554/casa-balma-murada-house-architecture-mesura-rory-gardiner-15.jpg" class="slide" alt="Casa Balma Murada 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209555/casa-balma-murada-house-architecture-mesura-rory-gardiner-16.jpg" class="slide" alt="Casa Balma Murada 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209556/casa-balma-murada-house-architecture-mesura-rory-gardiner-17-1.jpg" class="slide" alt="Casa Balma Murada 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209562/casa-balma-murada-house-architecture-mesura-model-2.jpg" class="slide" alt="Casa Balma Murada 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209564/casa-balma-murada-house-architecture-mesura-rory-gardiner-2.jpg" class="slide" alt="Casa Balma Murada 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209565/casa-balma-murada-house-architecture-mesura-rory-gardiner-3.jpg" class="slide" alt="Casa Balma Murada 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209566/casa-balma-murada-house-architecture-mesura-rory-gardiner-4.jpg" class="slide" alt="Casa Balma Murada 圖片 17" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222570/Mesura-Casa-Balma-Murada--Rory-Gardiner_04.jpg" class="slide" alt="Casa Balma Murada 圖片 18" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222571/Mesura-Casa-Balma-Murada--Rory-Gardiner_03.jpg" class="slide" alt="Casa Balma Murada 圖片 19" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222572/Mesura-Casa-Balma-Murada--Rory-Gardiner_05.jpg" class="slide" alt="Casa Balma Murada 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>地中海</span>
-                  </div>
-                  <h3 class="card-title">Casa Balma Murada</h3>
-                  <p class="card-by">Mesura</p>
-                  <p class="card-desc">Casa Balma Murada 的設計與其環境密切對話，塑造了一個與土地和諧相處而不是對抗的住宅。這棟房子位於自然保護區內，使用直接來自現場的材料，對風、地形和當地建築傳統做出反應。該項目是與 Nora Batlle Belonging Interiors 合作開發的，在對材料和氛圍的共同關注的指導下，在室內尺度上擴展了這種對話。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Casa Balma Murada 不是靠單一造型取勝，而是把 住宅室內 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>House</span><span>地中海</span><span>發布日期：2026 年 7 月 7 日</span><span>標籤： 獎項 / fa26 / 房子 / 生活</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/casa-balma-murada" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-122173">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209647/1.jpg" class="slide active" alt="Freeform Flow 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209770/4.jpg" class="slide" alt="Freeform Flow 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209649/3.jpg" class="slide" alt="Freeform Flow 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209771/5.jpg" class="slide" alt="Freeform Flow 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209772/6.jpg" class="slide" alt="Freeform Flow 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209773/7.jpg" class="slide" alt="Freeform Flow 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209774/8.jpg" class="slide" alt="Freeform Flow 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209775/9.jpg" class="slide" alt="Freeform Flow 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209776/10.jpg" class="slide" alt="Freeform Flow 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209777/11.jpg" class="slide" alt="Freeform Flow 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209778/12.jpg" class="slide" alt="Freeform Flow 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209779/13.jpg" class="slide" alt="Freeform Flow 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209661/260331仰德青海-平面圖(未施作).jpg" class="slide" alt="Freeform Flow 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209752/平面圖.jpg" class="slide" alt="Freeform Flow 圖片 14" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 14</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，共享居住綜合體</span>
-                    <span>2026</span>
-                    <span>804 高雄市鼓山區美術南三路269號</span>
-                  </div>
-                  <h3 class="card-title">Freeform Flow</h3>
-                  <p class="card-by">ChArchi Lab</p>
-                  <p class="card-desc">高雄市立美術館區的獨特性格賦予這個計畫一種原始的純粹和自由感。設計團隊與開發商合作，反思了那些已上演但很少使用的常見住宅空間。該項目不是對風格進行分層或狹隘地定義功能，而是詢問如何創造一個真正使用且自然促進行為的空間。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Freeform Flow 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「透過壓縮、分層與多重使用提高空間記憶密度，讓小尺度住宅仍然具有完整敘事」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>共享居住綜合體</span><span>804 高雄市鼓山區美術南三路269號</span><span>發布日期：2026 年 7 月 7 日</span><span>標籤： 獎項 / charchi-lab / 共同生活綜合體 / fa26</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/freeform-flow" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-dulnain-loader-monteith">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland-sq_dezeen_2364_col_0-852x852.jpg" class="slide active" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_1.jpg" class="slide" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_11-scaled.jpg" class="slide" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_14-scaled.jpg" class="slide" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2022/05/loader-monteith-ceangal-house-scotland-residential-architecture_dezeen_2364_col_1-1-191x191.jpg" class="slide" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_17-scaled.jpg" class="slide" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_30-scaled.jpg" class="slide" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_9.jpg" class="slide" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension 圖片 8" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_45.jpg" class="slide" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension 圖片 9" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 9</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>蘇格蘭房屋</span>
-                  </div>
-                  <h3 class="card-title">Loader Monteith rebuilds ruined Highlands house with blackened-larch extension</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">蘇格蘭工作室 Loader Monteith 在蘇格蘭高地重建了一座廢棄農舍，並添加了黑色落葉松擴建部分，以創建一個名為 Dulnain 的家庭住宅。洛德·蒙蒂斯 (Loader Monteith) 在蘇格蘭因弗內斯附近的杜爾南河 (Dulnain) 河畔重建了這座年久失修的石頭小屋，將其改造成一棟三居室的家庭住宅。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Loader Monteith rebuilds ruined Highlands house with blackened-larch extension 不是靠單一造型取勝，而是把 舊屋改造 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>蘇格蘭房屋</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/07/07/dulnain-loader-monteith/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-croxatto-opazo-architects-negrilla-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/06/la-negrilla-house-croxatto-and-opazo-architecture-residential-chile_dezeen_2364_sq-852x852.jpg" class="slide active" alt="Croxatto and Opazo Architects perches timber home overlooking Chilean coast 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/la-negrilla-house-croxatto-and-opazo-architecture-residential-chile_dezeen_2364_col_4-scaled.jpg" class="slide" alt="Croxatto and Opazo Architects perches timber home overlooking Chilean coast 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/la-negrilla-house-croxatto-and-opazo-architecture-residential-chile_dezeen_2364_col_2.jpg" class="slide" alt="Croxatto and Opazo Architects perches timber home overlooking Chilean coast 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2024/01/casa-lagunita-santiago-chile-croxatto-opazo-arquitectos_dezeen_2364_sq-2-191x191.jpg" class="slide" alt="Croxatto and Opazo Architects perches timber home overlooking Chilean coast 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/la-negrilla-house-croxatto-and-opazo-architecture-residential-chile_dezeen_2364_col_5-scaled.jpg" class="slide" alt="Croxatto and Opazo Architects perches timber home overlooking Chilean coast 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/la-negrilla-house-croxatto-and-opazo-architecture-residential-chile_dezeen_2364_col_9.jpg" class="slide" alt="Croxatto and Opazo Architects perches timber home overlooking Chilean coast 圖片 6" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 6</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>露臺</span>
-                  </div>
-                  <h3 class="card-title">Croxatto and Opazo Architects perches timber home overlooking Chilean coast</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">智利工作室 Croxatto 和 Opazo Architects 完成了 Negrilla House，這是一棟細長的住宅，坐落在馬坦薩斯村的一個峽谷上方，分成兩個堆疊的露台，俯瞰著太平洋。這座 152 平方米的住宅從智利沿海村莊附近的道路延伸出來，具有碼頭狀的木結構，主要覆蓋有後 Croxatto 和 Opazo Architects 棲息的木屋，俯瞰智利海岸，首先出現在 Dezeen 上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Croxatto and Opazo Architects perches timber home overlooking Chilean coast 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>露臺</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/07/07/croxatto-opazo-architects-negrilla-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-marilyn-monroes-former-home-is-now-worth-nothing-according-to-current-owners">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6334ae7783e8eeac4f04fc3f/16:9/w_2560%2Cc_limit/GettyImages-1180111.jpg" class="slide active" alt="Marilyn Monroe’s Former Home Is Now “Worth Nothing” According to Current Owners 圖片 1" loading="eager"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 1</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>問題是唯一</span>
-                  </div>
-                  <h3 class="card-title">Marilyn Monroe’s Former Home Is Now “Worth Nothing” According to Current Owners</h3>
-                  <p class="card-by">Pacific Legal Foundation</p>
-                  <p class="card-desc">瑪麗蓮夢露曾經居住和去世的這座歷史悠久的住宅被阻止拆除，其現任業主正在起訴洛杉磯市</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Marilyn Monroe’s Former Home Is Now “Worth Nothing” According to Current Owners 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>問題是唯一</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/marilyn-monroes-former-home-is-now-worth-nothing-according-to-current-owners" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2022-fort-137">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1659447092761DJC_Fort137_Book_Cover__004.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Fort 137 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151195841detail_3_Color_Corrected.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652225329224detail_10_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151199002detail_9.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652225334807Fort_137_0_Site_Plan_-_Presentation_Drawing.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151071316Fort_137_1_Plan_-_Presentation_Drawing.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151072286Fort_137_2_Elevation_-_North_-_Presentation_Drawing.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151073136Fort_137_3_Elevation_-_South_-_Presentation_Drawing.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151073861Fort_137_4_Elevation_-_West_-_Presentation_Drawing.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151224739thefort-126.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151218183thefort-101_copy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16521511897022021-10-02_09.07.38.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16521511881882021-10-02_08.30.35_copy-2.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16521511785692021-09-26_12.08D.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16521511854072021-09-26_22.16.49-9_copy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1659447092671DJC_Fort137_Book_Cover__007.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1659447092483DJC_Fort137_Book_Cover__009.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1659447092242DJC_Fort137_Book_Cover__011.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1659447091225DJC_Fort137_Book_Cover__013.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1659447091224DJC_Fort137_Book_Cover__016.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fort 137 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2022 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XL &gt; 6000 平方英尺）</span>
-                    <span>2022</span>
-                    <span>拉斯維加斯, 內華達州, 美國</span>
-                  </div>
-                  <h3 class="card-title">Fort 137</h3>
-                  <p class="card-by">Daniel Joseph Chenin, Ltd.</p>
-                  <p class="card-desc">該場地位於拉斯維加斯山谷的最西端，毗鄰未受破壞的聯邦保護土地，西北方向的紅岩峽穀保護區一覽無餘，地勢低窪，西南方向有通往斯普林山的小徑。客戶是一個由科學家和自然愛好者組成的家庭，他們尋求一個具有環保意識的住宅，與其場地有直接關係，作為他們積極生活方式的大本營。作為回應，住宅是一個開放的結構，分為三層，從公共核心輻射到更親密和私人區域的外圍。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Fort 137 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2022 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XL &gt; 6000 平方英尺）</span><span>拉斯維加斯, 內華達州, 美國</span><span>資料來源：Architizer A+Awards 2022</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/fort-137/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adus-miami-modernist-home-designed-by-gachot" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69ebaa3fb556930425a09de4/16:9/w_2560%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_0660%2520copy.jpg" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69ebaa25c7ea9a2f6daf72d1/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_023-copy.jpg" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69ebaa23b556930425a09dc9/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_257-copy.jpg" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69ebaa235d1b9fd8f525d3f4/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_235-copy.jpg" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69ebaa23c7ea9a2f6daf72c6/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_297-copy.jpg" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69ebaa25c21374ac7ae93711/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_151-copy.jpg" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69ebaa2849569997bc3791f2/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_544-copy.jpg" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69ebaa238f417da1dee3198f/master/w_1600%2Cc_limit/GACHOT_MiamiWaterfront_DouglasFriedman_164-copy.jpg" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69e7d5d24d893b5edfdb0759/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(4).jpeg" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69e7d5d01e54ea1187a6d3fe/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(6).jpeg" alt="These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_01 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">These Miami Homeowners Assembled a Dream Design Team for Their Modernist Home<small>Raymond Jungles<br>邁阿密現代主義<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">設計師約翰·加喬特 (John Gachot) 和克里斯汀·加喬特 (Christine Gachot) 以及建築師馬克斯·斯特朗 (Max Strang) 精心打造了一座大膽而宜居的度假勝地，以非凡的收藏品和協作精神打造而成</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>設計師約翰·加喬特 (John Gachot) 和克里斯汀·加喬特 (Christine Gachot) 以及建築師馬克斯·斯特朗 (Max Strang) 精心打造了一座大膽而宜居的度假勝地，以非凡的收藏品和協作精神打造而成</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_01 · <a href="https://www.architecturaldigest.com/story/miami-modernist-home-designed-by-gachot" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-122145" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209551/casa-balma-murada-house-architecture-mesura-rory-gardiner-6.jpg" alt="Casa Balma Murada image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209557/casa-balma-murada-house-architecture-mesura-construction-axonometry.png" alt="Casa Balma Murada image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209558/casa-balma-murada-house-architecture-mesura-construction-axonometry2.jpg" alt="Casa Balma Murada image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209559/casa-balma-murada-house-architecture-mesura-construction-axonometry-2.png" alt="Casa Balma Murada image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209560/casa-balma-murada-house-architecture-mesura-landscape-axonometry.png" alt="Casa Balma Murada image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209561/casa-balma-murada-house-architecture-mesura-medieval-axonometry.png" alt="Casa Balma Murada image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222568/Mesura-Casa-Balma-Murada--Rory-Gardiner_01.jpg" alt="Casa Balma Murada image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/222569/Mesura-Casa-Balma-Murada--Rory-Gardiner_02.jpg" alt="Casa Balma Murada image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209550/casa-balma-murada-house-architecture-mesura-rory-gardiner-5.jpg" alt="Casa Balma Murada image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209553/casa-balma-murada-house-architecture-mesura-rory-gardiner-12.jpg" alt="Casa Balma Murada image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Casa Balma Murada<small>Mesura<br>地中海<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">Casa Balma Murada 的設計與其環境密切對話，塑造了一個與土地和諧相處而不是對抗的住宅。這棟房子位於自然保護區內，使用直接來自現場的材料，對風、地形和當地建築傳統做出反應。該項目是與 Nora Batlle Belonging Interiors 合作開發的，在對材料和氛圍的共同關注的指導下，在室內尺度上</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Casa Balma Murada 的設計與其環境密切對話，塑造了一個與土地和諧相處而不是對抗的住宅。這棟房子位於自然保護區內，使用直接來自現場的材料，對風、地形和當地建築傳統做出反應。該項目是與 Nora Batlle Belonging Interiors 合作開發的，在對材料和氛圍的共同關注的指導下，在室內尺度上擴展了這種對話。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/casa-balma-murada" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-122173" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209647/1.jpg" alt="Freeform Flow image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209770/4.jpg" alt="Freeform Flow image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209649/3.jpg" alt="Freeform Flow image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209771/5.jpg" alt="Freeform Flow image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209772/6.jpg" alt="Freeform Flow image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209773/7.jpg" alt="Freeform Flow image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209774/8.jpg" alt="Freeform Flow image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209775/9.jpg" alt="Freeform Flow image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209776/10.jpg" alt="Freeform Flow image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209777/11.jpg" alt="Freeform Flow image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Freeform Flow<small>ChArchi Lab<br>804 高雄市鼓山區美術南三路269號<br>FRAME 獎，共享居住綜合體</small></h2>
+        <p class="ac-lead reveal">高雄市立美術館區的獨特性格賦予這個計畫一種原始的純粹和自由感。設計團隊與開發商合作，反思了那些已上演但很少使用的常見住宅空間。該項目不是對風格進行分層或狹隘地定義功能，而是詢問如何創造一個真正使用且自然促進行為的空間。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>高雄市立美術館區的獨特性格賦予這個計畫一種原始的純粹和自由感。設計團隊與開發商合作，反思了那些已上演但很少使用的常見住宅空間。該項目不是對風格進行分層或狹隘地定義功能，而是詢問如何創造一個真正使用且自然促進行為的空間。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · <a href="https://frameweb.com/project/freeform-flow" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-dulnain-loader-monteith" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland-sq_dezeen_2364_col_0-852x852.jpg" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_1.jpg" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_11-scaled.jpg" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_14-scaled.jpg" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2022/05/loader-monteith-ceangal-house-scotland-residential-architecture_dezeen_2364_col_1-1-191x191.jpg" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_17-scaled.jpg" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_30-scaled.jpg" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_9.jpg" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/07/dulnain-croft-house-loader-monteith-salvaged-granite-blackened-larch-scotland_dezeen_2364_col_45.jpg" alt="Loader Monteith rebuilds ruined Highlands house with blackened-larch extension image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Loader Monteith rebuilds ruined Highlands house with blackened-larch extension<small>Unknown architect<br>蘇格蘭房屋<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">蘇格蘭工作室 Loader Monteith 在蘇格蘭高地重建了一座廢棄農舍，並添加了黑色落葉松擴建部分，以創建一個名為 Dulnain 的家庭住宅。洛德·蒙蒂斯 (Loader Monteith) 在蘇格蘭因弗內斯附近的杜爾南河 (Dulnain) 河畔重建了這座年久失修的石頭小屋，將其改造成一棟三居室的家庭住宅。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>蘇格蘭工作室 Loader Monteith 在蘇格蘭高地重建了一座廢棄農舍，並添加了黑色落葉松擴建部分，以創建一個名為 Dulnain 的家庭住宅。洛德·蒙蒂斯 (Loader Monteith) 在蘇格蘭因弗內斯附近的杜爾南河 (Dulnain) 河畔重建了這座年久失修的石頭小屋，將其改造成一棟三居室的家庭住宅。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · <a href="https://www.dezeen.com/2026/07/07/dulnain-loader-monteith/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-croxatto-opazo-architects-negrilla-house" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/la-negrilla-house-croxatto-and-opazo-architecture-residential-chile_dezeen_2364_sq-852x852.jpg" alt="Croxatto and Opazo Architects perches timber home overlooking Chilean coast image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/la-negrilla-house-croxatto-and-opazo-architecture-residential-chile_dezeen_2364_col_4-scaled.jpg" alt="Croxatto and Opazo Architects perches timber home overlooking Chilean coast image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/la-negrilla-house-croxatto-and-opazo-architecture-residential-chile_dezeen_2364_col_2.jpg" alt="Croxatto and Opazo Architects perches timber home overlooking Chilean coast image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2024/01/casa-lagunita-santiago-chile-croxatto-opazo-arquitectos_dezeen_2364_sq-2-191x191.jpg" alt="Croxatto and Opazo Architects perches timber home overlooking Chilean coast image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/la-negrilla-house-croxatto-and-opazo-architecture-residential-chile_dezeen_2364_col_5-scaled.jpg" alt="Croxatto and Opazo Architects perches timber home overlooking Chilean coast image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/la-negrilla-house-croxatto-and-opazo-architecture-residential-chile_dezeen_2364_col_9.jpg" alt="Croxatto and Opazo Architects perches timber home overlooking Chilean coast image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_05 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Croxatto and Opazo Architects perches timber home overlooking Chilean coast<small>Unknown architect<br>露臺<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">智利工作室 Croxatto 和 Opazo Architects 完成了 Negrilla House，這是一棟細長的住宅，坐落在馬坦薩斯村的一個峽谷上方，分成兩個堆疊的露台，俯瞰著太平洋。這座 152 平方米的住宅從智利沿海村莊附近的道路延伸出來，具有碼頭狀的木結構，主要覆蓋有後 Croxatto 和 Opazo</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>智利工作室 Croxatto 和 Opazo Architects 完成了 Negrilla House，這是一棟細長的住宅，坐落在馬坦薩斯村的一個峽谷上方，分成兩個堆疊的露台，俯瞰著太平洋。這座 152 平方米的住宅從智利沿海村莊附近的道路延伸出來，具有碼頭狀的木結構，主要覆蓋有後 Croxatto 和 Opazo Architects 棲息的木屋，俯瞰智利海岸，首先出現在 Dezeen 上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_05 · <a href="https://www.dezeen.com/2026/07/07/croxatto-opazo-architects-negrilla-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-marilyn-monroes-former-home-is-now-worth-nothing-according-to-current-owners" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6334ae7783e8eeac4f04fc3f/16:9/w_2560%2Cc_limit/GettyImages-1180111.jpg" alt="Marilyn Monroe’s Former Home Is Now “Worth Nothing” According to Current Owners image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_06 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">Marilyn Monroe’s Former Home Is Now “Worth Nothing” According to Current Owners<small>Pacific Legal Foundation<br>問題是唯一<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">瑪麗蓮夢露曾經居住和去世的這座歷史悠久的住宅被阻止拆除，其現任業主正在起訴洛杉磯市</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>瑪麗蓮夢露曾經居住和去世的這座歷史悠久的住宅被阻止拆除，其現任業主正在起訴洛杉磯市</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_06 · <a href="https://www.architecturaldigest.com/story/marilyn-monroes-former-home-is-now-worth-nothing-according-to-current-owners" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2022-fort-137" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1659447092761DJC_Fort137_Book_Cover__004.jpg?w=1680&amp;q=60&amp;auto=format" alt="Fort 137 image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151195841detail_3_Color_Corrected.jpg?w=1680&amp;q=60&amp;auto=format" alt="Fort 137 image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652225329224detail_10_1.jpg?w=1680&amp;q=60&amp;auto=format" alt="Fort 137 image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151199002detail_9.jpg?w=1680&amp;q=60&amp;auto=format" alt="Fort 137 image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652225334807Fort_137_0_Site_Plan_-_Presentation_Drawing.jpg?w=1680&amp;q=60&amp;auto=format" alt="Fort 137 image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151071316Fort_137_1_Plan_-_Presentation_Drawing.jpg?w=1680&amp;q=60&amp;auto=format" alt="Fort 137 image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151072286Fort_137_2_Elevation_-_North_-_Presentation_Drawing.jpg?w=1680&amp;q=60&amp;auto=format" alt="Fort 137 image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151073136Fort_137_3_Elevation_-_South_-_Presentation_Drawing.jpg?w=1680&amp;q=60&amp;auto=format" alt="Fort 137 image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151073861Fort_137_4_Elevation_-_West_-_Presentation_Drawing.jpg?w=1680&amp;q=60&amp;auto=format" alt="Fort 137 image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652151224739thefort-126.jpg?w=1680&amp;q=60&amp;auto=format" alt="Fort 137 image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/22_07 · Architizer / 2022</p>
+        <h2 class="ac-title reveal">Fort 137<small>Daniel Joseph Chenin, Ltd.<br>拉斯維加斯, 內華達州, 美國<br>2022 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XL &gt; 6000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">該場地位於拉斯維加斯山谷的最西端，毗鄰未受破壞的聯邦保護土地，西北方向的紅岩峽穀保護區一覽無餘，地勢低窪，西南方向有通往斯普林山的小徑。客戶是一個由科學家和自然愛好者組成的家庭，他們尋求一個具有環保意識的住宅，與其場地有直接關係，作為他們積極生活方式的大本營。作為回應，住宅是一個開放的結構，分為三層，從公共核心輻射到更</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>該場地位於拉斯維加斯山谷的最西端，毗鄰未受破壞的聯邦保護土地，西北方向的紅岩峽穀保護區一覽無餘，地勢低窪，西南方向有通往斯普林山的小徑。客戶是一個由科學家和自然愛好者組成的家庭，他們尋求一個具有環保意識的住宅，與其場地有直接關係，作為他們積極生活方式的大本營。作為回應，住宅是一個開放的結構，分為三層，從公共核心輻射到更親密和私人區域的外圍。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/22_07 · <a href="https://architizer.com/projects/fort-137/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

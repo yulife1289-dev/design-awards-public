@@ -3,643 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-14</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD Style 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-14 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-14</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-14 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD Style 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-14.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD Style</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-14.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-frame-api-120082">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203803/14.jpg" class="slide active" alt="House of Memories 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203805/1-Ground-Floor-Plan.jpg" class="slide" alt="House of Memories 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203806/2-First-Floor-Plan.jpg" class="slide" alt="House of Memories 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203807/3-Terrace-Floor-Plan.jpg" class="slide" alt="House of Memories 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203790/1.jpg" class="slide" alt="House of Memories 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203791/2.jpg" class="slide" alt="House of Memories 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203792/3.jpg" class="slide" alt="House of Memories 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203793/4.jpg" class="slide" alt="House of Memories 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203794/5.jpg" class="slide" alt="House of Memories 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203795/6.jpg" class="slide" alt="House of Memories 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203796/7.jpg" class="slide" alt="House of Memories 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203797/8.jpg" class="slide" alt="House of Memories 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203798/9.jpg" class="slide" alt="House of Memories 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203799/10.jpg" class="slide" alt="House of Memories 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203800/11.jpg" class="slide" alt="House of Memories 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203801/12.jpg" class="slide" alt="House of Memories 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203802/13.jpg" class="slide" alt="House of Memories 圖片 17" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203804/15.jpg" class="slide" alt="House of Memories 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>印度古吉拉特邦瓦爾薩德</span>
-                  </div>
-                  <h3 class="card-title">House of Memories</h3>
-                  <p class="card-by">Studio Lagom</p>
-                  <p class="card-desc">記憶之家的誕生是為了滿足當代需求，同時尊重家族歷史和慶祝根源。這棟房子坐落在瓦爾薩德（Valsad）一塊 165&#x27; x 55&#x27; 的土地上，這座城市以其肥沃的農田和荷塘而聞名，這棟房子向周圍的環境致敬。新住宅建在該家庭以前擁有 22 個房間的住宅（同時也是他們的辦公室）的舊址上，解決了舊空間的局限性——房間小、佈局低效，特別是對於年老的家庭成員和身體有困難的家庭成員。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">House of Memories 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>House</span><span>印度古吉拉特邦瓦爾薩德</span><span>發布日期：2026 年 3 月 19 日</span><span>標籤： 獎項 / fa26 / gautam-desai / 房子</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/house-of-memories" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-119722">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201276/05-25.048.013A.JPG" class="slide active" alt="Chatham Residence 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201287/50-04-CHATHAM-MAIN-HOUSE-PLAN.png" class="slide" alt="Chatham Residence 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201288/50-06-CHATHAM-MAIN-HOUSE-SECTION-01.png" class="slide" alt="Chatham Residence 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201289/50-07-CHATHAM-MAIN-HOUSE-SECTION-02.png" class="slide" alt="Chatham Residence 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201280/09-25.048.039A.JPG" class="slide" alt="Chatham Residence 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201272/01--25.048.050A.JPG" class="slide" alt="Chatham Residence 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201273/02--25.048.041A.JPG" class="slide" alt="Chatham Residence 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201274/03-25.048.044A.JPG" class="slide" alt="Chatham Residence 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201275/04-25.048.046A.JPG" class="slide" alt="Chatham Residence 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201277/06-.048.014A.JPG" class="slide" alt="Chatham Residence 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201278/07-25.048.018A.JPG" class="slide" alt="Chatham Residence 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201279/08-25.048.036A.JPG" class="slide" alt="Chatham Residence 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201281/10-25.048.040A.JPG" class="slide" alt="Chatham Residence 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201282/11-25.048.032A.JPG" class="slide" alt="Chatham Residence 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201283/12-IMG_4694-2.jpg" class="slide" alt="Chatham Residence 圖片 15" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 15</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>美國紐約州查塔姆</span>
-                  </div>
-                  <h3 class="card-title">Chatham Residence</h3>
-                  <p class="card-by">Desai Chia Architecture</p>
-                  <p class="card-desc">查塔姆住宅 (Chatham Residence) 位於紐約州哥倫比亞縣，佔地 80 英畝。當我們第一次參觀該地產時，這裡主要是次生森林，石牆縱橫交錯，曾經劃定牧場和田野——這提醒人們，該地區的牧場和農業遺產一直延續到今天。在最初繞著山坡散步時，我們的客戶談到了他們對遠離紐約市的新生活的渴望。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Chatham Residence 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>House</span><span>美國紐約州查塔姆</span><span>發售日期：2026 年 3 月 18 日</span><span>標籤： 獎項 / 查塔姆 / desai-chia-architecture / fa26</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/chatham-residence" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-mrtn-architects-laneway-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/05/mrtn-architects-carlton-laneway-house-melbourne-sq_dezeen_2364_col_0-852x852.jpg" class="slide active" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/mrtn-architects-carlton-laneway-house-melbourne_dezeen_2364_col_27-scaled.jpg" class="slide" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/mrtn-architects-carlton-laneway-house-melbourne_dezeen_2364_col_23-scaled.jpg" class="slide" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/mrtn-architects-carlton-laneway-house-melbourne_dezeen_2364_col_22-scaled.jpg" class="slide" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/the-corner-store-residential-extension-ian-moore-architects-surry-hills-sydney-australia-architecture_dezeen_2364_col_1_square-191x191.jpg" class="slide" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/mrtn-architects-carlton-laneway-house-melbourne_dezeen_2364_col_6-scaled.jpg" class="slide" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/mrtn-architects-carlton-laneway-house-melbourne_dezeen_2364_col_17-scaled.jpg" class="slide" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes 圖片 7" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 7</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>擴充</span>
-                  </div>
-                  <h3 class="card-title">MRTN Architects extends Melbourne home with cluster of red-brick volumes</h3>
-                  <p class="card-by">MRTN Architects</p>
-                  <p class="card-desc">澳洲工作室 MRTN Architects 完成了墨爾本的巷道別墅 (Laneway House)，擴建了維多利亞風格的露台，並採用紅色磚、金屬和木材的「拼貼」形式。這棟住宅位於卡爾頓郊區，坐落在維多利亞時代的巷道網絡中，這裡的住宅呈現出傳統的面向街道的臨街面，並回到由一座由紅磚建築群定義的小巷。後 MRTN 建築師事務所以一系列紅磚體量擴展了墨爾本的住宅，這首先出現在 Dezeen 上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">MRTN Architects extends Melbourne home with cluster of red-brick volumes 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>擴充</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/06/12/mrtn-architects-laneway-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-moxon-architects-corriebeg">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/04/moxon-architects-corriebeg-home-extension-scotland-sq_dezeen_2364_col_2-852x852.jpg" class="slide active" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/moxon-architects-corriebeg-home-extension-scotland_dezeen_2364_col_3.jpg" class="slide" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/moxon-architects-corriebeg-home-extension-scotland_dezeen_2364_col_4.jpg" class="slide" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/moxon-architects-corriebeg-home-extension-scotland_dezeen_2364_col_7-scaled.jpg" class="slide" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/bprom-house-latvia-oad-sq_dezeen_2364_col_3-191x191.jpg" class="slide" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/moxon-architects-corriebeg-home-extension-scotland_dezeen_2364_col_10.jpg" class="slide" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/moxon-architects-corriebeg-home-extension-scotland_dezeen_2364_col_11.jpg" class="slide" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland 圖片 7" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 7</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>亮點</span>
-                  </div>
-                  <h3 class="card-title">Moxon Architects references farmsteads for Corriebeg house extension in Scotland</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">蘇格蘭工作室 Moxon Architects 在阿伯丁郡鄉村擴建了一棟房屋，增加了兩座穀倉般的體量，這些體積覆蓋著木板條。該項目名為 Corriebeg，位於 Sauchen 村附近，涉及更新現有房屋以滿足嚴格的 Passivhaus 標準，同時引入新的起居和用餐空間、家庭辦公室、臥室。 Moxon Architects 引述蘇格蘭 Corriebeg 房屋擴建的農莊首先出現在 Dezeen 上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Moxon Architects references farmsteads for Corriebeg house extension in Scotland 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>亮點</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/04/09/moxon-architects-corriebeg/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2024-mississippi-loft">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713791151482Mississippi_Loft_Main_Level.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Mississippi Loft 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713882282370PKA_DRG_Streeter_150_Portland_Ave_001.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713882410989PKA_DRG_Streeter_150_Portland_Ave_032.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713882413168PKA_DRG_Streeter_150_Portland_Ave_034.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874338962Mississippi_Loft_-_007.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874337914Mississippi_Loft_-_201.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874338356Mississippi_Loft_-_001.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874340252Mississippi_Loft_-_021.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874336758Mississippi_Loft_-_102.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713882105355Whitney_Loft_-_023.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874329674Mississippi_Loft_-_061.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713882155796Whitney_Loft_-_005.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874337677Mississippi_Loft_-_103.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874340449Mississippi_Loft_-_028.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874335718Mississippi_Loft_-_077.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874339236Mississippi_Loft_-_015.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874341561Mississippi_Loft_-_032.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874329670Mississippi_Loft_-_034.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713791155454Mississippi_Loft_Upper_Level.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mississippi Loft 圖片 19" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 19</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2024 年 A+Awards，住宅 &gt; 公寓</span>
-                    <span>2024</span>
-                    <span>美國明尼蘇達州明尼阿波利斯</span>
-                  </div>
-                  <h3 class="card-title">Mississippi Loft</h3>
-                  <p class="card-by">PKA Architecture</p>
-                  <p class="card-desc">當客戶從海外生活回到明尼阿波利斯時，他們在明尼阿波利斯市中心一座俯瞰密西西比河的歷史建築中購買了兩塊原始貝殼。這座七層磚砌建築始建於 1879 年，在成為公寓大樓之前曾是一家麵粉廠和豪華酒店。長期以來，原始外殼一直被認為幾乎無法建造，因為它們佈滿了結構柱、機械堆疊和其他過去的遺跡。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Mississippi Loft 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2024 年 A+Awards，住宅 &gt; 公寓</span><span>美國明尼蘇達州明尼阿波利斯</span><span>資料來源：Architizer A+Awards 2024</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/mississippi-loft/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2024-mawhitipana-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341607966501_001.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Mawhitipana House 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341607966602_052.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mawhitipana House 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608354503_065.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mawhitipana House 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608425504_109.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mawhitipana House 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608518905_152.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mawhitipana House 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608592406_242.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mawhitipana House 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608681907_218.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mawhitipana House 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608683508_1623.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mawhitipana House 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608756909_749.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mawhitipana House 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608788810_1037.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mawhitipana House 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608882111_617.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mawhitipana House 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608883412_225.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Mawhitipana House 圖片 12" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 12</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2024 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（S 1000 - 2000 平方英尺）</span>
-                    <span>2024</span>
-                    <span>紐西蘭奧克蘭</span>
-                  </div>
-                  <h3 class="card-title">Mawhitipana House</h3>
-                  <p class="card-by">MacKayCurtis</p>
-                  <p class="card-desc">業主對這棟度假屋的簡介很簡單：最大限度地利用陽光、景觀和戶外生活。他們想要寬敞的戶外生活區，以便在室外而不是室內放鬆身心。這棟房子是對這項簡報的簡單回應；以較小的佔地面積對景觀進行微妙的干預，使業主能夠與周圍的景觀聯繫起來而不主宰它，同時模糊了內部和外部之間的界限。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Mawhitipana House 不是靠單一造型取勝，而是把 住宅室內 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>2024 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（S 1000 - 2000 平方英尺）</span><span>紐西蘭奧克蘭</span><span>資料來源：Architizer A+Awards 2024</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/mawhitipana-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adstyle-news_16g39bbccd7c1ac9">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1679488232_5374qr.jpg?x-oss-process=image/resize" class="slide active" alt="一园“知秋”，在上海600平米小院入诗入画 圖片 1" loading="eager"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 1</span>
-                  <span class="photo-tag photo-tag-a">AD Style</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>AD風格家居內部</span>
-                    <span>2024</span>
-                    <span>文雅小院</span>
-                  </div>
-                  <h3 class="card-title">一园“知秋”，在上海600平米小院入诗入画</h3>
-                  <p class="card-by">AD Style 編輯部</p>
-                  <p class="card-desc">走进上海市区的文雅小院，与清风明月同坐对饮</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">一园“知秋”，在上海600平米小院入诗入画 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。走进上海市区的文雅小院，与清风明月同坐对饮</p>
-                  <div class="card-facts"><span>AD風格家居內部</span><span>文雅小院</span><span>發佈時間：2024-11-28</span><span>Tags: 文雅小院 / 私家园庭 / 一园知秋</span></div>
-                  <div class="card-links"><a href="https://www.adstyle.com.cn/home/home-inside/news_16g39bbccd7c1ac9.html" target="_blank" rel="noopener">文章頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adstyle-news_17546b38701e1241">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1679488232_5374qr.jpg?x-oss-process=image/resize" class="slide active" alt="家的画像 圖片 1" loading="eager"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1635146944_0px3h4.jpg?x-oss-process=image/resize" class="slide" alt="家的画像 圖片 2" loading="eager"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1624353362_yjuinq.jpg?x-oss-process=image/resize" class="slide" alt="家的画像 圖片 3" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1622533953_p4ogff.jpg?x-oss-process=image/resize" class="slide" alt="家的画像 圖片 4" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 4</span>
-                  <span class="photo-tag photo-tag-a">AD Style</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>AD風格家居內部</span>
-                    <span>2023</span>
-                    <span>Versace</span>
-                  </div>
-                  <h3 class="card-title">家的画像</h3>
-                  <p class="card-by">AD Style 編輯部</p>
-                  <p class="card-desc">画家小池，把家“画”成自己最倾心的模样。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">家的画像 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。画家小池，把家“画”成自己最倾心的模样。</p>
-                  <div class="card-facts"><span>AD風格家居內部</span><span>Versace</span><span>發佈時間：2023-09-15</span><span>標籤： 2023年夏季號 / Versace / 孟菲斯</span></div>
-                  <div class="card-links"><a href="https://www.adstyle.com.cn/home/home-inside/news_17546b38701e1241.html" target="_blank" rel="noopener">文章頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-frame-api-120082" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203803/14.jpg" alt="House of Memories image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203805/1-Ground-Floor-Plan.jpg" alt="House of Memories image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203806/2-First-Floor-Plan.jpg" alt="House of Memories image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203807/3-Terrace-Floor-Plan.jpg" alt="House of Memories image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203790/1.jpg" alt="House of Memories image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203791/2.jpg" alt="House of Memories image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203792/3.jpg" alt="House of Memories image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203793/4.jpg" alt="House of Memories image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203794/5.jpg" alt="House of Memories image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/203795/6.jpg" alt="House of Memories image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_01 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">House of Memories<small>Studio Lagom<br>印度古吉拉特邦瓦爾薩德<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">記憶之家的誕生是為了滿足當代需求，同時尊重家族歷史和慶祝根源。這棟房子坐落在瓦爾薩德（Valsad）一塊 165&#x27; x 55&#x27; 的土地上，這座城市以其肥沃的農田和荷塘而聞名，這棟房子向周圍的環境致敬。新住宅建在該家庭以前擁有 22 個房間的住宅（同時也是他們的辦公室）的舊址上，解決了舊空間的局限性——房間小、佈局低效，</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>記憶之家的誕生是為了滿足當代需求，同時尊重家族歷史和慶祝根源。這棟房子坐落在瓦爾薩德（Valsad）一塊 165&#x27; x 55&#x27; 的土地上，這座城市以其肥沃的農田和荷塘而聞名，這棟房子向周圍的環境致敬。新住宅建在該家庭以前擁有 22 個房間的住宅（同時也是他們的辦公室）的舊址上，解決了舊空間的局限性——房間小、佈局低效，特別是對於年老的家庭成員和身體有困難的家庭成員。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_01 · <a href="https://frameweb.com/project/house-of-memories" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-119722" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201276/05-25.048.013A.JPG" alt="Chatham Residence image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201287/50-04-CHATHAM-MAIN-HOUSE-PLAN.png" alt="Chatham Residence image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201288/50-06-CHATHAM-MAIN-HOUSE-SECTION-01.png" alt="Chatham Residence image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201289/50-07-CHATHAM-MAIN-HOUSE-SECTION-02.png" alt="Chatham Residence image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201280/09-25.048.039A.JPG" alt="Chatham Residence image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201272/01--25.048.050A.JPG" alt="Chatham Residence image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201273/02--25.048.041A.JPG" alt="Chatham Residence image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201274/03-25.048.044A.JPG" alt="Chatham Residence image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201275/04-25.048.046A.JPG" alt="Chatham Residence image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201277/06-.048.014A.JPG" alt="Chatham Residence image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Chatham Residence<small>Desai Chia Architecture<br>美國紐約州查塔姆<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">查塔姆住宅 (Chatham Residence) 位於紐約州哥倫比亞縣，佔地 80 英畝。當我們第一次參觀該地產時，這裡主要是次生森林，石牆縱橫交錯，曾經劃定牧場和田野——這提醒人們，該地區的牧場和農業遺產一直延續到今天。在最初繞著山坡散步時，我們的客戶談到了他們對遠離紐約市的新生活的渴望。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>查塔姆住宅 (Chatham Residence) 位於紐約州哥倫比亞縣，佔地 80 英畝。當我們第一次參觀該地產時，這裡主要是次生森林，石牆縱橫交錯，曾經劃定牧場和田野——這提醒人們，該地區的牧場和農業遺產一直延續到今天。在最初繞著山坡散步時，我們的客戶談到了他們對遠離紐約市的新生活的渴望。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/chatham-residence" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-mrtn-architects-laneway-house" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/mrtn-architects-carlton-laneway-house-melbourne-sq_dezeen_2364_col_0-852x852.jpg" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/mrtn-architects-carlton-laneway-house-melbourne_dezeen_2364_col_27-scaled.jpg" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/mrtn-architects-carlton-laneway-house-melbourne_dezeen_2364_col_23-scaled.jpg" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/mrtn-architects-carlton-laneway-house-melbourne_dezeen_2364_col_22-scaled.jpg" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/the-corner-store-residential-extension-ian-moore-architects-surry-hills-sydney-australia-architecture_dezeen_2364_col_1_square-191x191.jpg" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/mrtn-architects-carlton-laneway-house-melbourne_dezeen_2364_col_6-scaled.jpg" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/mrtn-architects-carlton-laneway-house-melbourne_dezeen_2364_col_17-scaled.jpg" alt="MRTN Architects extends Melbourne home with cluster of red-brick volumes image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_03 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">MRTN Architects extends Melbourne home with cluster of red-brick volumes<small>MRTN Architects<br>擴充<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">澳洲工作室 MRTN Architects 完成了墨爾本的巷道別墅 (Laneway House)，擴建了維多利亞風格的露台，並採用紅色磚、金屬和木材的「拼貼」形式。這棟住宅位於卡爾頓郊區，坐落在維多利亞時代的巷道網絡中，這裡的住宅呈現出傳統的面向街道的臨街面，並回到由一座由紅磚建築群定義的小巷。後 MRTN 建築師事</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>澳洲工作室 MRTN Architects 完成了墨爾本的巷道別墅 (Laneway House)，擴建了維多利亞風格的露台，並採用紅色磚、金屬和木材的「拼貼」形式。這棟住宅位於卡爾頓郊區，坐落在維多利亞時代的巷道網絡中，這裡的住宅呈現出傳統的面向街道的臨街面，並回到由一座由紅磚建築群定義的小巷。後 MRTN 建築師事務所以一系列紅磚體量擴展了墨爾本的住宅，這首先出現在 Dezeen 上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_03 · <a href="https://www.dezeen.com/2026/06/12/mrtn-architects-laneway-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-moxon-architects-corriebeg" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/moxon-architects-corriebeg-home-extension-scotland-sq_dezeen_2364_col_2-852x852.jpg" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/moxon-architects-corriebeg-home-extension-scotland_dezeen_2364_col_3.jpg" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/moxon-architects-corriebeg-home-extension-scotland_dezeen_2364_col_4.jpg" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/moxon-architects-corriebeg-home-extension-scotland_dezeen_2364_col_7-scaled.jpg" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/bprom-house-latvia-oad-sq_dezeen_2364_col_3-191x191.jpg" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/moxon-architects-corriebeg-home-extension-scotland_dezeen_2364_col_10.jpg" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/moxon-architects-corriebeg-home-extension-scotland_dezeen_2364_col_11.jpg" alt="Moxon Architects references farmsteads for Corriebeg house extension in Scotland image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Moxon Architects references farmsteads for Corriebeg house extension in Scotland<small>Unknown architect<br>亮點<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">蘇格蘭工作室 Moxon Architects 在阿伯丁郡鄉村擴建了一棟房屋，增加了兩座穀倉般的體量，這些體積覆蓋著木板條。該項目名為 Corriebeg，位於 Sauchen 村附近，涉及更新現有房屋以滿足嚴格的 Passivhaus 標準，同時引入新的起居和用餐空間、家庭辦公室、臥室。 Moxon Architec</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>蘇格蘭工作室 Moxon Architects 在阿伯丁郡鄉村擴建了一棟房屋，增加了兩座穀倉般的體量，這些體積覆蓋著木板條。該項目名為 Corriebeg，位於 Sauchen 村附近，涉及更新現有房屋以滿足嚴格的 Passivhaus 標準，同時引入新的起居和用餐空間、家庭辦公室、臥室。 Moxon Architects 引述蘇格蘭 Corriebeg 房屋擴建的農莊首先出現在 Dezeen 上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · <a href="https://www.dezeen.com/2026/04/09/moxon-architects-corriebeg/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2024-mississippi-loft" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713791151482Mississippi_Loft_Main_Level.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mississippi Loft image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713882282370PKA_DRG_Streeter_150_Portland_Ave_001.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mississippi Loft image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713882410989PKA_DRG_Streeter_150_Portland_Ave_032.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mississippi Loft image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713882413168PKA_DRG_Streeter_150_Portland_Ave_034.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mississippi Loft image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874338962Mississippi_Loft_-_007.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mississippi Loft image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874337914Mississippi_Loft_-_201.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mississippi Loft image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874338356Mississippi_Loft_-_001.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mississippi Loft image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874340252Mississippi_Loft_-_021.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mississippi Loft image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713874336758Mississippi_Loft_-_102.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mississippi Loft image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713882105355Whitney_Loft_-_023.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mississippi Loft image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/24_05 · Architizer / 2024</p>
+        <h2 class="ac-title reveal">Mississippi Loft<small>PKA Architecture<br>美國明尼蘇達州明尼阿波利斯<br>大眾選擇獎得主，2024 年 A+Awards，住宅 &gt; 公寓</small></h2>
+        <p class="ac-lead reveal">當客戶從海外生活回到明尼阿波利斯時，他們在明尼阿波利斯市中心一座俯瞰密西西比河的歷史建築中購買了兩塊原始貝殼。這座七層磚砌建築始建於 1879 年，在成為公寓大樓之前曾是一家麵粉廠和豪華酒店。長期以來，原始外殼一直被認為幾乎無法建造，因為它們佈滿了結構柱、機械堆疊和其他過去的遺跡。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>當客戶從海外生活回到明尼阿波利斯時，他們在明尼阿波利斯市中心一座俯瞰密西西比河的歷史建築中購買了兩塊原始貝殼。這座七層磚砌建築始建於 1879 年，在成為公寓大樓之前曾是一家麵粉廠和豪華酒店。長期以來，原始外殼一直被認為幾乎無法建造，因為它們佈滿了結構柱、機械堆疊和其他過去的遺跡。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/24_05 · <a href="https://architizer.com/projects/mississippi-loft/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2024-mawhitipana-house" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341607966501_001.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mawhitipana House image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341607966602_052.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mawhitipana House image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608354503_065.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mawhitipana House image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608425504_109.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mawhitipana House image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608518905_152.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mawhitipana House image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608592406_242.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mawhitipana House image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608681907_218.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mawhitipana House image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608683508_1623.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mawhitipana House image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608756909_749.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mawhitipana House image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171341608788810_1037.Mawhitipana-House-Photo-by-Simon-Wilson.jpg?w=1680&amp;q=60&amp;auto=format" alt="Mawhitipana House image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/24_06 · Architizer / 2024</p>
+        <h2 class="ac-title reveal">Mawhitipana House<small>MacKayCurtis<br>紐西蘭奧克蘭<br>2024 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（S 1000 - 2000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">業主對這棟度假屋的簡介很簡單：最大限度地利用陽光、景觀和戶外生活。他們想要寬敞的戶外生活區，以便在室外而不是室內放鬆身心。這棟房子是對這項簡報的簡單回應；以較小的佔地面積對景觀進行微妙的干預，使業主能夠與周圍的景觀聯繫起來而不主宰它，同時模糊了內部和外部之間的界限。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>業主對這棟度假屋的簡介很簡單：最大限度地利用陽光、景觀和戶外生活。他們想要寬敞的戶外生活區，以便在室外而不是室內放鬆身心。這棟房子是對這項簡報的簡單回應；以較小的佔地面積對景觀進行微妙的干預，使業主能夠與周圍的景觀聯繫起來而不主宰它，同時模糊了內部和外部之間的界限。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/24_06 · <a href="https://architizer.com/projects/mawhitipana-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adstyle-news_16g39bbccd7c1ac9" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1679488232_5374qr.jpg?x-oss-process=image/resize" alt="一园“知秋”，在上海600平米小院入诗入画 image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · ADS/24_07 · AD Style / 2024</p>
+        <h2 class="ac-title reveal">一园“知秋”，在上海600平米小院入诗入画<small>AD Style 編輯部<br>文雅小院<br>AD風格家居內部</small></h2>
+        <p class="ac-lead reveal">走进上海市区的文雅小院，与清风明月同坐对饮</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>走进上海市区的文雅小院，与清风明月同坐对饮</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE ADS/24_07 · <a href="https://www.adstyle.com.cn/home/home-inside/news_16g39bbccd7c1ac9.html" target="_blank" rel="noopener">文章頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adstyle-news_17546b38701e1241" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1679488232_5374qr.jpg?x-oss-process=image/resize" alt="家的画像 image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1635146944_0px3h4.jpg?x-oss-process=image/resize" alt="家的画像 image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1624353362_yjuinq.jpg?x-oss-process=image/resize" alt="家的画像 image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1622533953_p4ogff.jpg?x-oss-process=image/resize" alt="家的画像 image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · ADS/23_08 · AD Style / 2023</p>
+        <h2 class="ac-title reveal">家的画像<small>AD Style 編輯部<br>Versace<br>AD風格家居內部</small></h2>
+        <p class="ac-lead reveal">画家小池，把家“画”成自己最倾心的模样。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>画家小池，把家“画”成自己最倾心的模样。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE ADS/23_08 · <a href="https://www.adstyle.com.cn/home/home-inside/news_17546b38701e1241.html" target="_blank" rel="noopener">文章頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

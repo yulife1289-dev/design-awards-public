@@ -3,642 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-05-30</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD Style 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-05-30 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-05-30</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-05-30 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD Style 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-05-30.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD Style</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-05-30.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adstyle-news_14g2aa356682694f">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://oimg1.selfimg.com.cn/adcms/20265/d0edeee51779844929855.jpg" class="slide active" alt="在光与秩序之间 Written in Light 圖片 1" loading="eager"><img src="https://oimg2.selfimg.com.cn/adcms/20265/975f549d1779844939947.jpg" class="slide" alt="在光与秩序之间 Written in Light 圖片 2" loading="eager"><img src="https://oimg1.selfimg.com.cn/adcms/20265/34e474be1779844944144.jpg" class="slide" alt="在光与秩序之间 Written in Light 圖片 3" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/20265/379f55891779844948343.jpg" class="slide" alt="在光与秩序之间 Written in Light 圖片 4" loading="lazy"><img src="https://oimg2.selfimg.com.cn/adcms/20265/83d3033d1779844951934.jpg" class="slide" alt="在光与秩序之间 Written in Light 圖片 5" loading="lazy"><img src="https://oimg2.selfimg.com.cn/adcms/20265/3d6b8dca1779844955510.jpg" class="slide" alt="在光与秩序之间 Written in Light 圖片 6" loading="lazy"><img src="https://oimg2.selfimg.com.cn/adcms/20265/d7a6b1671779844959197.jpg" class="slide" alt="在光与秩序之间 Written in Light 圖片 7" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20265/7723da571779844962986.jpg" class="slide" alt="在光与秩序之间 Written in Light 圖片 8" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/20265/258de9db1779844966983.jpg" class="slide" alt="在光与秩序之间 Written in Light 圖片 9" loading="lazy"><img src="https://oimg2.selfimg.com.cn/adcms/20265/1ba936051779844971374.jpg" class="slide" alt="在光与秩序之间 Written in Light 圖片 10" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/20265/fe695ac91779844977526.jpg" class="slide" alt="在光与秩序之间 Written in Light 圖片 11" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20265/c90183481779844982943.jpg" class="slide" alt="在光与秩序之间 Written in Light 圖片 12" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/20265/b79e97751779844987750.jpg" class="slide" alt="在光与秩序之间 Written in Light 圖片 13" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20265/894619f41779844992033.jpg" class="slide" alt="在光与秩序之间 Written in Light 圖片 14" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1669820618_4bhjzl.jpg?x-oss-process=image/resize" class="slide" alt="在光与秩序之间 Written in Light 圖片 15" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1660809196_j02y2n.jpg?x-oss-process=image/resize" class="slide" alt="在光与秩序之间 Written in Light 圖片 16" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1657185769_mhna6e.jpg?x-oss-process=image/resize" class="slide" alt="在光与秩序之间 Written in Light 圖片 17" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1649215925_3c5tel.jpg?x-oss-process=image/resize" class="slide" alt="在光与秩序之间 Written in Light 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-a">AD Style</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>AD風格居家旅遊</span>
-                    <span>2026</span>
-                    <span>巴黎</span>
-                  </div>
-                  <h3 class="card-title">在光与秩序之间 Written in Light</h3>
-                  <p class="card-by">AD Style 編輯部</p>
-                  <p class="card-desc">在巴黎，街区往往以高密度展开，建筑彼此压缩，光线因此显得稀缺而珍贵。正是在这样的背景下，自称有“左岸情结”的Isabelle Dubern Mallevays选中了这套位于右岸十六区的顶层公寓，因为它的露台和光线以及一种可被重新想象的结构。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">在光与秩序之间 Written in Light 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」調整空間氣質，最後透過「透過壓縮、分層與多重使用提高空間記憶密度，讓小尺度住宅仍然具有完整敘事」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>AD風格居家旅遊</span><span>巴黎</span><span>發佈時間：2026-05-27</span><span>Tags: 2026年五月号 / 巴黎 / 室内设计</span></div>
-                  <div class="card-links"><a href="https://www.adstyle.com.cn/home/home-tour/news_14g2aa356682694f.html" target="_blank" rel="noopener">文章頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-121409">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207427/1.jpg" class="slide active" alt="Jindi Xihai Open Floor 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207487/夜间外观.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207488/老人与小孩在此活动.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207491/儿童活动室完整.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207492/傍晚的休息区.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207493/儿童活动室内部.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207495/儿童活动室内部2.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207496/活动室.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207498/空间.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207500/活动室2.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207501/晴天-局部外观.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207502/室外玩具.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207503/天窗下的小休息区.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207504/夜间外观-局部.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207505/休息区域.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207506/平面图1.png" class="slide" alt="Jindi Xihai Open Floor 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207507/平面图2.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 17" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207509/平面图3.jpg" class="slide" alt="Jindi Xihai Open Floor 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，共享居住綜合體</span>
-                    <span>2026</span>
-                    <span>中國, 廣東省, 佛山市, 順德區, 西海村 郵遞區號: 528311</span>
-                  </div>
-                  <h3 class="card-title">Jindi Xihai Open Floor</h3>
-                  <p class="card-by">Wei Banghui</p>
-                  <p class="card-desc">金地西海開放式樓層工程位於中國佛山，於2025年1月完工。超常態設計以「社區是一個自我生長的有機體」為理念，將一塊215平方公尺的閒置高架改造成「家外之家」。透過三個功能場景的差異化定位，打造出更愉悅舒適的過渡社區空間，讓生活與自然融為一體，讓住戶體驗人與人之間純粹的溫暖和真誠的聯繫。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Jindi Xihai Open Floor 不是靠單一造型取勝，而是把 舊屋改造 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>共享居住綜合體</span><span>中國, 廣東省, 佛山市, 順德區, 西海村 郵遞區號: 528311</span><span>發售日期：2026 年 4 月 22 日</span><span>標籤： 獎項 / 中國 / 共享居住綜合體 / fa26</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/jindi-xihai-open-floor" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-118101">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204780/Uniek_Operngasse_©Sophie_Menegaldo_016.jpg" class="slide active" alt="Altbau [BM&amp;a] 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204775/TOP_Uniek_Operngasse_©Sophie_Menegaldo_018.jpg" class="slide" alt="Altbau [BM&amp;a] 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204776/Uniek_Operngasse_©Sophie_Menegaldo_001.jpg" class="slide" alt="Altbau [BM&amp;a] 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204778/Uniek_Operngasse_©Sophie_Menegaldo_005.jpg" class="slide" alt="Altbau [BM&amp;a] 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204779/Uniek_Operngasse_©Sophie_Menegaldo_010.jpg" class="slide" alt="Altbau [BM&amp;a] 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204782/Uniek_Operngasse_©Sophie_Menegaldo_024.jpg" class="slide" alt="Altbau [BM&amp;a] 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204783/Uniek_Operngasse_©Sophie_Menegaldo_025.jpg" class="slide" alt="Altbau [BM&amp;a] 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204786/Uniek_Operngasse_©Sophie_Menegaldo_035.jpg" class="slide" alt="Altbau [BM&amp;a] 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204788/Uniek_Operngasse_©Sophie_Menegaldo_046.jpg" class="slide" alt="Altbau [BM&amp;a] 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204789/Uniek_Operngasse_©Sophie_Menegaldo_039.jpg" class="slide" alt="Altbau [BM&amp;a] 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205015/before&amp;after.png" class="slide" alt="Altbau [BM&amp;a] 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205047/beschreibung_schlafzimmer.png" class="slide" alt="Altbau [BM&amp;a] 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205049/beschreibung.png" class="slide" alt="Altbau [BM&amp;a] 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/206458/hiddensafe_before&amp;after_sophiemenegaldo.png" class="slide" alt="Altbau [BM&amp;a] 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/206459/VR_before&amp;after_sophiemenegaldo.png" class="slide" alt="Altbau [BM&amp;a] 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204791/grundrissl.jpg" class="slide" alt="Altbau [BM&amp;a] 圖片 16" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 16</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，大型公寓</span>
-                    <span>2026</span>
-                    <span>奧地利維也納</span>
-                  </div>
-                  <h3 class="card-title">Altbau [BM&amp;a]</h3>
-                  <p class="card-by">Uniek / Innenarchitektur</p>
-                  <p class="card-desc">「公寓和建築的歷史特色以及維也納和新藝術時代的精神都被精心地復活了。」原始元素以現代方式重新詮釋，同時被精心、真實地重建。隱形加熱和冷卻天花板現在取代了傳統的散熱器和空調裝置。新鋪設的星形鑲木地板與修復後的人字形地板相得益彰，而手繪的凹形線條則重現了過去時代的精緻優雅。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Altbau [BM&amp;a] 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>大型公寓</span><span>奧地利維也納</span><span>發佈日期：2026 年 4 月 14 日</span><span>標籤： 奧地利 / 獎項 / fa26 / 大型公寓</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/altbau-bma" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adstyle-news_16133c25be3ec20f">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://oimg1.selfimg.com.cn/adcms/20265/46af65711779931734124.jpg" class="slide active" alt="最是人间烟火气 The Spark of Life 圖片 1" loading="eager"><img src="https://oimg2.selfimg.com.cn/adcms/20265/5392e31d1779931745568.jpg" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 2" loading="eager"><img src="https://oimg3.selfimg.com.cn/adcms/20265/286670b31779931754477.jpg" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 3" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20265/80182b831779931767789.jpg" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 4" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/20265/fd6131991779931780655.jpg" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 5" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20265/b369c2341779931794862.jpg" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 6" loading="lazy"><img src="https://oimg2.selfimg.com.cn/adcms/20265/9784490b1779931805165.jpg" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 7" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/20265/a4744fbb1779931821381.jpg" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 8" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/20265/711615f81779931835685.jpg" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 9" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20265/648f37111779931844487.jpg" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 10" loading="lazy"><img src="https://oimg2.selfimg.com.cn/adcms/20265/1eb9bf7b1779931851760.jpg" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 11" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1675323779_mj8903.jpg?x-oss-process=image/resize" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 12" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1675391192_3ucua5.jpg?x-oss-process=image/resize" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 13" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1675322596_580zj1.jpg?x-oss-process=image/resize" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 14" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1669925253_uf0d6e.jpg?x-oss-process=image/resize" class="slide" alt="最是人间烟火气 The Spark of Life 圖片 15" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 15</span>
-                  <span class="photo-tag photo-tag-a">AD Style</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>AD風格居家旅遊</span>
-                    <span>2026</span>
-                    <span>北京</span>
-                  </div>
-                  <h3 class="card-title">最是人间烟火气 The Spark of Life</h3>
-                  <p class="card-by">AD Style 編輯部</p>
-                  <p class="card-desc">“我们曾经将喜欢的风格与视觉融入他人的生活，但在笑笑家，功能是最重要的诉求和解决方案。”被精致打磨过的空间，不刻意追求风格，却以最贴合的姿态，让新家自带岁月沉淀的温润质感。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">最是人间烟火气 The Spark of Life 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。“我们曾经将喜欢的风格与视觉融入他人的生活，但在笑笑家，功能是最重要的诉求和解决方案。”被精致打磨过的空间，不刻意追求风格，却以最贴合的姿态，让新家自带岁月沉淀的温润质感。</p>
-                  <div class="card-facts"><span>AD風格居家旅遊</span><span>北京</span><span>發佈時間：2026-05-28</span><span>Tags: 2026年五月号 / 北京 / 室内设计</span></div>
-                  <div class="card-links"><a href="https://www.adstyle.com.cn/home/home-tour/news_16133c25be3ec20f.html" target="_blank" rel="noopener">文章頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-raul-sanchez-architects-sailor-house-interiors-spain">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/05/la-casa-del-pirata-house-interiors-spain-raul-sanchez-architects_dezeen_sq-1-1-852x852.jpg" class="slide active" alt="Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/la-casa-del-pirata-house-interiors-spain-raul-sanchez-architects_dezeen_2364_col_10-scaled.jpg" class="slide" alt="Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/la-casa-del-pirata-house-interiors-spain-raul-sanchez-architects_dezeen_2364_col_9-scaled.jpg" class="slide" alt="Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/la-casa-del-pirata-house-interiors-spain-raul-sanchez-architects_dezeen_2364_col_16-scaled.jpg" class="slide" alt="Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/la-casa-del-pirata-house-interiors-spain-raul-sanchez-architects_dezeen_2364_col_21-scaled.jpg" class="slide" alt="Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/la-casa-del-pirata-house-interiors-spain-raul-sanchez-architects_dezeen_2364_col_29.jpg" class="slide" alt="Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/la-casa-del-pirata-house-interiors-spain-raul-sanchez-architects_dezeen_2364_col_34-scaled.jpg" class="slide" alt="Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/la-casa-del-pirata-house-interiors-spain-raul-sanchez-architects_dezeen_2364_col_1-scaled.jpg" class="slide" alt="Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details 圖片 8" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/la-casa-del-pirata-house-interiors-spain-raul-sanchez-architects_dezeen_2364_col_2-scaled.jpg" class="slide" alt="Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details 圖片 9" loading="lazy"><img src="https://static.dezeen.com/uploads/2024/10/psm21-by-raul-sanchez-architects_dezeen_2364_col_sq1-191x191.jpg" class="slide" alt="Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details 圖片 10" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 10</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>內飾</span>
-                  </div>
-                  <h3 class="card-title">Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">西班牙事務所 Raúl Sánchez Architects 翻修了位於西班牙馬塔羅的一處住宅，該住宅屬於 19 世紀的一名水手，更新了其內飾，以適應他現在居住在那裡的後裔的生活方式。該房產最初是兩棟獨立的住宅，由水手安東尼·庫亞斯 (Antoni Cuyas) 於 1865 年合併，他希望透過勞爾·桑切斯建築師事務所 (Raúl Sánchez Architects) 的改造，將西班牙古老水手的住宅融入現代細節。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details 的強度在於它沒有把 舊屋改造 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>內飾</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/05/24/raul-sanchez-architects-sailor-house-interiors-spain/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-harper-house-renovation-restoration-gramercy-park-nyc-span-a">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/05/harper-house_span-architecture_dezeen_sq2-852x852.jpg" class="slide active" alt="Span Architecture restores New York residence associated with Bob Dylan 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/harper-house_span-architecture_dezeen_2364_col_4-scaled.jpg" class="slide" alt="Span Architecture restores New York residence associated with Bob Dylan 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/harper-house_span-architecture_dezeen_2364_col_18-scaled.jpg" class="slide" alt="Span Architecture restores New York residence associated with Bob Dylan 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/harper-house_span-architecture_dezeen_2364_col_0-scaled.jpg" class="slide" alt="Span Architecture restores New York residence associated with Bob Dylan 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/harper-house_span-architecture_dezeen_2364_col_15-scaled.jpg" class="slide" alt="Span Architecture restores New York residence associated with Bob Dylan 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/harper-house_span-architecture_dezeen_2364_col_13-scaled.jpg" class="slide" alt="Span Architecture restores New York residence associated with Bob Dylan 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/harper-house_span-architecture_dezeen_2364_col_2-scaled.jpg" class="slide" alt="Span Architecture restores New York residence associated with Bob Dylan 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2025/03/lalique-new-york-townhouse-maison-artiste_dezeen_2364_sq_26-1-191x191.jpg" class="slide" alt="Span Architecture restores New York residence associated with Bob Dylan 圖片 8" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/harper-house_span-architecture_dezeen_2364_col_24-scaled.jpg" class="slide" alt="Span Architecture restores New York residence associated with Bob Dylan 圖片 9" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/harper-house_span-architecture_dezeen_2364_col_30-scaled.jpg" class="slide" alt="Span Architecture restores New York residence associated with Bob Dylan 圖片 10" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 10</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>內飾</span>
-                  </div>
-                  <h3 class="card-title">Span Architecture restores New York residence associated with Bob Dylan</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">紐約工作室 Span Architecture 修復了紐約格拉梅西公園 (Gramercy Park) 的一座歷史悠久的聯排別墅，該別墅出現在鮑勃迪倫 (Bob Dylan) 專輯封面上，並具有華麗的內飾。該住宅因其與紐約市長詹姆斯哈珀的關係而被命名為哈珀之家，根據斯潘建築事務所的說法，「他的任期標誌著該社區的公民地位」。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Span Architecture restores New York residence associated with Bob Dylan 的強度在於它沒有把 舊屋改造 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>內飾</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/05/02/harper-house-renovation-restoration-gramercy-park-nyc-span-architecture/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2025-ravine-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593241330800_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Ravine House 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932413311001_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932417231002_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932418024003_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932418576004_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932419112005_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932419385006_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932419587007_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932419817008_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932420119009_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932420265010_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932420482011_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932420876012_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932421782013_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932422022014_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932422253015_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932422370016_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932422449017_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932422509018_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745932422582019_-_Scott_Norsworthy.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Ravine House 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 住宅翻新與擴建</span>
-                    <span>2025</span>
-                    <span>加拿大 米西索加</span>
-                  </div>
-                  <h3 class="card-title">Ravine House</h3>
-                  <p class="card-by">Orangeink Design</p>
-                  <p class="card-desc">該項目涉及對 1960 年代平房進行現代化改造，該平房包括四間臥室、三間浴室、廚房、餐廳、客廳、室內游泳池、通往峽谷的地下室出口和一個附屬的雙車庫。該專案簡介要求重新配置臥室，將其從四間減少到三間，開放式概念起居區，包括廚房、餐廳和起居區、較低層的大房間和健身房、室外甲板和新的前院社交聚會空間。該地點位於密西沙加洛恩公園附近一片樹木繁茂的土地上，面積為 105 英尺 x 600 英尺，距離多倫多市中心 25 公里。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Ravine House 不是靠單一造型取勝，而是把 舊屋改造 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 住宅翻新與擴建</span><span>加拿大 米西索加</span><span>資料來源：Architizer A+Awards 2025</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/ravine-house-5/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2025-qr3d">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1746030441776QR3D_06_Kitchen.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="QR3D 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1746030395859QR3D_01_Entry_and_Dining_Area.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="QR3D 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1746030417605QR3D_03_Stairs.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="QR3D 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1746030453332QR3D_07_Powder_Room.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="QR3D 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1746030410105QR3D_02_Oculus.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="QR3D 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1746030429662QR3D_04_Corridor.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="QR3D 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1746030464334Park_P2CF116819.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="QR3D 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1746258712806494_resize.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="QR3D 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1746281196577729A_resize.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="QR3D 圖片 9" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 9</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2025 年 A+Awards 評審團得獎者，住宅 &gt; 私人住宅（L 4000 - 6000 平方英尺）</span>
-                    <span>2025</span>
-                    <span>新加坡</span>
-                  </div>
-                  <h3 class="card-title">QR3D</h3>
-                  <p class="card-by">Park + Associates</p>
-                  <p class="card-desc">QR3D 是東南亞背景下 3D 列印的原型，這項技術尚未在建築業中廣泛採用。該項目於2021年投入使用，當時新加坡建築業在擺脫2020-2021年的動盪時期後，經歷了勞動力的巨大短缺。相應地，建築成本飆升。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">QR3D 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>2025 年 A+Awards 評審團得獎者，住宅 &gt; 私人住宅（L 4000 - 6000 平方英尺）</span><span>新加坡</span><span>資料來源：Architizer A+Awards 2025</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/qr3d/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adstyle-news_14g2aa356682694f" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · ADS/26_01 · AD Style / 2026</p>
+        <h2 class="ac-title reveal">在光与秩序之间 Written in Light<small>AD Style 編輯部<br>巴黎<br>AD風格居家旅遊</small></h2>
+        <p class="ac-lead reveal">在光与秩序之间 Written in Light 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>在光与秩序之间 Written in Light 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE ADS/26_01 · </p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-121409" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Jindi Xihai Open Floor<small>Wei Banghui<br>中國, 廣東省, 佛山市, 順德區, 西海村 郵遞區號: 528311<br>FRAME 獎，共享居住綜合體</small></h2>
+        <p class="ac-lead reveal">Jindi Xihai Open Floor 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Jindi Xihai Open Floor 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · </p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-118101" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Altbau [BM&amp;a]<small>Uniek / Innenarchitektur<br>奧地利維也納<br>FRAME 獎，大型公寓</small></h2>
+        <p class="ac-lead reveal">Altbau [BM&amp;a] 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Altbau [BM&amp;a] 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · </p>
+      </div>
+    </article>
+    
+    <article id="case-adstyle-news_16133c25be3ec20f" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · ADS/26_04 · AD Style / 2026</p>
+        <h2 class="ac-title reveal">最是人间烟火气 The Spark of Life<small>AD Style 編輯部<br>北京<br>AD風格居家旅遊</small></h2>
+        <p class="ac-lead reveal">最是人间烟火气 The Spark of Life 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>最是人间烟火气 The Spark of Life 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE ADS/26_04 · </p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-raul-sanchez-architects-sailor-house-interiors-spain" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_05 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details<small>Unknown architect<br>內飾<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Raúl Sánchez Architects splashes old sailor&#x27;s home in Spain with modern details 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_05 · </p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-harper-house-renovation-restoration-gramercy-park-nyc-span-a" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_06 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Span Architecture restores New York residence associated with Bob Dylan<small>Unknown architect<br>內飾<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">Span Architecture restores New York residence associated with Bob Dylan 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Span Architecture restores New York residence associated with Bob Dylan 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_06 · </p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2025-ravine-house" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/25_07 · Architizer / 2025</p>
+        <h2 class="ac-title reveal">Ravine House<small>Orangeink Design<br>加拿大 米西索加<br>2025 年 A+ 獎評審團得獎者，住宅 &gt; 住宅翻新與擴建</small></h2>
+        <p class="ac-lead reveal">Ravine House 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Ravine House 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/25_07 · </p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2025-qr3d" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/25_08 · Architizer / 2025</p>
+        <h2 class="ac-title reveal">QR3D<small>Park + Associates<br>新加坡<br>2025 年 A+Awards 評審團得獎者，住宅 &gt; 私人住宅（L 4000 - 6000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">QR3D 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>QR3D 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/25_08 · </p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

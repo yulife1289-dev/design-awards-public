@@ -3,643 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-07-05</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-07-05 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-07-05</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-07-05 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-07-05.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-07-05.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adus-this-355-square-foot-brussels-home-makes-a-case-for-pink-and-wavy-wood-panels">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa3923b/16:9/w_2560%2Cc_limit/6R5A9158.JPG" class="slide active" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa39242/master/w_1600%2Cc_limit/6R5A9086.JPG" class="slide" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa39239/master/w_1600%2Cc_limit/6R5A9024.JPG" class="slide" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa3923a/master/w_1600%2Cc_limit/6R5A9050.JPG" class="slide" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa3923c/master/w_1600%2Cc_limit/6R5A9139.JPG" class="slide" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa3923d/master/w_1600%2Cc_limit/6R5A9121.JPG" class="slide" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa3923e/master/w_1600%2Cc_limit/6R5A9131.JPG" class="slide" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa39241/master/w_1600%2Cc_limit/6R5A9070.JPG" class="slide" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa39244/master/w_1600%2Cc_limit/6R5A9059.JPG" class="slide" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa39245/master/w_1600%2Cc_limit/6R5A9039.JPG" class="slide" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa39243/master/w_1600%2Cc_limit/6R5A9073.JPG" class="slide" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa39246/master/w_1600%2Cc_limit/6R5A9188.JPG" class="slide" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa39238/master/w_1600%2Cc_limit/6R5A9213.JPG" class="slide" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 圖片 13" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 13</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>樓梯到</span>
-                  </div>
-                  <h3 class="card-title">This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">比利時市中心的微型公寓的靈感來自其充滿活力的社區和路易斯·巴拉甘</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>樓梯到</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/this-355-square-foot-brussels-home-makes-a-case-for-pink-and-wavy-wood-panels" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-119694">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201173/View2_DIning_Seaview.jpg" class="slide active" alt="House H 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201199/Sections.jpg" class="slide" alt="House H 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201200/Plans.jpg" class="slide" alt="House H 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201172/View1_Kitchen_Dining_Seaview.jpg" class="slide" alt="House H 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201174/View3_Dining_Living_Seaside_.jpg" class="slide" alt="House H 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201177/View6_Kitchen_Upperfloor.jpg" class="slide" alt="House H 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201178/View7_Entrance_Porch_Bedroom.jpg" class="slide" alt="House H 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201179/View8_Entrance_Staircase.jpg" class="slide" alt="House H 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201180/View9_Interior_Staircase_Inside.jpg" class="slide" alt="House H 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201181/View10_Kitchen_Groundfloor.jpg" class="slide" alt="House H 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201182/View11_Interior_Staircase.jpg" class="slide" alt="House H 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201175/View4_Lounge_Seaview.jpg" class="slide" alt="House H 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201176/View5_Balcony.jpg" class="slide" alt="House H 圖片 13" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 13</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>23233, 普利拉卡, 克羅埃西亞</span>
-                  </div>
-                  <h3 class="card-title">House H</h3>
-                  <p class="card-by">Banozic Architektur Studio</p>
-                  <p class="card-desc">House H Privlaka，克羅埃西亞 House H 是一個沿海住宅項目，加強了室內空間與亞得里亞海之間的連結。這棟房子坐落在一塊 600 平方米的土地上，俯瞰著西方地平線，被認為是一個連續的空間序列，建築、室內設計和景觀融合成一個無縫的生活體驗。該項目的創新之處在於其倒置的空間佈局，將大海視為室內不可分割的一部分。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">House H 的強度在於它沒有把 住宅室內 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>House</span><span>23233, 普利拉卡, 克羅埃西亞</span><span>發售日期：2026 年 2 月 11 日</span><span>標籤： 獎項 / banozic-architektur-studio / 克羅埃西亞 / fa26</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/house-h-2" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-119589">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201119/Deco-Farmer---KW-2.jpg" class="slide active" alt="An Urban Colour Reimagined 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201328/FloorPlan.jpg" class="slide" alt="An Urban Colour Reimagined 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201122/Deco-Farmer---KW-4.jpg" class="slide" alt="An Urban Colour Reimagined 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201124/Deco-Farmer---KW-6.jpg" class="slide" alt="An Urban Colour Reimagined 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201125/Deco-Farmer---KW-7.jpg" class="slide" alt="An Urban Colour Reimagined 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201126/Deco-Farmer---KW.jpg" class="slide" alt="An Urban Colour Reimagined 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201127/Deco-Farmer---KW-10.jpg" class="slide" alt="An Urban Colour Reimagined 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201128/Deco-Farmer---KW-3.jpg" class="slide" alt="An Urban Colour Reimagined 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201129/Deco-Farmer---KW-5.jpg" class="slide" alt="An Urban Colour Reimagined 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201130/Deco-Farmer---KW-9.jpg" class="slide" alt="An Urban Colour Reimagined 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201131/Deco-Farmer---KW-8.jpg" class="slide" alt="An Urban Colour Reimagined 圖片 11" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 11</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，小型公寓</span>
-                    <span>2026</span>
-                    <span>香港葵湧</span>
-                  </div>
-                  <h3 class="card-title">An Urban Colour Reimagined</h3>
-                  <p class="card-by">Deco Farmer Studio</p>
-                  <p class="card-desc">這不僅是一棟城市住宅；更是一棟城市住宅。這是一次徹底的空間重新構想，大膽地背離了已經發生了驚人轉變的傳統。這裡的目的是拆除既定的形式，建立一個充滿不羈、有趣的活力的令人興奮的庇護所，提供一種完全非傳統的生活體驗。在門廳內，引人注目的向日葵黃色結構巧妙地充當了謹慎的視覺屏幕，立即為空間增添了幾何興趣。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">An Urban Colour Reimagined 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>小公寓</span><span>香港葵湧</span><span>發售日期：2026 年 2 月 12 日</span><span>標籤： 獎項 / 裝飾農民工作室 / fa26 / 綠色</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/an-urban-colour-reimagined" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-self-build-housing-projects">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/07/joe-burke-leyton-house-london-hero_dezeen_2364_sq.jpg" class="slide active" alt="Seven self-build housing projects to inspire your own 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/07/helen-street-house-usa-mw-works-sq.jpg" class="slide" alt="Seven self-build housing projects to inspire your own 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2024/02/peckham-house-surman-weston-architecture-london-self-build-_dezeen_2364_sq-852x852.jpg" class="slide" alt="Seven self-build housing projects to inspire your own 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/01/clay-rise-templeton-ford_dezeen_2364_sq.jpg" class="slide" alt="Seven self-build housing projects to inspire your own 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2024/08/atwater-house-design-bitches-sq2.jpg" class="slide" alt="Seven self-build housing projects to inspire your own 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/07/tommy-rand-house-denmark_dezeen_2364_sq.jpg" class="slide" alt="Seven self-build housing projects to inspire your own 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2023/11/edge-house-studio-prototype_dezeen_2364_sq_1.jpg" class="slide" alt="Seven self-build housing projects to inspire your own 圖片 7" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 7</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>綜述</span>
-                  </div>
-                  <h3 class="card-title">Seven self-build housing projects to inspire your own</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">考慮建造自己的客製化房屋？以下是 Dezeen 檔案中的八個成功的住宅自建項目範例，可讓您發揮創意。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Seven self-build housing projects to inspire your own 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>綜述</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/07/04/self-build-housing-projects/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-sinaldaba-cecebre-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/06/cecebre-house-sinaldaba-studio-architecture-residential-spain-courtyard_dezeen_2364_sq-852x852.jpg" class="slide active" alt="Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/cecebre-house-sinaldaba-studio-architecture-residential-spain-courtyard_dezeen_2364_col_34.jpg" class="slide" alt="Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/cecebre-house-sinaldaba-studio-architecture-residential-spain-courtyard_dezeen_2364_col_27.jpg" class="slide" alt="Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/cecebre-house-sinaldaba-studio-architecture-residential-spain-courtyard_dezeen_2364_col_15.jpg" class="slide" alt="Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/cecebre-house-sinaldaba-studio-architecture-residential-spain-courtyard_dezeen_2364_col_3-scaled.jpg" class="slide" alt="Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2024/02/sabater-house-fran-silvestre-arquitectos-architecture-residential-house-spain-white-minimalism_dezeen_2364_sq-191x191.jpg" class="slide" alt="Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard 圖片 6" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 6</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>庭院</span>
-                  </div>
-                  <h3 class="card-title">Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">這座位於西班牙加利西亞的極簡主義住宅由當地建築工作室 Sinaldaba 設計，中心的新月形庭院創造了一個「家庭避難所」。這座三房住宅以所在城市的名字命名為 Cecebre House，部分坐落在傾斜的鄉村場地中。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>庭院</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/07/01/sinaldaba-cecebre-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-550-madison-is-home-to-a-hot-new-korean-restaurant-designed-by-david-rockwell">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/69f8a057623f224f843ca970/16:9/w_2560%2Cc_limit/550%2520MADISON_BAR%2520CHIMERA_WHISKEY%2520BAR%2520LOUNGE_072%2520FINAL%2520Credit%2520Jason%2520Varney.jpg" class="slide active" alt="550 Madison Is Home to a Hot New Korean Restaurant Designed by David Rockwell 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/69f8a06fa876b5f49b476c63/2:3/w_1600%2Cc_limit/550%2520MADISON_COTE%2520550_PORTAL_014%2520FINAL%2520Credit%2520Jason%2520Varney.jpg" class="slide" alt="550 Madison Is Home to a Hot New Korean Restaurant Designed by David Rockwell 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/69f503cbd3cd4b27c23bb995/master/w_1600%2Cc_limit/Longevity%2520Spa.jpeg" class="slide" alt="550 Madison Is Home to a Hot New Korean Restaurant Designed by David Rockwell 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0dcae3fc6c499a14b20714/master/w_1600%2Cc_limit/Screenshot%25202026-05-19%2520at%252010.38.50%25E2%2580%25AFAM.png" class="slide" alt="550 Madison Is Home to a Hot New Korean Restaurant Designed by David Rockwell 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f50479a61ec0a2eda43609/master/w_1600%2Cc_limit/SDG_ZOFFANY_MS_ZOF0244-04_1.jpg" class="slide" alt="550 Madison Is Home to a Hot New Korean Restaurant Designed by David Rockwell 圖片 5" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 5</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span></span>
-                  </div>
-                  <h3 class="card-title">550 Madison Is Home to a Hot New Korean Restaurant Designed by David Rockwell</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">另外，我們最喜歡的照明燈具將在 NYCxDesign 首次亮相，您的下一個生物駭客靜修中心（在義大利），以及本月的更多 AD 發現</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">550 Madison Is Home to a Hot New Korean Restaurant Designed by David Rockwell 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。另外，我們最喜歡的照明燈具將在 NYCxDesign 首次亮相，您的下一個生物駭客靜修中心（在義大利），以及本月的更多 AD 發現</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>位置未列出</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/550-madison-is-home-to-a-hot-new-korean-restaurant-designed-by-david-rockwell" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2022-canterbury-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165271184102902_Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Staged_Web__30.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Canterbury House 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712191370038_CY_Plans_for_Publication_pg_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712204343038_CY_Plans_for_Publication_pg_2-01.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712492771A301_Long_Section_Through_Library-01.png?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712492772A301_Long_Section-01.png?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712494484A302_Short_Sections-01.png?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712494491A302_Short_Sections-02.png?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712498568North_Elevation-01.png?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712498577West_Elevation-01.png?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165271184919903_Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Sun_Web__3_crop.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165271186769604_Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Staged_Web__28.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165271187863205_Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Staged_Web__21.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165271189636306_Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Staged_Web__19.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165271190571907_Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Staged_Web__25.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165271191286908_Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Staged_Web__16.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165271192286709_Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Sun_Web__1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165271193439710_Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Staged_Web__6.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165271195327611_Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Snow_Web__10.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165271196694812_Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Staged_Web__33.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1658790526403Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Staged_Web__1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Canterbury House 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2022 年 A+Awards 評審團得獎者，住宅 &gt; 私人住宅（S 1000-2000 平方英尺）</span>
-                    <span>2022</span>
-                    <span>美國德州奧斯汀</span>
-                  </div>
-                  <h3 class="card-title">Canterbury House</h3>
-                  <p class="card-by">Murray Legge Architecture</p>
-                  <p class="card-desc">坎特伯雷之家是一座緊湊的城市住宅。它包含兩間臥室、一間媒體室和一間完全獨立的客房套房，面積僅 1680 平方英尺。住宅的形式靈感來自於傳統的狗步屋；庭院作為居住空間的核心，將兩側的緊湊空間延伸為私人戶外空間。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Canterbury House 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「透過壓縮、分層與多重使用提高空間記憶密度，讓小尺度住宅仍然具有完整敘事」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>2022 年 A+Awards 評審團得獎者，住宅 &gt; 私人住宅（S 1000-2000 平方英尺）</span><span>美國德州奧斯汀</span><span>資料來源：Architizer A+Awards 2022</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/canterbury-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2022-casa-acqua">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520637493CASA_ACQUA_FOTO_01.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Casa Acqua 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651523593462IMPLANTA%C3%87%C3%83O.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651523710672plan.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520644680CASA_ACQUA_FOTO_02_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520650316CASA_ACQUA_FOTO_03_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520655971CASA_ACQUA_FOTO_04_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520660155CASA_ACQUA_FOTO_05_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520664644CASA_ACQUA_FOTO_06_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520669123CASA_ACQUA_FOTO_07_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520674068CASA_ACQUA_FOTO_08_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520677896CASA_ACQUA_FOTO_09_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520681884CASA_ACQUA_FOTO_10_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520689479CASA_ACQUA_FOTO_11_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520694557CASA_ACQUA_FOTO_12_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651523627586Projeto_02.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651523633503Projeto_03.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651523643143Projeto_04.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651523646810Projeto_05.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651523657256Projeto_06.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651523665191Projeto_07.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Acqua 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2022 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</span>
-                    <span>2022</span>
-                    <span>巴西貝洛奧裡藏特</span>
-                  </div>
-                  <h3 class="card-title">Casa Acqua</h3>
-                  <p class="card-by">Cristina Menezes Arquitetura</p>
-                  <p class="card-desc">Casa Acqua 的概念設計與原來的羅馬房屋相同。原始的羅馬房屋是在維蘇威火山的石化熔岩下發現的，它有一個“O”形平面圖，房間周圍有陽台，內部庭院允許所有空間的視覺整合，中央噴泉象徵著繁榮！這種類型適合我們當前的時代，Casa Acqua 使用四個模組，按區域進行個性化設計，帶有內部庭院，周圍環繞著水鏡、美學元素，並帶來了鏡像建築和周圍環境的令人驚訝的情況！</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Casa Acqua 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>2022 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</span><span>巴西貝洛奧裡藏特</span><span>資料來源：Architizer A+Awards 2022</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/casa-acqua/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adus-this-355-square-foot-brussels-home-makes-a-case-for-pink-and-wavy-wood-panels" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa3923b/16:9/w_2560%2Cc_limit/6R5A9158.JPG" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa39242/master/w_1600%2Cc_limit/6R5A9086.JPG" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa39239/master/w_1600%2Cc_limit/6R5A9024.JPG" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa3923a/master/w_1600%2Cc_limit/6R5A9050.JPG" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa3923c/master/w_1600%2Cc_limit/6R5A9139.JPG" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa3923d/master/w_1600%2Cc_limit/6R5A9121.JPG" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa3923e/master/w_1600%2Cc_limit/6R5A9131.JPG" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa39241/master/w_1600%2Cc_limit/6R5A9070.JPG" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa39244/master/w_1600%2Cc_limit/6R5A9059.JPG" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f1056b1ed0fe39eaa39245/master/w_1600%2Cc_limit/6R5A9039.JPG" alt="This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_01 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">This 355-Square-Foot Brussels Home Makes a Case for Pink and Faux Bois Panels<small>AD editorial<br>樓梯到<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">比利時市中心的微型公寓的靈感來自其充滿活力的社區和路易斯·巴拉甘</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>比利時市中心的微型公寓的靈感來自其充滿活力的社區和路易斯·巴拉甘</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_01 · <a href="https://www.architecturaldigest.com/story/this-355-square-foot-brussels-home-makes-a-case-for-pink-and-wavy-wood-panels" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-119694" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201173/View2_DIning_Seaview.jpg" alt="House H image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201199/Sections.jpg" alt="House H image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201200/Plans.jpg" alt="House H image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201172/View1_Kitchen_Dining_Seaview.jpg" alt="House H image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201174/View3_Dining_Living_Seaside_.jpg" alt="House H image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201177/View6_Kitchen_Upperfloor.jpg" alt="House H image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201178/View7_Entrance_Porch_Bedroom.jpg" alt="House H image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201179/View8_Entrance_Staircase.jpg" alt="House H image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201180/View9_Interior_Staircase_Inside.jpg" alt="House H image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201181/View10_Kitchen_Groundfloor.jpg" alt="House H image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">House H<small>Banozic Architektur Studio<br>23233, 普利拉卡, 克羅埃西亞<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">House H Privlaka，克羅埃西亞 House H 是一個沿海住宅項目，加強了室內空間與亞得里亞海之間的連結。這棟房子坐落在一塊 600 平方米的土地上，俯瞰著西方地平線，被認為是一個連續的空間序列，建築、室內設計和景觀融合成一個無縫的生活體驗。該項目的創新之處在於其倒置的空間佈局，將大海視為室內不可分割的一</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>House H Privlaka，克羅埃西亞 House H 是一個沿海住宅項目，加強了室內空間與亞得里亞海之間的連結。這棟房子坐落在一塊 600 平方米的土地上，俯瞰著西方地平線，被認為是一個連續的空間序列，建築、室內設計和景觀融合成一個無縫的生活體驗。該項目的創新之處在於其倒置的空間佈局，將大海視為室內不可分割的一部分。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/house-h-2" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-119589" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201119/Deco-Farmer---KW-2.jpg" alt="An Urban Colour Reimagined image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201328/FloorPlan.jpg" alt="An Urban Colour Reimagined image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201122/Deco-Farmer---KW-4.jpg" alt="An Urban Colour Reimagined image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201124/Deco-Farmer---KW-6.jpg" alt="An Urban Colour Reimagined image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201125/Deco-Farmer---KW-7.jpg" alt="An Urban Colour Reimagined image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201126/Deco-Farmer---KW.jpg" alt="An Urban Colour Reimagined image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201127/Deco-Farmer---KW-10.jpg" alt="An Urban Colour Reimagined image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201128/Deco-Farmer---KW-3.jpg" alt="An Urban Colour Reimagined image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201129/Deco-Farmer---KW-5.jpg" alt="An Urban Colour Reimagined image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201130/Deco-Farmer---KW-9.jpg" alt="An Urban Colour Reimagined image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">An Urban Colour Reimagined<small>Deco Farmer Studio<br>香港葵湧<br>FRAME 獎，小型公寓</small></h2>
+        <p class="ac-lead reveal">這不僅是一棟城市住宅；更是一棟城市住宅。這是一次徹底的空間重新構想，大膽地背離了已經發生了驚人轉變的傳統。這裡的目的是拆除既定的形式，建立一個充滿不羈、有趣的活力的令人興奮的庇護所，提供一種完全非傳統的生活體驗。在門廳內，引人注目的向日葵黃色結構巧妙地充當了謹慎的視覺屏幕，立即為空間增添了幾何興趣。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>這不僅是一棟城市住宅；更是一棟城市住宅。這是一次徹底的空間重新構想，大膽地背離了已經發生了驚人轉變的傳統。這裡的目的是拆除既定的形式，建立一個充滿不羈、有趣的活力的令人興奮的庇護所，提供一種完全非傳統的生活體驗。在門廳內，引人注目的向日葵黃色結構巧妙地充當了謹慎的視覺屏幕，立即為空間增添了幾何興趣。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · <a href="https://frameweb.com/project/an-urban-colour-reimagined" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-self-build-housing-projects" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/07/joe-burke-leyton-house-london-hero_dezeen_2364_sq.jpg" alt="Seven self-build housing projects to inspire your own image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/07/helen-street-house-usa-mw-works-sq.jpg" alt="Seven self-build housing projects to inspire your own image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2024/02/peckham-house-surman-weston-architecture-london-self-build-_dezeen_2364_sq-852x852.jpg" alt="Seven self-build housing projects to inspire your own image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/01/clay-rise-templeton-ford_dezeen_2364_sq.jpg" alt="Seven self-build housing projects to inspire your own image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2024/08/atwater-house-design-bitches-sq2.jpg" alt="Seven self-build housing projects to inspire your own image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/07/tommy-rand-house-denmark_dezeen_2364_sq.jpg" alt="Seven self-build housing projects to inspire your own image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2023/11/edge-house-studio-prototype_dezeen_2364_sq_1.jpg" alt="Seven self-build housing projects to inspire your own image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Seven self-build housing projects to inspire your own<small>Unknown architect<br>綜述<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">考慮建造自己的客製化房屋？以下是 Dezeen 檔案中的八個成功的住宅自建項目範例，可讓您發揮創意。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>考慮建造自己的客製化房屋？以下是 Dezeen 檔案中的八個成功的住宅自建項目範例，可讓您發揮創意。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · <a href="https://www.dezeen.com/2026/07/04/self-build-housing-projects/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-sinaldaba-cecebre-house" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/cecebre-house-sinaldaba-studio-architecture-residential-spain-courtyard_dezeen_2364_sq-852x852.jpg" alt="Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/cecebre-house-sinaldaba-studio-architecture-residential-spain-courtyard_dezeen_2364_col_34.jpg" alt="Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/cecebre-house-sinaldaba-studio-architecture-residential-spain-courtyard_dezeen_2364_col_27.jpg" alt="Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/cecebre-house-sinaldaba-studio-architecture-residential-spain-courtyard_dezeen_2364_col_15.jpg" alt="Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/cecebre-house-sinaldaba-studio-architecture-residential-spain-courtyard_dezeen_2364_col_3-scaled.jpg" alt="Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2024/02/sabater-house-fran-silvestre-arquitectos-architecture-residential-house-spain-white-minimalism_dezeen_2364_sq-191x191.jpg" alt="Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_05 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Sinaldaba organises Cecebre House in Spain around crescent-shaped courtyard<small>Unknown architect<br>庭院<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">這座位於西班牙加利西亞的極簡主義住宅由當地建築工作室 Sinaldaba 設計，中心的新月形庭院創造了一個「家庭避難所」。這座三房住宅以所在城市的名字命名為 Cecebre House，部分坐落在傾斜的鄉村場地中。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>這座位於西班牙加利西亞的極簡主義住宅由當地建築工作室 Sinaldaba 設計，中心的新月形庭院創造了一個「家庭避難所」。這座三房住宅以所在城市的名字命名為 Cecebre House，部分坐落在傾斜的鄉村場地中。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_05 · <a href="https://www.dezeen.com/2026/07/01/sinaldaba-cecebre-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-550-madison-is-home-to-a-hot-new-korean-restaurant-designed-by-david-rockwell" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f8a057623f224f843ca970/16:9/w_2560%2Cc_limit/550%2520MADISON_BAR%2520CHIMERA_WHISKEY%2520BAR%2520LOUNGE_072%2520FINAL%2520Credit%2520Jason%2520Varney.jpg" alt="550 Madison Is Home to a Hot New Korean Restaurant Designed by David Rockwell image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f8a06fa876b5f49b476c63/2:3/w_1600%2Cc_limit/550%2520MADISON_COTE%2520550_PORTAL_014%2520FINAL%2520Credit%2520Jason%2520Varney.jpg" alt="550 Madison Is Home to a Hot New Korean Restaurant Designed by David Rockwell image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f503cbd3cd4b27c23bb995/master/w_1600%2Cc_limit/Longevity%2520Spa.jpeg" alt="550 Madison Is Home to a Hot New Korean Restaurant Designed by David Rockwell image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0dcae3fc6c499a14b20714/master/w_1600%2Cc_limit/Screenshot%25202026-05-19%2520at%252010.38.50%25E2%2580%25AFAM.png" alt="550 Madison Is Home to a Hot New Korean Restaurant Designed by David Rockwell image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f50479a61ec0a2eda43609/master/w_1600%2Cc_limit/SDG_ZOFFANY_MS_ZOF0244-04_1.jpg" alt="550 Madison Is Home to a Hot New Korean Restaurant Designed by David Rockwell image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_06 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">550 Madison Is Home to a Hot New Korean Restaurant Designed by David Rockwell<small>AD editorial<br><br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">另外，我們最喜歡的照明燈具將在 NYCxDesign 首次亮相，您的下一個生物駭客靜修中心（在義大利），以及本月的更多 AD 發現</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>另外，我們最喜歡的照明燈具將在 NYCxDesign 首次亮相，您的下一個生物駭客靜修中心（在義大利），以及本月的更多 AD 發現</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_06 · <a href="https://www.architecturaldigest.com/story/550-madison-is-home-to-a-hot-new-korean-restaurant-designed-by-david-rockwell" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2022-canterbury-house" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165271184102902_Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Staged_Web__30.jpg?w=1680&amp;q=60&amp;auto=format" alt="Canterbury House image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712191370038_CY_Plans_for_Publication_pg_1.jpg?w=1680&amp;q=60&amp;auto=format" alt="Canterbury House image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712204343038_CY_Plans_for_Publication_pg_2-01.jpg?w=1680&amp;q=60&amp;auto=format" alt="Canterbury House image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712492771A301_Long_Section_Through_Library-01.png?w=1680&amp;q=60&amp;auto=format" alt="Canterbury House image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712492772A301_Long_Section-01.png?w=1680&amp;q=60&amp;auto=format" alt="Canterbury House image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712494484A302_Short_Sections-01.png?w=1680&amp;q=60&amp;auto=format" alt="Canterbury House image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712494491A302_Short_Sections-02.png?w=1680&amp;q=60&amp;auto=format" alt="Canterbury House image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712498568North_Elevation-01.png?w=1680&amp;q=60&amp;auto=format" alt="Canterbury House image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652712498577West_Elevation-01.png?w=1680&amp;q=60&amp;auto=format" alt="Canterbury House image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165271184919903_Leonid_Furmansky_Murray_Legge_Curate_Homes_CY_House_Sun_Web__3_crop.jpg?w=1680&amp;q=60&amp;auto=format" alt="Canterbury House image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/22_07 · Architizer / 2022</p>
+        <h2 class="ac-title reveal">Canterbury House<small>Murray Legge Architecture<br>美國德州奧斯汀<br>2022 年 A+Awards 評審團得獎者，住宅 &gt; 私人住宅（S 1000-2000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">坎特伯雷之家是一座緊湊的城市住宅。它包含兩間臥室、一間媒體室和一間完全獨立的客房套房，面積僅 1680 平方英尺。住宅的形式靈感來自於傳統的狗步屋；庭院作為居住空間的核心，將兩側的緊湊空間延伸為私人戶外空間。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>坎特伯雷之家是一座緊湊的城市住宅。它包含兩間臥室、一間媒體室和一間完全獨立的客房套房，面積僅 1680 平方英尺。住宅的形式靈感來自於傳統的狗步屋；庭院作為居住空間的核心，將兩側的緊湊空間延伸為私人戶外空間。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/22_07 · <a href="https://architizer.com/projects/canterbury-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2022-casa-acqua" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520637493CASA_ACQUA_FOTO_01.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Acqua image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651523593462IMPLANTA%C3%87%C3%83O.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Acqua image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651523710672plan.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Acqua image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520644680CASA_ACQUA_FOTO_02_.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Acqua image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520650316CASA_ACQUA_FOTO_03_.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Acqua image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520655971CASA_ACQUA_FOTO_04_.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Acqua image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520660155CASA_ACQUA_FOTO_05_.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Acqua image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520664644CASA_ACQUA_FOTO_06_.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Acqua image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520669123CASA_ACQUA_FOTO_07_.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Acqua image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651520674068CASA_ACQUA_FOTO_08_.jpg?w=1680&amp;q=60&amp;auto=format" alt="Casa Acqua image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/22_08 · Architizer / 2022</p>
+        <h2 class="ac-title reveal">Casa Acqua<small>Cristina Menezes Arquitetura<br>巴西貝洛奧裡藏特<br>2022 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">Casa Acqua 的概念設計與原來的羅馬房屋相同。原始的羅馬房屋是在維蘇威火山的石化熔岩下發現的，它有一個“O”形平面圖，房間周圍有陽台，內部庭院允許所有空間的視覺整合，中央噴泉象徵著繁榮！這種類型適合我們當前的時代，Casa Acqua 使用四個模組，按區域進行個性化設計，帶有內部庭院，周圍環繞著水鏡、美學元素，</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Casa Acqua 的概念設計與原來的羅馬房屋相同。原始的羅馬房屋是在維蘇威火山的石化熔岩下發現的，它有一個“O”形平面圖，房間周圍有陽台，內部庭院允許所有空間的視覺整合，中央噴泉象徵著繁榮！這種類型適合我們當前的時代，Casa Acqua 使用四個模組，按區域進行個性化設計，帶有內部庭院，周圍環繞著水鏡、美學元素，並帶來了鏡像建築和周圍環境的令人驚訝的情況！</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/22_08 · <a href="https://architizer.com/projects/casa-acqua/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

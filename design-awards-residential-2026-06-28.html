@@ -3,643 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-28</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-28 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-28</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-28 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-28.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-28.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-frame-api-119928">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202835/Common-Practice_Dijkmagazijn-Scharwoude_01_Photo_Crispijn-van-Sas.jpg" class="slide active" alt="Dijkmagazijn Scharwoude 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202848/Common-Practice_Dijkmagazijn-Scharwoude_30_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202836/Common-Practice_Dijkmagazijn-Scharwoude_02_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202837/Common-Practice_Dijkmagazijn-Scharwoude_04_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202838/Common-Practice_Dijkmagazijn-Scharwoude_05_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202839/Common-Practice_Dijkmagazijn-Scharwoude_11_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202840/Common-Practice_Dijkmagazijn-Scharwoude_13_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202841/Common-Practice_Dijkmagazijn-Scharwoude_15_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202842/Common-Practice_Dijkmagazijn-Scharwoude_18_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202843/Common-Practice_Dijkmagazijn-Scharwoude_19_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202844/Common-Practice_Dijkmagazijn-Scharwoude_20_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202845/Common-Practice_Dijkmagazijn-Scharwoude_24_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202846/Common-Practice_Dijkmagazijn-Scharwoude_27_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202847/Common-Practice_Dijkmagazijn-Scharwoude_28_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202849/Common-Practice_Dijkmagazijn-Scharwoude_32_Photo_Crispijn-van-Sas.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202856/common-practice_shelter-scharwoude_101.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202857/common-practice_shelter-scharwoude_102.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 17" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202858/common-practice_shelter-scharwoude_104.jpg" class="slide" alt="Dijkmagazijn Scharwoude 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>IJsselmeerdijk 7, 1634 DM 沙爾沃德, 荷蘭</span>
-                  </div>
-                  <h3 class="card-title">Dijkmagazijn Scharwoude</h3>
-                  <p class="card-by">Common Practice</p>
-                  <p class="card-desc">Dijkmagazijn Scharwoude 探索生物基和循環遺產轉型。沙爾沃德 (Scharwoude) 的堤壩倉庫建於 1923 年，是負責監控前須德海 (Zuiderzee) 海岸線的堤壩管理員的儲存設施和住所。一個世紀後的現在，它被賦予了新的用途，作為賓館和駐地藝術家，專注於水和氣候挑戰。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Dijkmagazijn Scharwoude 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。Dijkmagazijn Scharwoude 探索生物基和循環遺產轉型。沙爾沃德 (Scharwoude) 的堤壩倉庫建於 1923 年，是負責監控前須德海 (Zuiderzee) 海岸線的堤壩管理員的儲存設施和住所。一個世紀後的現在，它被賦予了新的用途，作為賓館和駐地藝術家，專注於水和氣候挑戰。</p>
-                  <div class="card-facts"><span>House</span><span>IJsselmeerdijk 7, 1634 DM 沙爾沃德, 荷蘭</span><span>發布日期：2026 年 2 月 17 日</span><span>標籤： 獎項 / 常見做法 / 文化問題 / fa26</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/dijkmagazijn-scharwoude-1" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-119633">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202598/01_VPR07479_Vasso_Paraschi-copy.jpg" class="slide active" alt="Heraklion Apartment 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202632/Apartment-Heraklion_3D-floor-plan-2.jpg" class="slide" alt="Heraklion Apartment 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202633/Apartment-Heraklion_3D-floor-plan.jpg" class="slide" alt="Heraklion Apartment 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202634/Apartment-Heraklion_floor-plan.jpg" class="slide" alt="Heraklion Apartment 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202599/02_VPR07542_Vasso_Paraschi-copy.jpg" class="slide" alt="Heraklion Apartment 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202600/03_VPR07559_Vasso_Paraschi-copy.jpg" class="slide" alt="Heraklion Apartment 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202601/04_VPR07676_Vasso_Paraschi-copy.jpg" class="slide" alt="Heraklion Apartment 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202602/05_VPR07340_Vasso_Paraschi-copy.jpg" class="slide" alt="Heraklion Apartment 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202603/06_VPR07492_Vasso_Paraschi-copy.jpg" class="slide" alt="Heraklion Apartment 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202604/07_VPR07444_Vasso_Paraschi-copy.jpg" class="slide" alt="Heraklion Apartment 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202605/08_VPR07161_Vasso_Paraschi-copy.jpg" class="slide" alt="Heraklion Apartment 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202606/09_VPR07841_Vasso_Paraschi-copy.jpg" class="slide" alt="Heraklion Apartment 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202607/10_VPR07738_Vasso_Paraschi-copy.jpg" class="slide" alt="Heraklion Apartment 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202608/11_VPR07259_Vasso_Paraschi-copy.jpg" class="slide" alt="Heraklion Apartment 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202609/12_VPR07296_Vasso_Paraschi-copy.jpg" class="slide" alt="Heraklion Apartment 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202610/13_VPR07785_Vasso_Paraschi-copy-2.jpg" class="slide" alt="Heraklion Apartment 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202611/14_VPR07599_Vasso_Paraschi-copy.jpg" class="slide" alt="Heraklion Apartment 圖片 17" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202612/15_VPR07891_Vasso_Paraschi-copy.jpg" class="slide" alt="Heraklion Apartment 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，大型公寓</span>
-                    <span>2026</span>
-                    <span>伊拉克利翁 713 05, 希臘</span>
-                  </div>
-                  <h3 class="card-title">Heraklion Apartment</h3>
-                  <p class="card-by">Natalia Nerantzaki Architect | Interior design</p>
-                  <p class="card-desc">在拆除和重建如此普遍的時代，這座建於 1974 年的伊拉克利翁公寓向人們展示了創新意味著知道什麼是不該改變的。該空間近 50 年來一直保持原樣，擁有當代建築中越來越罕見的品質：3.2 公尺高的天花板、三種獨特的水磨石​​地板圖案和寬敞的空間比例。設計挑戰很快就顯現出來：如何在保留物質遺產的同時實現現代功能？</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Heraklion Apartment 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>大型公寓</span><span>伊拉克利翁 713 05, 希臘</span><span>發布日期：2026 年 2 月 17 日</span><span>標籤： 獎項 / fa26 / 希臘 / 伊拉克利翁</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/heraklion-apartment" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-skylark-house-of-em-shropshire-stepped-brick-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_0-SQ1-852x852.jpg" class="slide active" alt="House of EM draws on mid-century design principles for brick-clad home 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_8-scaled.jpg" class="slide" alt="House of EM draws on mid-century design principles for brick-clad home 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_12.jpg" class="slide" alt="House of EM draws on mid-century design principles for brick-clad home 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_0-scaled.jpg" class="slide" alt="House of EM draws on mid-century design principles for brick-clad home 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/loggia-house-191x191.jpg" class="slide" alt="House of EM draws on mid-century design principles for brick-clad home 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_30.jpg" class="slide" alt="House of EM draws on mid-century design principles for brick-clad home 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_26.jpg" class="slide" alt="House of EM draws on mid-century design principles for brick-clad home 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_32-scaled.jpg" class="slide" alt="House of EM draws on mid-century design principles for brick-clad home 圖片 8" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_27-scaled.jpg" class="slide" alt="House of EM draws on mid-century design principles for brick-clad home 圖片 9" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_13.jpg" class="slide" alt="House of EM draws on mid-century design principles for brick-clad home 圖片 10" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_21-scaled.jpg" class="slide" alt="House of EM draws on mid-century design principles for brick-clad home 圖片 11" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_34-scaled.jpg" class="slide" alt="House of EM draws on mid-century design principles for brick-clad home 圖片 12" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 12</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>天窗</span>
-                  </div>
-                  <h3 class="card-title">House of EM draws on mid-century design principles for brick-clad home</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">建築工作室 House of EM 在英國什羅普郡的 Skylark 建築中使用了由磚、木材、混凝土和石灰灰泥組成的內斂調色板，這是一棟位於英國什羅普郡的當代 F 形房屋。 House of EM 坐落在 Ludlow 村附近的一個高原上，俯瞰著 Teme 河，為房地產開發商 James 和 Sam Charters 設計了四居室住宅，他們的後 House of EM 借鑒了中世紀磚砌住宅的設計原則，首先出現在 Dezeen 上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">House of EM draws on mid-century design principles for brick-clad home 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」調整空間氣質，最後透過「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>天窗</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/06/27/skylark-house-of-em-shropshire-stepped-brick-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-live-sawn-house-icada-saitama-japan">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_sq_0a-852x852.jpg" class="slide active" alt="Live Sawn House features moving walls and a room on stilts 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_26.jpg" class="slide" alt="Live Sawn House features moving walls and a room on stilts 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_2-scaled.jpg" class="slide" alt="Live Sawn House features moving walls and a room on stilts 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_0.jpg" class="slide" alt="Live Sawn House features moving walls and a room on stilts 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_8.jpg" class="slide" alt="Live Sawn House features moving walls and a room on stilts 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/01/house-in-saidera-akio-isshiki-architects_dezeen_2364_col_sq3-191x191.jpg" class="slide" alt="Live Sawn House features moving walls and a room on stilts 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_22-scaled.jpg" class="slide" alt="Live Sawn House features moving walls and a room on stilts 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_29.jpg" class="slide" alt="Live Sawn House features moving walls and a room on stilts 圖片 8" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_11.jpg" class="slide" alt="Live Sawn House features moving walls and a room on stilts 圖片 9" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_15.jpg" class="slide" alt="Live Sawn House features moving walls and a room on stilts 圖片 10" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 10</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>Japan</span>
-                  </div>
-                  <h3 class="card-title">Live Sawn House features moving walls and a room on stilts</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">日本工作室 ICADA 在日本埼玉縣完成了一棟房屋，它將創造性的儲存解決方案與粗切雪松原木結構相結合。 Live Sawn House 的特點是外露的牆壁和地板結構由雪松木板組成，這些雪松木板經過盡可能簡單的銑削，邊緣保持原始狀態。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Live Sawn House features moving walls and a room on stilts 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>Japan</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/03/19/live-sawn-house-icada-saitama-japan/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-donna-kelces-home-renovation-is-done-and-heres-what-she-thought-of-your-memes">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6a0780d580d3d05c6dd28fb3/16:9/w_2560%2Cc_limit/260507_BK_GAMECHANGER_SHOT_06_04891.jpg" class="slide active" alt="Donna Kelce’s Home Renovation Is Done, and Here’s What She Thought of Your Memes 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a0748a1af5e14450cf7c072/master/w_1600%2Cc_limit/GettyImages-2259997380.jpg" class="slide" alt="Donna Kelce’s Home Renovation Is Done, and Here’s What She Thought of Your Memes 圖片 2" loading="eager"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 2</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span></span>
-                  </div>
-                  <h3 class="card-title">Donna Kelce’s Home Renovation Is Done, and Here’s What She Thought of Your Memes</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">傑森和特拉維斯凱爾斯的媽媽從未想到她的櫥窗項目會像病毒一樣傳播開來，但即使是她也從網路上的轟動中得到了樂趣</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Donna Kelce’s Home Renovation Is Done, and Here’s What She Thought of Your Memes 最值得注意的不是外觀，而是它如何透過 光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性，把 舊屋改造 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>位置未列出</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/donna-kelces-home-renovation-is-done-and-heres-what-she-thought-of-your-memes" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-residential-barn-in-a-hamlet-zone">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939309028_Wohnzimmer.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Residential barn in a hamlet zone 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168199394097221_Plans_floor_section_facade.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939086011_Wohnzimmer.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939086032_Essen_K%C3%BCche.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939169173_Luftraeume.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939217094_Schlafzimmer.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939233205_Zimmer.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939236986_Fenster_Schiebeladen_zu.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939243857_Fenster_Schiebeladen_offen.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939310279_Entree.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168199393305610_Dachgeschoss_Zimmer.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168199393370511_Dachgeschoss_Zimmer.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168199393429213_Bad_OG.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168199393436114_Bad_EG.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168199393756315_Luftraeume.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168199393812217_Ost_Fassde.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168199393869818_Sued_Fassade.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168199393922019_Hauszugang_Fassade.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168199394090420_Entwurfsmodell_Foto.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168199394266726_Wohnscheune-03_Entwicklungsweg_Skizzen.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Residential barn in a hamlet zone 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2023 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（S 1000 - 2000 平方英尺）</span>
-                    <span>2023</span>
-                    <span>瑞士蘇黎世</span>
-                  </div>
-                  <h3 class="card-title">Residential barn in a hamlet zone</h3>
-                  <p class="card-by">BE ARCHITEKTUR GMBH, Boris Egli dipl. Architekt FH REG A SIA</p>
-                  <p class="card-desc">概念、建築、環境 大約 15 棟建築物在鄉村（主要是農業環境）中形成了一個小村莊區。這個小村莊的新家感覺有必要尊重該地區的歷史背景。典型的穀倉特徵被採用並以現代方式重新詮釋。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Residential barn in a hamlet zone 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2023 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（S 1000 - 2000 平方英尺）</span><span>瑞士蘇黎世</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/residential-barn-in-a-hamlet-zone-reppischtal-zurich/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-perif-rico-2008">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1685492376708SAN_ANGEL_edited_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Periférico 2008 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021507364S9_Long_Section.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021511747S10_Cross_Section.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021511986Santiago_Arau_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021429538Alex_Fernandez_2.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021504405Onnis_Luque_9.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021429544Alex_Fernandez_3.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021550790Zaickz_Moz_8.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021445958Alex_Fernandez_6.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021490118Onnis_Luque_5.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021480369Onnis_Luque_4.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021536545Zaickz_Moz_2.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021458025Onnis_Luque_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021542273Zaickz_Moz_3.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021543058Zaickz_Moz_5.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021470981Onnis_Luque_2.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021513769Zaickz_Moz_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021472079Onnis_Luque_3.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Periférico 2008 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2023 年 A+ 獎，住宅 &gt; 多單元住宅 - 高層（16 層以上）</span>
-                    <span>2023</span>
-                    <span>墨西哥墨西哥城</span>
-                  </div>
-                  <h3 class="card-title">Periférico 2008</h3>
-                  <p class="card-by">BRAG Arquitectos</p>
-                  <p class="card-desc">PERIFERICO 是一座多單元住宅大樓，位於墨西哥城南部，非常靠近被稱為「原始小鎮」的聖天使，以其殖民歷史、紀念碑和宗教建築以及博物館、廣場、街道和傳統派對為特色。 18世紀末，聖天使位於墨西哥城郊外，當時它是人們最喜歡的休閒目的地。當時建造的住宅以花園環繞為特色，如今這些建築已成為城市內的歷史遺產。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Periférico 2008 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2023 年 A+ 獎，住宅 &gt; 多單元住宅 - 高層（16 層以上）</span><span>墨西哥墨西哥城</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/periferico-2008/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-best-filing-cabinets">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/685eec0c9c524891b1d9ce5c/16:9/w_2560%2Cc_limit/imgi_1_021%2520Bethany%2520Adams%2520Interiors%2520and%2520J.L.%2520Jordan%2520Photography%2520-%2520Modern%2520Tudor.jpg" class="slide active" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/685ec6759c4f7ec5a9918ba7/3:4/w_748%2Cc_limit/USM%2520Haller%2520File%2520Credenza.png" class="slide" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a0b6c32f6c828bf5aed6571/3:4/w_748%2Cc_limit/Product%2520Image%2520Template.jpeg" class="slide" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/685f07ba2a8bad5966fbda1c/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(1).jpeg" class="slide" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b6f773eb9c947e4e44e7c/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(2).jpeg" class="slide" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b6e593eb9c947e4e44e76/3:4/w_748%2Cc_limit/Article.png" class="slide" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b704c69fc611bbd421dda/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(3).jpeg" class="slide" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b6a979ee07b41891bf6d4/3:4/w_748%2Cc_limit/Sienna.png" class="slide" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b71b8171b82f81afbc81a/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(5).jpeg" class="slide" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/68b066f4b2d86587d910dd04/1:1/w_640%2Cc_limit/ADSeatWk25_officechairs_site.jpg" class="slide" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/67c7271d7edefeed238d4e98/1:1/w_640%2Cc_limit/1205-AD-SAND-06.jpg" class="slide" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6809468340917a366ee3f3ba/1:1/w_640%2Cc_limit/0913-AD-MOTA-04.jpg" class="slide" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/64550677f41cd6f6382881d4/1:1/w_640%2Cc_limit/IMG_0129%2520copy.jpg" class="slide" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) 圖片 13" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 13</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2023</span>
-                    <span>最佳歸檔</span>
-                  </div>
-                  <h3 class="card-title">9 Best Filing Cabinets For Stashing Stylishly (2026)</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">這些單調的辦公室主打產品經過編輯認可，從 Herman Miller、USM、Branch 等品牌中挑選出來，進行了現代改造。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">9 Best Filing Cabinets For Stashing Stylishly (2026) 最值得注意的不是外觀，而是它如何透過 以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序，把 舊屋改造 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>最佳歸檔</span><span>資料來源：《建築文摘 2023》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/best-filing-cabinets" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-frame-api-119928" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202835/Common-Practice_Dijkmagazijn-Scharwoude_01_Photo_Crispijn-van-Sas.jpg" alt="Dijkmagazijn Scharwoude image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202848/Common-Practice_Dijkmagazijn-Scharwoude_30_Photo_Crispijn-van-Sas.jpg" alt="Dijkmagazijn Scharwoude image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202836/Common-Practice_Dijkmagazijn-Scharwoude_02_Photo_Crispijn-van-Sas.jpg" alt="Dijkmagazijn Scharwoude image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202837/Common-Practice_Dijkmagazijn-Scharwoude_04_Photo_Crispijn-van-Sas.jpg" alt="Dijkmagazijn Scharwoude image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202838/Common-Practice_Dijkmagazijn-Scharwoude_05_Photo_Crispijn-van-Sas.jpg" alt="Dijkmagazijn Scharwoude image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202839/Common-Practice_Dijkmagazijn-Scharwoude_11_Photo_Crispijn-van-Sas.jpg" alt="Dijkmagazijn Scharwoude image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202840/Common-Practice_Dijkmagazijn-Scharwoude_13_Photo_Crispijn-van-Sas.jpg" alt="Dijkmagazijn Scharwoude image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202841/Common-Practice_Dijkmagazijn-Scharwoude_15_Photo_Crispijn-van-Sas.jpg" alt="Dijkmagazijn Scharwoude image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202842/Common-Practice_Dijkmagazijn-Scharwoude_18_Photo_Crispijn-van-Sas.jpg" alt="Dijkmagazijn Scharwoude image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202843/Common-Practice_Dijkmagazijn-Scharwoude_19_Photo_Crispijn-van-Sas.jpg" alt="Dijkmagazijn Scharwoude image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_01 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Dijkmagazijn Scharwoude<small>Common Practice<br>IJsselmeerdijk 7, 1634 DM 沙爾沃德, 荷蘭<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">Dijkmagazijn Scharwoude 探索生物基和循環遺產轉型。沙爾沃德 (Scharwoude) 的堤壩倉庫建於 1923 年，是負責監控前須德海 (Zuiderzee) 海岸線的堤壩管理員的儲存設施和住所。一個世紀後的現在，它被賦予了新的用途，作為賓館和駐地藝術家，專注於水和氣候挑戰。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Dijkmagazijn Scharwoude 探索生物基和循環遺產轉型。沙爾沃德 (Scharwoude) 的堤壩倉庫建於 1923 年，是負責監控前須德海 (Zuiderzee) 海岸線的堤壩管理員的儲存設施和住所。一個世紀後的現在，它被賦予了新的用途，作為賓館和駐地藝術家，專注於水和氣候挑戰。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_01 · <a href="https://frameweb.com/project/dijkmagazijn-scharwoude-1" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-119633" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202598/01_VPR07479_Vasso_Paraschi-copy.jpg" alt="Heraklion Apartment image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202632/Apartment-Heraklion_3D-floor-plan-2.jpg" alt="Heraklion Apartment image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202633/Apartment-Heraklion_3D-floor-plan.jpg" alt="Heraklion Apartment image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202634/Apartment-Heraklion_floor-plan.jpg" alt="Heraklion Apartment image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202599/02_VPR07542_Vasso_Paraschi-copy.jpg" alt="Heraklion Apartment image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202600/03_VPR07559_Vasso_Paraschi-copy.jpg" alt="Heraklion Apartment image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202601/04_VPR07676_Vasso_Paraschi-copy.jpg" alt="Heraklion Apartment image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202602/05_VPR07340_Vasso_Paraschi-copy.jpg" alt="Heraklion Apartment image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202603/06_VPR07492_Vasso_Paraschi-copy.jpg" alt="Heraklion Apartment image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/202604/07_VPR07444_Vasso_Paraschi-copy.jpg" alt="Heraklion Apartment image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Heraklion Apartment<small>Natalia Nerantzaki Architect | Interior design<br>伊拉克利翁 713 05, 希臘<br>FRAME 獎，大型公寓</small></h2>
+        <p class="ac-lead reveal">在拆除和重建如此普遍的時代，這座建於 1974 年的伊拉克利翁公寓向人們展示了創新意味著知道什麼是不該改變的。該空間近 50 年來一直保持原樣，擁有當代建築中越來越罕見的品質：3.2 公尺高的天花板、三種獨特的水磨石​​地板圖案和寬敞的空間比例。設計挑戰很快就顯現出來：如何在保留物質遺產的同時實現現代功能？</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>在拆除和重建如此普遍的時代，這座建於 1974 年的伊拉克利翁公寓向人們展示了創新意味著知道什麼是不該改變的。該空間近 50 年來一直保持原樣，擁有當代建築中越來越罕見的品質：3.2 公尺高的天花板、三種獨特的水磨石​​地板圖案和寬敞的空間比例。設計挑戰很快就顯現出來：如何在保留物質遺產的同時實現現代功能？</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/heraklion-apartment" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-skylark-house-of-em-shropshire-stepped-brick-house" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_0-SQ1-852x852.jpg" alt="House of EM draws on mid-century design principles for brick-clad home image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_8-scaled.jpg" alt="House of EM draws on mid-century design principles for brick-clad home image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_12.jpg" alt="House of EM draws on mid-century design principles for brick-clad home image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_0-scaled.jpg" alt="House of EM draws on mid-century design principles for brick-clad home image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/loggia-house-191x191.jpg" alt="House of EM draws on mid-century design principles for brick-clad home image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_30.jpg" alt="House of EM draws on mid-century design principles for brick-clad home image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_26.jpg" alt="House of EM draws on mid-century design principles for brick-clad home image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_32-scaled.jpg" alt="House of EM draws on mid-century design principles for brick-clad home image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_27-scaled.jpg" alt="House of EM draws on mid-century design principles for brick-clad home image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/house-of-em-skylark-residential-architecture_dezeen_2364_col_13.jpg" alt="House of EM draws on mid-century design principles for brick-clad home image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_03 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">House of EM draws on mid-century design principles for brick-clad home<small>Unknown architect<br>天窗<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">建築工作室 House of EM 在英國什羅普郡的 Skylark 建築中使用了由磚、木材、混凝土和石灰灰泥組成的內斂調色板，這是一棟位於英國什羅普郡的當代 F 形房屋。 House of EM 坐落在 Ludlow 村附近的一個高原上，俯瞰著 Teme 河，為房地產開發商 James 和 Sam Charters</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>建築工作室 House of EM 在英國什羅普郡的 Skylark 建築中使用了由磚、木材、混凝土和石灰灰泥組成的內斂調色板，這是一棟位於英國什羅普郡的當代 F 形房屋。 House of EM 坐落在 Ludlow 村附近的一個高原上，俯瞰著 Teme 河，為房地產開發商 James 和 Sam Charters 設計了四居室住宅，他們的後 House of EM 借鑒了中世紀磚砌住宅的設計原則，首先出現在 Dezeen 上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_03 · <a href="https://www.dezeen.com/2026/06/27/skylark-house-of-em-shropshire-stepped-brick-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-live-sawn-house-icada-saitama-japan" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_sq_0a-852x852.jpg" alt="Live Sawn House features moving walls and a room on stilts image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_26.jpg" alt="Live Sawn House features moving walls and a room on stilts image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_2-scaled.jpg" alt="Live Sawn House features moving walls and a room on stilts image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_0.jpg" alt="Live Sawn House features moving walls and a room on stilts image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_8.jpg" alt="Live Sawn House features moving walls and a room on stilts image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/01/house-in-saidera-akio-isshiki-architects_dezeen_2364_col_sq3-191x191.jpg" alt="Live Sawn House features moving walls and a room on stilts image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_22-scaled.jpg" alt="Live Sawn House features moving walls and a room on stilts image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_29.jpg" alt="Live Sawn House features moving walls and a room on stilts image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_11.jpg" alt="Live Sawn House features moving walls and a room on stilts image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/live-sawn-house_dezeen_2364_col_15.jpg" alt="Live Sawn House features moving walls and a room on stilts image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Live Sawn House features moving walls and a room on stilts<small>Unknown architect<br>Japan<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">日本工作室 ICADA 在日本埼玉縣完成了一棟房屋，它將創造性的儲存解決方案與粗切雪松原木結構相結合。 Live Sawn House 的特點是外露的牆壁和地板結構由雪松木板組成，這些雪松木板經過盡可能簡單的銑削，邊緣保持原始狀態。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>日本工作室 ICADA 在日本埼玉縣完成了一棟房屋，它將創造性的儲存解決方案與粗切雪松原木結構相結合。 Live Sawn House 的特點是外露的牆壁和地板結構由雪松木板組成，這些雪松木板經過盡可能簡單的銑削，邊緣保持原始狀態。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · <a href="https://www.dezeen.com/2026/03/19/live-sawn-house-icada-saitama-japan/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-donna-kelces-home-renovation-is-done-and-heres-what-she-thought-of-your-memes" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0780d580d3d05c6dd28fb3/16:9/w_2560%2Cc_limit/260507_BK_GAMECHANGER_SHOT_06_04891.jpg" alt="Donna Kelce’s Home Renovation Is Done, and Here’s What She Thought of Your Memes image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0748a1af5e14450cf7c072/master/w_1600%2Cc_limit/GettyImages-2259997380.jpg" alt="Donna Kelce’s Home Renovation Is Done, and Here’s What She Thought of Your Memes image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_05 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">Donna Kelce’s Home Renovation Is Done, and Here’s What She Thought of Your Memes<small>AD editorial<br><br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">傑森和特拉維斯凱爾斯的媽媽從未想到她的櫥窗項目會像病毒一樣傳播開來，但即使是她也從網路上的轟動中得到了樂趣</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>傑森和特拉維斯凱爾斯的媽媽從未想到她的櫥窗項目會像病毒一樣傳播開來，但即使是她也從網路上的轟動中得到了樂趣</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_05 · <a href="https://www.architecturaldigest.com/story/donna-kelces-home-renovation-is-done-and-heres-what-she-thought-of-your-memes" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-residential-barn-in-a-hamlet-zone" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939309028_Wohnzimmer.jpg?w=1680&amp;q=60&amp;auto=format" alt="Residential barn in a hamlet zone image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168199394097221_Plans_floor_section_facade.jpg?w=1680&amp;q=60&amp;auto=format" alt="Residential barn in a hamlet zone image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939086011_Wohnzimmer.jpg?w=1680&amp;q=60&amp;auto=format" alt="Residential barn in a hamlet zone image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939086032_Essen_K%C3%BCche.jpg?w=1680&amp;q=60&amp;auto=format" alt="Residential barn in a hamlet zone image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939169173_Luftraeume.jpg?w=1680&amp;q=60&amp;auto=format" alt="Residential barn in a hamlet zone image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939217094_Schlafzimmer.jpg?w=1680&amp;q=60&amp;auto=format" alt="Residential barn in a hamlet zone image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939233205_Zimmer.jpg?w=1680&amp;q=60&amp;auto=format" alt="Residential barn in a hamlet zone image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939236986_Fenster_Schiebeladen_zu.jpg?w=1680&amp;q=60&amp;auto=format" alt="Residential barn in a hamlet zone image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939243857_Fenster_Schiebeladen_offen.jpg?w=1680&amp;q=60&amp;auto=format" alt="Residential barn in a hamlet zone image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819939310279_Entree.jpg?w=1680&amp;q=60&amp;auto=format" alt="Residential barn in a hamlet zone image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_06 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">Residential barn in a hamlet zone<small>BE ARCHITEKTUR GMBH, Boris Egli dipl. Architekt FH REG A SIA<br>瑞士蘇黎世<br>2023 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（S 1000 - 2000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">概念、建築、環境 大約 15 棟建築物在鄉村（主要是農業環境）中形成了一個小村莊區。這個小村莊的新家感覺有必要尊重該地區的歷史背景。典型的穀倉特徵被採用並以現代方式重新詮釋。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>概念、建築、環境 大約 15 棟建築物在鄉村（主要是農業環境）中形成了一個小村莊區。這個小村莊的新家感覺有必要尊重該地區的歷史背景。典型的穀倉特徵被採用並以現代方式重新詮釋。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_06 · <a href="https://architizer.com/projects/residential-barn-in-a-hamlet-zone-reppischtal-zurich/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-perif-rico-2008" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1685492376708SAN_ANGEL_edited_.jpg?w=1680&amp;q=60&amp;auto=format" alt="Periférico 2008 image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021507364S9_Long_Section.jpg?w=1680&amp;q=60&amp;auto=format" alt="Periférico 2008 image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021511747S10_Cross_Section.jpg?w=1680&amp;q=60&amp;auto=format" alt="Periférico 2008 image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021511986Santiago_Arau_1.jpg?w=1680&amp;q=60&amp;auto=format" alt="Periférico 2008 image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021429538Alex_Fernandez_2.jpg?w=1680&amp;q=60&amp;auto=format" alt="Periférico 2008 image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021504405Onnis_Luque_9.jpg?w=1680&amp;q=60&amp;auto=format" alt="Periférico 2008 image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021429544Alex_Fernandez_3.jpg?w=1680&amp;q=60&amp;auto=format" alt="Periférico 2008 image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021550790Zaickz_Moz_8.jpg?w=1680&amp;q=60&amp;auto=format" alt="Periférico 2008 image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021445958Alex_Fernandez_6.jpg?w=1680&amp;q=60&amp;auto=format" alt="Periférico 2008 image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682021490118Onnis_Luque_5.jpg?w=1680&amp;q=60&amp;auto=format" alt="Periférico 2008 image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_07 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">Periférico 2008<small>BRAG Arquitectos<br>墨西哥墨西哥城<br>大眾選擇獎得主，2023 年 A+ 獎，住宅 &gt; 多單元住宅 - 高層（16 層以上）</small></h2>
+        <p class="ac-lead reveal">PERIFERICO 是一座多單元住宅大樓，位於墨西哥城南部，非常靠近被稱為「原始小鎮」的聖天使，以其殖民歷史、紀念碑和宗教建築以及博物館、廣場、街道和傳統派對為特色。 18世紀末，聖天使位於墨西哥城郊外，當時它是人們最喜歡的休閒目的地。當時建造的住宅以花園環繞為特色，如今這些建築已成為城市內的歷史遺產。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>PERIFERICO 是一座多單元住宅大樓，位於墨西哥城南部，非常靠近被稱為「原始小鎮」的聖天使，以其殖民歷史、紀念碑和宗教建築以及博物館、廣場、街道和傳統派對為特色。 18世紀末，聖天使位於墨西哥城郊外，當時它是人們最喜歡的休閒目的地。當時建造的住宅以花園環繞為特色，如今這些建築已成為城市內的歷史遺產。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_07 · <a href="https://architizer.com/projects/periferico-2008/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-best-filing-cabinets" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/685eec0c9c524891b1d9ce5c/16:9/w_2560%2Cc_limit/imgi_1_021%2520Bethany%2520Adams%2520Interiors%2520and%2520J.L.%2520Jordan%2520Photography%2520-%2520Modern%2520Tudor.jpg" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/685ec6759c4f7ec5a9918ba7/3:4/w_748%2Cc_limit/USM%2520Haller%2520File%2520Credenza.png" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0b6c32f6c828bf5aed6571/3:4/w_748%2Cc_limit/Product%2520Image%2520Template.jpeg" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/685f07ba2a8bad5966fbda1c/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(1).jpeg" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0b6f773eb9c947e4e44e7c/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(2).jpeg" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0b6e593eb9c947e4e44e76/3:4/w_748%2Cc_limit/Article.png" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0b704c69fc611bbd421dda/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(3).jpeg" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0b6a979ee07b41891bf6d4/3:4/w_748%2Cc_limit/Sienna.png" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0b71b8171b82f81afbc81a/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(5).jpeg" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/68b066f4b2d86587d910dd04/1:1/w_640%2Cc_limit/ADSeatWk25_officechairs_site.jpg" alt="9 Best Filing Cabinets For Stashing Stylishly (2026) image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/23_08 · AD (US) / 2023</p>
+        <h2 class="ac-title reveal">9 Best Filing Cabinets For Stashing Stylishly (2026)<small>AD editorial<br>最佳歸檔<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">這些單調的辦公室主打產品經過編輯認可，從 Herman Miller、USM、Branch 等品牌中挑選出來，進行了現代改造。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>這些單調的辦公室主打產品經過編輯認可，從 Herman Miller、USM、Branch 等品牌中挑選出來，進行了現代改造。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/23_08 · <a href="https://www.architecturaldigest.com/story/best-filing-cabinets" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

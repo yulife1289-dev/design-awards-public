@@ -3,642 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-05-24</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD Style 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-05-24 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-05-24</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-05-24 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD Style 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-05-24.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD Style</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-05-24.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adstyle-news_1251699b76fb916c">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://oimg3.selfimg.com.cn/adcms/20263/dcc37bec1774601413676.jpg" class="slide active" alt="木石之缘 When Wood Meets Stone 圖片 1" loading="eager"><img src="https://oimg1.selfimg.com.cn/adcms/20263/d301e3ba1774601418210.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 2" loading="eager"><img src="https://oimg2.selfimg.com.cn/adcms/20263/c34e62ca1774601421192.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 3" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20263/ac8a9311774601424549.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 4" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/20263/bb65d4311774601428107.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 5" loading="lazy"><img src="https://oimg2.selfimg.com.cn/adcms/20263/5da8ac591774601431219.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 6" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20263/47ff3d8a1774601434207.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 7" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20263/d21c69711774601437333.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 8" loading="lazy"><img src="https://oimg2.selfimg.com.cn/adcms/20263/a815f9861774601440389.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 9" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20263/c6a4801b1774601443752.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 10" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/20263/8d6be70e1774601447156.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 11" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20263/e475deb11774601450243.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 12" loading="lazy"><img src="https://oimg2.selfimg.com.cn/adcms/20263/f887bfcd1774601453536.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 13" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20263/361a905d1774601457084.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 14" loading="lazy"><img src="https://oimg2.selfimg.com.cn/adcms/20263/76de0d7b1774601460364.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 15" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20263/d99598ee1774601463435.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 16" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/20263/61474a531774601466755.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 17" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/20263/e099db4f1774601470302.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 18" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20263/9dee5ea91774601473497.jpg" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 19" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1664432462_x18vft.jpg?x-oss-process=image/resize" class="slide" alt="木石之缘 When Wood Meets Stone 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-a">AD Style</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>AD風格居家旅遊</span>
-                    <span>2026</span>
-                    <span>纽约</span>
-                  </div>
-                  <h3 class="card-title">木石之缘 When Wood Meets Stone</h3>
-                  <p class="card-by">AD Style 編輯部</p>
-                  <p class="card-desc">在大洋彼岸的Catskill（卡茨基尔）小镇上，设计师琚宾为艺术家Emily Cheng（成瑞娴）设计的住宅中，东方与西方、人工与天然、理性与情感悄然相遇。这座摊开在山脚下的房子像Emily画布上的底稿，刚刚有了家的轮廓，等待未来一点点慢慢填充。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">木石之缘 When Wood Meets Stone 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>AD風格居家旅遊</span><span>纽约</span><span>發佈時間：2026-03-27</span><span>Tags: 2026年三月号 / 纽约 / 室内设计</span></div>
-                  <div class="card-links"><a href="https://www.adstyle.com.cn/home/home-tour/news_1251699b76fb916c.html" target="_blank" rel="noopener">文章頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-122227">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209921/_DSC5218.jpg" class="slide active" alt="Sea and Grain, Life Savoured 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209922/_DSC5208.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209923/_DSC5243.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209933/_DSC5309.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209934/_DSC5428.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209935/_DSC5601.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209936/_DSC5560.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209937/_DSC5799.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209938/_DSC5713.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209939/_DSC5668.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209940/_DSC5840.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209941/_DSC5952.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/209942/_DSC6008.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215061/微信图片_20260511152940_355_201.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215063/微信图片_20260511153705_356_201.jpg" class="slide" alt="Sea and Grain, Life Savoured 圖片 15" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 15</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，大型公寓</span>
-                    <span>2026</span>
-                    <span>香港鴨脷洲</span>
-                  </div>
-                  <h3 class="card-title">Sea and Grain, Life Savoured</h3>
-                  <p class="card-by">Stylus Studio</p>
-                  <p class="card-desc">面對「為未來十年創造一個家」的任務，Stylus Studio 塑造了一座有特色的住宅——一個將與四口之家共同成長的住宅。它帶有現代的清晰、歐陸式的輕鬆和東方的平靜。海天的藍、山坡的綠，抵消了木材的溫暖，為日常生活形成了一個優雅而靈活的舞台—​​早晨的咖啡安靜的交流，孩子們嬉戲的歡笑。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Sea and Grain, Life Savoured 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>大型公寓</span><span>香港鴨脷洲</span><span>發售日期：2026 年 5 月 12 日</span><span>標籤： 獎項 / fa26 / 香港 / 大公寓</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/sea-and-grain-life-savoured" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adstyle-news_112g6be6af6d96a2">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://oimg1.selfimg.com.cn/adcms/20263/ca215dc91774600607471.jpg" class="slide active" alt="协奏乐章 Harmonious Collaboration 圖片 1" loading="eager"><img src="https://oimg1.selfimg.com.cn/adcms/20263/5c5e295f1774600616369.jpg" class="slide" alt="协奏乐章 Harmonious Collaboration 圖片 2" loading="eager"><img src="https://oimg3.selfimg.com.cn/adcms/20263/b390e4d51774600624823.jpg" class="slide" alt="协奏乐章 Harmonious Collaboration 圖片 3" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20263/2d7f73a91774600633277.jpg" class="slide" alt="协奏乐章 Harmonious Collaboration 圖片 4" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20263/ec408aac1774600641232.jpg" class="slide" alt="协奏乐章 Harmonious Collaboration 圖片 5" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/20263/cdab6311774600649524.jpg" class="slide" alt="协奏乐章 Harmonious Collaboration 圖片 6" loading="lazy"><img src="https://oimg2.selfimg.com.cn/adcms/20263/61f9a4ba1774600657694.jpg" class="slide" alt="协奏乐章 Harmonious Collaboration 圖片 7" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/20263/e4109fdf1774600665600.jpg" class="slide" alt="协奏乐章 Harmonious Collaboration 圖片 8" loading="lazy"><img src="https://oimg2.selfimg.com.cn/adcms/20263/fd70ce861774600673975.jpg" class="slide" alt="协奏乐章 Harmonious Collaboration 圖片 9" loading="lazy"><img src="https://oimg3.selfimg.com.cn/adcms/20263/3286274b1774600682294.jpg" class="slide" alt="协奏乐章 Harmonious Collaboration 圖片 10" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1466491417_WvCJUS.jpg?x-oss-process=image/resize" class="slide" alt="协奏乐章 Harmonious Collaboration 圖片 11" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1467395195_9jF9bd.jpg?x-oss-process=image/resize" class="slide" alt="协奏乐章 Harmonious Collaboration 圖片 12" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1595317850_dSlFJG.png?x-oss-process=image/resize" class="slide" alt="协奏乐章 Harmonious Collaboration 圖片 13" loading="lazy"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1595324721_VHCzw7.png?x-oss-process=image/resize" class="slide" alt="协奏乐章 Harmonious Collaboration 圖片 14" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 14</span>
-                  <span class="photo-tag photo-tag-a">AD Style</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>AD風格居家旅遊</span>
-                    <span>2026</span>
-                    <span>淄博</span>
-                  </div>
-                  <h3 class="card-title">协奏乐章 Harmonious Collaboration</h3>
-                  <p class="card-by">AD Style 編輯部</p>
-                  <p class="card-desc">这是一个善于倾听和协作的家，在淄博这栋地上一层连通地下二层的住宅里，呈现出三代同堂的和美画面，美学和实用不分彼此，身体和心灵可以轻快地抵达多种生活情境。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">协奏乐章 Harmonious Collaboration 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>AD風格居家旅遊</span><span>淄博</span><span>發佈時間：2026-03-27</span><span>Tags: 2026年三月号 / 室内设计 / 淄博</span></div>
-                  <div class="card-links"><a href="https://www.adstyle.com.cn/home/home-tour/news_112g6be6af6d96a2.html" target="_blank" rel="noopener">文章頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-122673">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212519/WhatsApp-Image-2026-03-16-at-13.26.24-(2).jpeg" class="slide active" alt="Amayadori House 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212530/LukasTan-FLOORPLAN2.png" class="slide" alt="Amayadori House 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212520/WhatsApp-Image-2026-03-16-at-13.26.24-(3).jpeg" class="slide" alt="Amayadori House 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212521/WhatsApp-Image-2026-03-16-at-13.26.26-(1).jpeg" class="slide" alt="Amayadori House 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212522/WhatsApp-Image-2026-03-16-at-13.26.26.jpeg" class="slide" alt="Amayadori House 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212523/WhatsApp-Image-2026-03-16-at-13.26.24.jpeg" class="slide" alt="Amayadori House 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212524/WhatsApp-Image-2026-03-16-at-13.26.24-(1).jpeg" class="slide" alt="Amayadori House 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212525/PHOTO-2026-03-16-13-26-25-4.jpg" class="slide" alt="Amayadori House 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212526/PHOTO-2026-03-16-13-26-26.jpg" class="slide" alt="Amayadori House 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212527/PHOTO-2026-03-16-13-26-25-7.jpg" class="slide" alt="Amayadori House 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212528/PHOTO-2026-03-16-13-26-24-9.jpg" class="slide" alt="Amayadori House 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212529/PHOTO-2026-03-16-13-26-25-8.jpg" class="slide" alt="Amayadori House 圖片 12" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 12</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，小型公寓</span>
-                    <span>2026</span>
-                    <span>金炎路 35 號，#01 01，新加坡 239343</span>
-                  </div>
-                  <h3 class="card-title">Amayadori House</h3>
-                  <p class="card-by">Ascend Design</p>
-                  <p class="card-desc">Amayadori House 將內牆重新定義為透光元素，而不是靜態分隔物，解決了日光有限的深單面公寓的挑戰。設計沒有採用完全開放式佈局或依賴人工照明，而是保持了不同的區域，同時在定制的木隔間中插入精心定位的玻璃孔。這些開口充當內部天窗，橫向重新分配自然光，使其能夠更深入地滲透到空間中，同時保留隱私、隔音和親密感——這對於一個兼具低調地下酒吧功能的家庭來說至關重要。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Amayadori House 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>小公寓</span><span>金炎路 35 號，#01 01，新加坡 239343</span><span>發售日期：2026 年 5 月 23 日</span><span>標籤： ascend-design / 獎 / fa26 / 生活</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/amayadori-house" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2025-fondation-de-chine">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593602458414_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Fondation de Chine 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593598242802_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593598638603_COL1_ARCH.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593599049804_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593599361505_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593599657306_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593599935007_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593600263708_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593600596909_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593600875310_COL1_ARCH.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593601160211_COL1_ARCH.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593601618512_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593601901813_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593602675515_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593602894416_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593603145717_COL1_ARCH.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593606372318_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593606624319_COL1_ARCH.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593606831620_COL1_ARCH.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174593607134721_Coldefy_-_Fondation_de_Chine_Paris_fr_-_Photo_Cyrille_Weiner.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Fondation de Chine 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 經濟適用房</span>
-                    <span>2025</span>
-                    <span>法國巴黎</span>
-                  </div>
-                  <h3 class="card-title">Fondation de Chine</h3>
-                  <p class="card-by">Coldefy</p>
-                  <p class="card-desc">中華基金會是一個文化和建築合作項目，體現了中法文化的融合。它位於巴黎國際大學城（CIUP），既是學生的宿舍，也是在巴黎推廣中華遺產的文化中心。這種雙重目的指導了建築方法，以找到兩種不同文化和城市類型之間的共同點。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Fondation de Chine 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 經濟適用房</span><span>法國巴黎</span><span>資料來源：Architizer A+Awards 2025</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/fondation-de-chine/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2025-diagonal">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745919352877_Featured_Diaognal.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Diagonal 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745919359958Diaognal_2.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Diagonal 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745919364450Diaognal_3.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Diagonal 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745919366771Diaognal_4.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Diagonal 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745919370194Diaognal_5.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Diagonal 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745919382839Diaognal_6.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Diagonal 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745919382840Diaognal_7.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Diagonal 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745919385597Diaognal_8.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Diagonal 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745919385704Diaognal_9.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Diagonal 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745919386697Diaognal_10.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Diagonal 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745919386728Diaognal_11.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Diagonal 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745919387768Diaognal_12.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Diagonal 圖片 12" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 12</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 公寓</span>
-                    <span>2025</span>
-                    <span>台灣新北市</span>
-                  </div>
-                  <h3 class="card-title">Diagonal</h3>
-                  <p class="card-by">StudioX4</p>
-                  <p class="card-desc">這個非常規的公寓被一條大尺度的對角線分割開來，並連接著幾道短寬的隔間牆，擺脫了這種典型的配置，呈現出一種新的居住形式，讓每個空間都是開放、平坦和混合的。在牆壁的間隔縫隙之間，光影的遞進、變化、移動清晰可見。礦物漆的運用凸顯了每個隔間的曲線、輪廓和流動性，讓整個居住空間充滿藝術性和無限的自由。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Diagonal 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 公寓</span><span>台灣新北市</span><span>資料來源：Architizer A+Awards 2025</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/diagonal/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-2021-stone-garden-mina-image-center-and-housing">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2021/11/11-stone-garden-a-lina-ghotmeh-a.jpeg" class="slide active" alt="Stone Garden — Mina Image Center and Housing 圖片 1" loading="eager"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 1</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2021 年德澤恩獎</span>
-                    <span>2021</span>
-                    <span>黎巴嫩貝魯特</span>
-                  </div>
-                  <h3 class="card-title">Stone Garden — Mina Image Center and Housing</h3>
-                  <p class="card-by">Lina Ghotmeh — Architecture</p>
-                  <p class="card-desc">獲獎者：年度住房計畫和獲獎者：2021 年度建築項目 Lina Ghotmeh 在黎巴嫩貝魯特設計了一棟水泥和泥土的 13 層公寓大樓。貝魯特是永久性的考古學。這座城市歷經七次掩埋，講述我們祖先的故事，其建築景觀反映了其近代歷史。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Stone Garden — Mina Image Center and Housing 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>2021 年德澤恩獎</span><span>黎巴嫩貝魯特</span><span>資料來源：2021 年 Dezeen 獎</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/awards/2021/winners/stone-garden-mina-image-center-and-housing/" target="_blank" rel="noopener">得獎頁面</a> <a href="https://www.dezeen.com/awards/2021/winners/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-2020-the-borderless-community">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2020/08/9m1GISsq9cmqitNoHe9nTDovYVnb9WQtD4xc5XLL_Z33nsize_2048.jpeg" class="slide active" alt="The Borderless Community 圖片 1" loading="eager"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 1</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2020年住房項目</span>
-                    <span>2020</span>
-                    <span>中國 番禺區</span>
-                  </div>
-                  <h3 class="card-title">The Borderless Community</h3>
-                  <p class="card-by">Fei Architects</p>
-                  <p class="card-desc">得獎者：2020年住房計畫。紫泥十二門無邊界社區是中國番禺區的一個住房計畫。紫泥十二門無國界社區是為七位「斜槓青年」量身打造的公私生活混合空間。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">The Borderless Community 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>2020年住房項目</span><span>中國 番禺區</span><span>資料來源：2020 年 Dezeen 獎</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/awards/2020/winners/the-borderless-community/" target="_blank" rel="noopener">得獎頁面</a> <a href="https://www.dezeen.com/awards/2020/winners/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adstyle-news_1251699b76fb916c" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · ADS/26_01 · AD Style / 2026</p>
+        <h2 class="ac-title reveal">木石之缘 When Wood Meets Stone<small>AD Style 編輯部<br>纽约<br>AD風格居家旅遊</small></h2>
+        <p class="ac-lead reveal">木石之缘 When Wood Meets Stone 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>木石之缘 When Wood Meets Stone 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE ADS/26_01 · </p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-122227" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Sea and Grain, Life Savoured<small>Stylus Studio<br>香港鴨脷洲<br>FRAME 獎，大型公寓</small></h2>
+        <p class="ac-lead reveal">Sea and Grain, Life Savoured 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Sea and Grain, Life Savoured 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · </p>
+      </div>
+    </article>
+    
+    <article id="case-adstyle-news_112g6be6af6d96a2" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · ADS/26_03 · AD Style / 2026</p>
+        <h2 class="ac-title reveal">协奏乐章 Harmonious Collaboration<small>AD Style 編輯部<br>淄博<br>AD風格居家旅遊</small></h2>
+        <p class="ac-lead reveal">协奏乐章 Harmonious Collaboration 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>协奏乐章 Harmonious Collaboration 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE ADS/26_03 · </p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-122673" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_04 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Amayadori House<small>Ascend Design<br>金炎路 35 號，#01 01，新加坡 239343<br>FRAME 獎，小型公寓</small></h2>
+        <p class="ac-lead reveal">Amayadori House 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Amayadori House 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_04 · </p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2025-fondation-de-chine" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/25_05 · Architizer / 2025</p>
+        <h2 class="ac-title reveal">Fondation de Chine<small>Coldefy<br>法國巴黎<br>2025 年 A+ 獎評審團得獎者，住宅 &gt; 經濟適用房</small></h2>
+        <p class="ac-lead reveal">Fondation de Chine 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Fondation de Chine 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/25_05 · </p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2025-diagonal" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/25_06 · Architizer / 2025</p>
+        <h2 class="ac-title reveal">Diagonal<small>StudioX4<br>台灣新北市<br>2025 年 A+ 獎評審團得獎者，住宅 &gt; 公寓</small></h2>
+        <p class="ac-lead reveal">Diagonal 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Diagonal 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/25_06 · </p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-2021-stone-garden-mina-image-center-and-housing" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/21_07 · Dezeen / 2021</p>
+        <h2 class="ac-title reveal">Stone Garden — Mina Image Center and Housing<small>Lina Ghotmeh — Architecture<br>黎巴嫩貝魯特<br>2021 年德澤恩獎</small></h2>
+        <p class="ac-lead reveal">Stone Garden — Mina Image Center and Housing 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Stone Garden — Mina Image Center and Housing 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/21_07 · </p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-2020-the-borderless-community" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/20_08 · Dezeen / 2020</p>
+        <h2 class="ac-title reveal">The Borderless Community<small>Fei Architects<br>中國 番禺區<br>2020年住房項目</small></h2>
+        <p class="ac-lead reveal">The Borderless Community 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>The Borderless Community 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/20_08 · </p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

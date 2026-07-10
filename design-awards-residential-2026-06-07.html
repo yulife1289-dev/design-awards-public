@@ -3,585 +3,144 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-07</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-07 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-07</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-07 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 6 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-07.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-07.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-frame-api-120535">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205005/17-BUNKER-ABEZ-WEB.jpg" class="slide active" alt="Bunker 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205014/Planta-Bunker.jpg" class="slide" alt="Bunker 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204998/01-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204999/02-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205000/04-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205001/05-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205002/07-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205003/10-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205004/11-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205006/29-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205007/31-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205008/32-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205009/35-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205010/38-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205011/39-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205012/41-BUNKER-ABEZ-WEB.jpg" class="slide" alt="Bunker 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205013/Axo-Bunker.jpg" class="slide" alt="Bunker 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>03187 洛斯蒙特西諾斯, 阿利坎特, 西班牙</span>
-                  </div>
-                  <h3 class="card-title">Bunker</h3>
-                  <p class="card-by">Abez</p>
-                  <p class="card-desc">總有一天，空間將不再是原來的樣子。以一種微妙的方式，回顧過去，我們意識到碉堡就是其中之一。這裡曾經是與鄉村慶祝活動相關的聚會場所，與朋友們一起度過漫長的下午，現在尋求與賦予它意義的人們一起發展和成長。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Bunker 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。總有一天，空間將不再是原來的樣子。以一種微妙的方式，回顧過去，我們意識到碉堡就是其中之一。這裡曾經是與鄉村慶祝活動相關的聚會場所，與朋友們一起度過漫長的下午，現在尋求與賦予它意義的人們一起發展和成長。</p>
-                  <div class="card-facts"><span>House</span><span>03187 洛斯蒙特西諾斯, 阿利坎特, 西班牙</span><span>發售日期：2026 年 4 月 6 日</span><span>標籤： 阿貝茲 / 阿利坎特 / 獎項 / fa26</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/bunker" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-120203">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204382/影棚攝影-091-編輯.jpg" class="slide active" alt="Commune Store 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204386/FloorPlan.png" class="slide" alt="Commune Store 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204379/影棚攝影-028-編輯-編輯.jpg" class="slide" alt="Commune Store 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204373/影棚攝影-107-編輯.jpg" class="slide" alt="Commune Store 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204374/影棚攝影-121-編輯-編輯.jpg" class="slide" alt="Commune Store 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204375/影棚攝影-127-編輯.jpg" class="slide" alt="Commune Store 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204376/DA5USRS5F2KW4FJ_33.jpg" class="slide" alt="Commune Store 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204377/DA5USRS5F2KW4FJ_37.jpg" class="slide" alt="Commune Store 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204378/DJI_20240608171358_0080_D-拷贝.jpg" class="slide" alt="Commune Store 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204380/影棚攝影-056-編輯-編輯.jpg" class="slide" alt="Commune Store 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204381/影棚攝影-062-編輯-編輯.jpg" class="slide" alt="Commune Store 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204383/613A8331-拷贝-2(1).jpg" class="slide" alt="Commune Store 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204384/613A8871-拷贝(1).jpg" class="slide" alt="Commune Store 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204385/613A6719(1).jpg" class="slide" alt="Commune Store 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204464/微信图片_20251212170315_564_21.jpg" class="slide" alt="Commune Store 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204465/微信图片_20251212170313_563_21.jpg" class="slide" alt="Commune Store 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204387/AXO(1).png" class="slide" alt="Commune Store 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>中國福建省南平市武夷山市後園村, 354309</span>
-                  </div>
-                  <h3 class="card-title">Commune Store</h3>
-                  <p class="card-by">Atelier Glow</p>
-                  <p class="card-desc">對話自然公社店坐落於武夷山，一座群峰環抱、竹林梯田環抱的傳統山村。該計畫重新構想了一所長期廢棄的鄉村小學，保留其集體記憶，同時將其復興為將居住、交流和農業實踐交織在一起的當代公共空間，探索鄉村背景下社會、文化和生活方式的演變。原有的牆壁和結構框架被視為室內的一部分。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Commune Store 的強度在於它沒有把 住宅室內 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>House</span><span>中國福建省南平市武夷山市後園村, 354309</span><span>發售日期：2026 年 4 月 4 日</span><span>標籤： 四月 / atelier-glow / 獎 / 竹子</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/commune-store" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-studio-hallett-ike-cemetery-house-extension-london">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/05/studio-hallett-cemetery-house-extension-london-sq_dezeen_2364_col_1-852x852.jpg" class="slide active" alt="Studio Hallett Ike updates and extends Victorian lodge in the grounds of a London cemetery 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/studio-hallett-cemetery-house-extension-london_dezeen_2364_col_19.jpg" class="slide" alt="Studio Hallett Ike updates and extends Victorian lodge in the grounds of a London cemetery 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/studio-hallett-cemetery-house-extension-london_dezeen_2364_col_10-scaled.jpg" class="slide" alt="Studio Hallett Ike updates and extends Victorian lodge in the grounds of a London cemetery 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/studio-hallett-cemetery-house-extension-london_dezeen_2364_col_16-scaled.jpg" class="slide" alt="Studio Hallett Ike updates and extends Victorian lodge in the grounds of a London cemetery 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/studio-hallett-cemetery-house-extension-london_dezeen_2364_col_15-scaled.jpg" class="slide" alt="Studio Hallett Ike updates and extends Victorian lodge in the grounds of a London cemetery 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2025/01/studio-hallett-ike-br-house-london_dezeen_2364_sq-191x191.jpg" class="slide" alt="Studio Hallett Ike updates and extends Victorian lodge in the grounds of a London cemetery 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/studio-hallett-cemetery-house-extension-london_dezeen_2364_col_7-scaled.jpg" class="slide" alt="Studio Hallett Ike updates and extends Victorian lodge in the grounds of a London cemetery 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/studio-hallett-cemetery-house-extension-london_dezeen_2364_col_3-scaled.jpg" class="slide" alt="Studio Hallett Ike updates and extends Victorian lodge in the grounds of a London cemetery 圖片 8" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 8</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>倫敦房屋擴建</span>
-                  </div>
-                  <h3 class="card-title">Studio Hallett Ike updates and extends Victorian lodge in the grounds of a London cemetery</h3>
-                  <p class="card-by">Studio Hallett Ike updates and</p>
-                  <p class="card-desc">英國工作室 Hallett Ike 完成了倫敦公墓內一座哥德式小屋的翻修和擴建。這座被列為二級保護建築的維多利亞式小屋被命名為公墓屋 (Cemetery House)，最初由托馬斯·利特爾 (Thomas Little) 於 1855 年設計，是倫敦西北部基爾本帕丁頓公墓 (Paddington Cemetery) 內的一座牧師住宅，旁邊有兩座小教堂。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Studio Hallett Ike updates and extends Victorian lodge in the grounds of a London cemetery 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>倫敦房屋擴建</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/05/22/studio-hallett-ike-cemetery-house-extension-london/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-studioninedots-light-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/04/studioninedots-light-house-amsterdam-sq_dezeen_2364_col_1-852x852.jpg" class="slide active" alt="Studioninedots fronts skinny Amsterdam home with glass blocks 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/studioninedots-light-house-amsterdam_dezeen_2364_col_17-scaled.jpg" class="slide" alt="Studioninedots fronts skinny Amsterdam home with glass blocks 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/studioninedots-light-house-amsterdam_dezeen_2364_col_2-scaled.jpg" class="slide" alt="Studioninedots fronts skinny Amsterdam home with glass blocks 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/studioninedots-light-house-amsterdam_dezeen_2364_col_0-scaled.jpg" class="slide" alt="Studioninedots fronts skinny Amsterdam home with glass blocks 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/the-corner-store-residential-extension-ian-moore-architects-surry-hills-sydney-australia-architecture_dezeen_2364_col_1_square-191x191.jpg" class="slide" alt="Studioninedots fronts skinny Amsterdam home with glass blocks 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/studioninedots-light-house-amsterdam_dezeen_2364_col_8-scaled.jpg" class="slide" alt="Studioninedots fronts skinny Amsterdam home with glass blocks 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/studioninedots-light-house-amsterdam_dezeen_2364_col_14-scaled.jpg" class="slide" alt="Studioninedots fronts skinny Amsterdam home with glass blocks 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/studioninedots-light-house-amsterdam_dezeen_2364_col_12-scaled.jpg" class="slide" alt="Studioninedots fronts skinny Amsterdam home with glass blocks 圖片 8" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 8</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>亮點</span>
-                  </div>
-                  <h3 class="card-title">Studioninedots fronts skinny Amsterdam home with glass blocks</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">玻璃磚、金屬格柵和光面瓷磚為 Light House 賦予了工業特色，這是一座位於荷蘭的家庭住宅，由當地建築事務所 Studioninedots 設計。這棟又高又瘦的房子位於阿姆斯特丹新開發的社區 Centrumeiland，是為一個家庭建造的，他們想要一個空間，讓「每個家庭成員都能居住」。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Studioninedots fronts skinny Amsterdam home with glass blocks 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」調整空間氣質，最後透過「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>亮點</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/04/24/studioninedots-light-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2024-bunkie-on-the-hill">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908687787Bunkie_On_The_Hill-05.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Bunkie on the Hill 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908685477Bunkie_On_The_Hill-01.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908685480Bunkie_On_The_Hill-02.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908686789Bunkie_On_The_Hill-03.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908687681Bunkie_On_The_Hill-04.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908688082Bunkie_On_The_Hill-06.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908688225Bunkie_On_The_Hill-07.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908688405Bunkie_On_The_Hill-08.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908688474Bunkie_On_The_Hill-09.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908688704Bunkie_On_The_Hill-10.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908688752Bunkie_On_The_Hill-11.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908688925Bunkie_On_The_Hill-12.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908689074Bunkie_On_The_Hill-13.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908689188Bunkie_On_The_Hill-14.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908689431Bunkie_On_The_Hill-15.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908689651Bunkie_On_The_Hill-16.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908689717Bunkie_On_The_Hill-18.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908690041Bunkie_On_The_Hill-21.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908689919Bunkie_On_The_Hill-19.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713908690250Bunkie_On_The_Hill-23.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Bunkie on the Hill 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2024 年 A+ 獎，住宅 &gt; 私人住宅（S 1000 - 2000 平方英尺）</span>
-                    <span>2024</span>
-                    <span>加拿大安大略省馬斯科卡區市</span>
-                  </div>
-                  <h3 class="card-title">Bunkie on the Hill</h3>
-                  <p class="card-by">Dubbeldam Architecture + Design</p>
-                  <p class="card-desc">Bunkie on the Hill 是分佈在四處家族地產中的一系列小屋中最小的一間，為穆斯科卡的家庭客戶提供了休息的空間。 Bunkie 隱藏在陡坡頂部的樹林中，旨在提供一個安靜的空間，遠離下面多代家庭小屋的喧囂。對傳統 A 形框架形狀的現代詮釋讓人想起典型的樹林小屋，其屋頂體積的變化使其與眾不同。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Bunkie on the Hill 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2024 年 A+ 獎，住宅 &gt; 私人住宅（S 1000 - 2000 平方英尺）</span><span>加拿大安大略省馬斯科卡區市</span><span>資料來源：Architizer A+Awards 2024</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/bunkie-on-the-hill/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2024-barcelona-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713783092715OriginalPhotoBarcelonaHouse_04.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Barcelona House 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713783484188OriginalPhotoBarcelonaHouse_09.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Barcelona House 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713783312030OriginalPhotoBarcelonaHouse_34.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Barcelona House 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713783310035OriginalPhotoBarcelonaHouse_33.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Barcelona House 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713783289604OriginalPhotoBarcelonaHouse_27.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Barcelona House 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713782524028ARCHITIZER24_STROM_BARCELONA-6.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Barcelona House 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713782524719ARCHITIZER24_STROM_BARCELONA-8.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Barcelona House 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713782522927ARCHITIZER24_STROM_BARCELONA-4.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Barcelona House 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713782525923ARCHITIZER24_STROM_BARCELONA-11.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Barcelona House 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713782524551ARCHITIZER24_STROM_BARCELONA-7.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Barcelona House 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713782521085_Feature_ARCHITIZER24_STROM_BARCELONA-1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Barcelona House 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713782525218ARCHITIZER24_STROM_BARCELONA-9.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Barcelona House 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713782525769ARCHITIZER24_STROM_BARCELONA-10.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Barcelona House 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713782526155ARCHITIZER24_STROM_BARCELONA-12.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Barcelona House 圖片 14" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 14</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2024 年 A+ 獎，住宅 &gt; 私人住宅（L 4000 - 6000 平方英尺）</span>
-                    <span>2024</span>
-                    <span>西班牙巴塞隆納</span>
-                  </div>
-                  <h3 class="card-title">Barcelona House</h3>
-                  <p class="card-by">Strom Architects</p>
-                  <p class="card-desc">這棟房子位於巴塞隆納郊外的山上，一側享有地中海海岸線一覽無餘的 180 度景觀，後方是松樹林。當地對佔地面積的限制意味著我們需要設計一座兩層建築來容納客戶的簡報。該場地在三個方向上都有很大的傾斜，使我們能夠錯開建築物並將住宿分散開來。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Barcelona House 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2024 年 A+ 獎，住宅 &gt; 私人住宅（L 4000 - 6000 平方英尺）</span><span>西班牙巴塞隆納</span><span>資料來源：Architizer A+Awards 2024</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/barcelona-house-1/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-frame-api-120535" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_01 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Bunker<small>Abez<br>03187 洛斯蒙特西諾斯, 阿利坎特, 西班牙<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">Bunker 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Bunker 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_01 · </p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-120203" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Commune Store<small>Atelier Glow<br>中國福建省南平市武夷山市後園村, 354309<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">Commune Store 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Commune Store 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · </p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-studio-hallett-ike-cemetery-house-extension-london" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_03 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Studio Hallett Ike updates and extends Victorian lodge in the grounds of a London cemetery<small>Studio Hallett Ike updates and<br>倫敦房屋擴建<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">Studio Hallett Ike updates and extends Victorian lodge in the grounds of a London cemetery 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Studio Hallett Ike updates and extends Victorian lodge in the grounds of a London cemetery 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_03 · </p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-studioninedots-light-house" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Studioninedots fronts skinny Amsterdam home with glass blocks<small>Unknown architect<br>亮點<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">Studioninedots fronts skinny Amsterdam home with glass blocks 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Studioninedots fronts skinny Amsterdam home with glass blocks 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · </p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2024-bunkie-on-the-hill" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/24_05 · Architizer / 2024</p>
+        <h2 class="ac-title reveal">Bunkie on the Hill<small>Dubbeldam Architecture + Design<br>加拿大安大略省馬斯科卡區市<br>大眾選擇獎得主，2024 年 A+ 獎，住宅 &gt; 私人住宅（S 1000 - 2000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">Bunkie on the Hill 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Bunkie on the Hill 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/24_05 · </p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2024-barcelona-house" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/24_06 · Architizer / 2024</p>
+        <h2 class="ac-title reveal">Barcelona House<small>Strom Architects<br>西班牙巴塞隆納<br>大眾選擇獎得主，2024 年 A+ 獎，住宅 &gt; 私人住宅（L 4000 - 6000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">Barcelona House 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Barcelona House 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/24_06 · </p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

@@ -3,585 +3,144 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-05</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-05 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-05</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-05 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 6 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-05.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-05.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-frame-api-121459">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215069/16-27AS.JPG" class="slide active" alt="27B Aida Street 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215370/1st-Storey-Plan_page-0001.jpg" class="slide" alt="27B Aida Street 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215371/2nd-Storey-Plan_page-0001.jpg" class="slide" alt="27B Aida Street 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215372/3rd-Storey-Plan_page-0001.jpg" class="slide" alt="27B Aida Street 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215373/Roof-Plan_page-0001.jpg" class="slide" alt="27B Aida Street 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215064/02-27AS.JPG" class="slide" alt="27B Aida Street 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215065/05-27AS.JPG" class="slide" alt="27B Aida Street 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215066/03-27AS.jpg" class="slide" alt="27B Aida Street 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215067/08-27AS.JPG" class="slide" alt="27B Aida Street 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215068/15-27AS.jpg" class="slide" alt="27B Aida Street 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215070/36-27AS.JPG" class="slide" alt="27B Aida Street 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215085/39-27AS-(2).jpg" class="slide" alt="27B Aida Street 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215087/43-27AS.jpg" class="slide" alt="27B Aida Street 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215090/26-27AS.JPG" class="slide" alt="27B Aida Street 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215369/33-27AS.JPG" class="slide" alt="27B Aida Street 圖片 15" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 15</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>27B 愛達街, 新加坡 459954</span>
-                  </div>
-                  <h3 class="card-title">27B Aida Street</h3>
-                  <p class="card-by">Renaissance Planners and Designers</p>
-                  <p class="card-desc">「一個既能引入光線又能隔絕熱量的家。」阿依達街位於新加坡密集的城市結構內，探索如何透過環境響應性、空間清晰度和長期適應性來改造老化的聯排別墅。原來的房子由蔡氏家族擁有 30 多年，由於其深平面和具有挑戰性的東西向方向，導致漏水、通風不良和內部空間黑暗。這家人沒有拆除房子，而是選擇保留並改造它，保留其結構和情感意義。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">27B Aida Street 不是靠單一造型取勝，而是把 舊屋改造 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>House</span><span>27B 愛達街, 新加坡 459954</span><span>發佈日期: 2026 年 6 月 4 日</span><span>標籤： 獎項 / fa26 / 房子 / 生活</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/27b-aida-street" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-122547">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212951/DJ_HOUSE_059.jpg" class="slide active" alt="DJ&#x27;s House 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213011/Section.jpg" class="slide" alt="DJ&#x27;s House 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212947/DJ_HOUSE_004.jpg" class="slide" alt="DJ&#x27;s House 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212948/DJ_HOUSE_012.jpg" class="slide" alt="DJ&#x27;s House 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212949/DJ_HOUSE_023.jpg" class="slide" alt="DJ&#x27;s House 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212950/DJ_HOUSE_035.jpg" class="slide" alt="DJ&#x27;s House 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212952/DJ_HOUSE_072.jpg" class="slide" alt="DJ&#x27;s House 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212953/DJ_HOUSE_085.jpg" class="slide" alt="DJ&#x27;s House 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212954/DJ_HOUSE_095.jpg" class="slide" alt="DJ&#x27;s House 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212955/DJ_HOUSE_114.jpg" class="slide" alt="DJ&#x27;s House 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212956/DJ_HOUSE_123.jpg" class="slide" alt="DJ&#x27;s House 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212962/DJ_HOUSE_167.jpg" class="slide" alt="DJ&#x27;s House 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212965/DJ_HOUSE_177.jpg" class="slide" alt="DJ&#x27;s House 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212966/DJ_HOUSE_204.jpg" class="slide" alt="DJ&#x27;s House 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212967/DJ_HOUSE_244.jpg" class="slide" alt="DJ&#x27;s House 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213021/DJ_HOUSE_102.jpg" class="slide" alt="DJ&#x27;s House 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214702/gf.jpg" class="slide" alt="DJ&#x27;s House 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>特拉維夫-雅法, 以色列</span>
-                  </div>
-                  <h3 class="card-title">DJ&#x27;s House</h3>
-                  <p class="card-by">Pitsou Kedem Architects</p>
-                  <p class="card-desc">該計畫透過將家庭生活與音樂表演環境融為一體，重新定義了家庭空間。該住宅專為一對 DJ 表演者和音樂製作人而設計，集成了室內和室外兩個定制 DJ 站，將聲音、節奏和主持融入日常生活的空間結構中。創新在於將家庭轉變為活躍的文化基礎設施。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">DJ&#x27;s House 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 住宅室內 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>House</span><span>特拉維夫-雅法, 以色列</span><span>發佈日期: 2026 年 6 月 4 日</span><span>標籤： 獎項 / fa26 / 房子 / 以色列</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/djs-house" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-false-bay-heliotrope-house-washington">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/03/false-bay-heliotrope-house-washington_dezeen_2364_sq_0-852x852.jpg" class="slide active" alt="Heliotrope tucks False Bay house into rocky site on a Washington island 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/03/false-bay-heliotrope-house-washington_dezeen_2364_col_21.jpg" class="slide" alt="Heliotrope tucks False Bay house into rocky site on a Washington island 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/03/false-bay-heliotrope-house-washington_dezeen_2364_col_7.jpg" class="slide" alt="Heliotrope tucks False Bay house into rocky site on a Washington island 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/false-bay-heliotrope-house-washington_dezeen_2364_col_8.jpg" class="slide" alt="Heliotrope tucks False Bay house into rocky site on a Washington island 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2022/05/heliotrope-the-buck-mountain-cabin-washington-us-residential-architecture-sq_dezeen_2364_col_1-191x191.jpg" class="slide" alt="Heliotrope tucks False Bay house into rocky site on a Washington island 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/false-bay-heliotrope-house-washington_dezeen_2364_col_11.jpg" class="slide" alt="Heliotrope tucks False Bay house into rocky site on a Washington island 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/false-bay-heliotrope-house-washington_dezeen_2364_col_9-scaled.jpg" class="slide" alt="Heliotrope tucks False Bay house into rocky site on a Washington island 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/false-bay-heliotrope-house-washington_dezeen_2364_col_5.jpg" class="slide" alt="Heliotrope tucks False Bay house into rocky site on a Washington island 圖片 8" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 8</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>USA</span>
-                  </div>
-                  <h3 class="card-title">Heliotrope tucks False Bay house into rocky site on a Washington island</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">建築工作室 Heliotrope 在設計太平洋西北地區的度假屋時採取了“場地敏感的方法”，最終形成了領結形狀的平面圖和多節的雪松覆層。该房屋位于萨利什海的圣胡安岛，距离西雅图约 90 英里（145 公里）。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Heliotrope tucks False Bay house into rocky site on a Washington island 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>USA</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/03/24/false-bay-heliotrope-house-washington/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-house-in-amagansett-khanna-schultz-hamptons">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/04/house-in-amagansett-khanna-schultz-hamptons_dezeen_2364_sq_0-852x852.jpg" class="slide active" alt="Khanna Schultz infuses House in Amagansett with atmosphere of quiet contemplation 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/house-in-amagansett-khanna-schultz-hamptons_dezeen_2364_col_0.jpg" class="slide" alt="Khanna Schultz infuses House in Amagansett with atmosphere of quiet contemplation 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/house-in-amagansett-khanna-schultz-hamptons_dezeen_2364_col_5-scaled.jpg" class="slide" alt="Khanna Schultz infuses House in Amagansett with atmosphere of quiet contemplation 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/house-in-amagansett-khanna-schultz-hamptons_dezeen_2364_col_24.jpg" class="slide" alt="Khanna Schultz infuses House in Amagansett with atmosphere of quiet contemplation 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/denizen-works-house-onomichi-japan-setonai-islands_dezeen_2364_sq_16-191x191.jpg" class="slide" alt="Khanna Schultz infuses House in Amagansett with atmosphere of quiet contemplation 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/house-in-amagansett-khanna-schultz-hamptons_dezeen_2364_col_6.jpg" class="slide" alt="Khanna Schultz infuses House in Amagansett with atmosphere of quiet contemplation 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/house-in-amagansett-khanna-schultz-hamptons_dezeen_2364_col_10.jpg" class="slide" alt="Khanna Schultz infuses House in Amagansett with atmosphere of quiet contemplation 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/house-in-amagansett-khanna-schultz-hamptons_dezeen_2364_col_17-scaled.jpg" class="slide" alt="Khanna Schultz infuses House in Amagansett with atmosphere of quiet contemplation 圖片 8" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 8</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>Black</span>
-                  </div>
-                  <h3 class="card-title">Khanna Schultz infuses House in Amagansett with atmosphere of quiet contemplation</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">紐約工作室 Khanna Schultz 從日本建築中汲取靈感，在紐約漢普頓創建了一座「淨正能量」房屋，其特點是深色木質覆層和大型屋頂太陽能電池陣列。阿瑪甘西特的房子是為一位在日本生活了幾十年的慈善家設計的，他想要一個週末度假屋。卡納舒爾茨為阿瑪甘西特的房子注入了“安靜沉思的氛圍”，這首先出現在 Dezeen 上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Khanna Schultz infuses House in Amagansett with atmosphere of quiet contemplation 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>Black</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/05/15/house-in-amagansett-khanna-schultz-hamptons/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2025-winelands-villa">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785535944ZA_VDV_GE13_Ext_003_001a_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Winelands Villa 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785535948ZA_VDV_GE13_Int_001_001_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785549347ZA_VDV_GE13_Int_001_003_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785553393ZA_VDV_GE13_Int_002_002a_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785556124ZA_VDV_GE13_Int_003_001a_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785562363ZA_VDV_GE13_Int_004_001_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785564155ZA_VDV_GE13_Int_005_002a_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785567917ZA_VDV_GE13_Int_006_002a_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785572332ZA_VDV_GE13_Int_007_002_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785574837ZA_VDV_GE13_Int_008_002_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785577141ZA_VDV_GE13_Int_012_001a_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785584148ZA_VDV_GE13_Int_013_001b_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785585165ZA_VDV_GE13_Int_014_001_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785591638ZA_VDV_GE13_Int_016_001_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785592642ZA_VDV_GE13_Int_018_001_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785600267ZA_VDV_GE13_Int_021_001a_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713785600483zz_ZA_VDV_GE13_Ext_002_004_AL_LR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Winelands Villa 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2025 年 A+Awards，住宅 &gt; 住宅室內設計（&lt;3000 平方英尺）</span>
-                    <span>2025</span>
-                    <span>南非開普敦</span>
-                  </div>
-                  <h3 class="card-title">Winelands Villa</h3>
-                  <p class="card-by">ARRCC</p>
-                  <p class="card-desc">Winelands Villa 位於帕爾-弗朗斯胡克山谷 Val de Vie 莊園的紳士莊園內，這是一個沿著伯格河沿岸的豪華小莊園概念，在經過修復的凡波斯景觀中，可以欣賞德拉肯斯坦山、西蒙斯伯格山和帕爾岩山的景色。莊園的美學準則明確了對普羅旺斯和開普敦鄉土建築的當代詮釋，規定了傾斜的屋頂、裸露的木椽子以及木材覆層、百葉窗外混凝土和與白色灰泥牆相抵消的天然石製品的材料調色板。在此框架內，ARRCC 改進了最初的 H 形足跡客戶簡介，創建了五個重疊正方形的十字形排列：一個中央正方形用於起居和就餐區，每個角落都有一個互鎖的正方形用於臥室，再加上一個用於廚房和公用設施。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Winelands Villa 不是靠單一造型取勝，而是把 舊屋改造 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2025 年 A+Awards，住宅 &gt; 住宅室內設計（&lt;3000 平方英尺）</span><span>南非開普敦</span><span>資料來源：Architizer A+Awards 2025</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/winelands-villa/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2025-into-the-wall-wiedenhofer">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174603151186301_bergmeisterwolf-Arch_Milland_WA_HS_IMG_0113_GW.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="into the wall - wiedenhofer 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1746167157938231120_lageplan_1-500.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="into the wall - wiedenhofer 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174616688294405_bergmeisterwolf-Arch_Milland_WA_HS_IMG_0040_GW-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="into the wall - wiedenhofer 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174616690751707_bergmeisterwolf-Arch_Milland_WA_HS_IMG_0013_GW-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="into the wall - wiedenhofer 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174616725850512_bergmeisterwolf-Arch_Milland_WA_HS_IMG_0086_GW-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="into the wall - wiedenhofer 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174616726432814_bergmeisterwolf-Arch_Milland_WA_HS_IMG_0073_GW-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="into the wall - wiedenhofer 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174616733365808_bergmeisterwolf-Arch_Milland_WA_HS_IMG_0043_GW-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="into the wall - wiedenhofer 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1746167277800231120_grundriss_1-50.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="into the wall - wiedenhofer 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174616733365711_bergmeisterwolf-Arch_Milland_WA_HS_IMG_0028_GW-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="into the wall - wiedenhofer 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174616733582509_bergmeisterwolf-Arch_Milland_WA_HS_IMG_0016_GW-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="into the wall - wiedenhofer 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174616736188913_bergmeisterwolf-Arch_Milland_WA_HS_IMG_0083_GW.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="into the wall - wiedenhofer 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174616736792116_bergmeisterwolf-Arch_Milland_WA_HS_IMG_0104_GW.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="into the wall - wiedenhofer 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174616740077806_bergmeisterwolf-Arch_Milland_WA_HS_IMG_0019_GW-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="into the wall - wiedenhofer 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/174616740549117_bergmeisterwolf-Arch_Milland_WA_HS_IMG_0049_GW-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="into the wall - wiedenhofer 圖片 14" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 14</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</span>
-                    <span>2025</span>
-                    <span>米蘭, 布里克森, 義大利</span>
-                  </div>
-                  <h3 class="card-title">into the wall - wiedenhofer</h3>
-                  <p class="card-by">bergmeisterwolf architekten</p>
-                  <p class="card-desc">延續、重塑、添加、再利用。一個隱居的地方，一個反思、冥想、休息、夢想、為自己而存在的房間。所有新的建築構件均按照延續原則手工製作和設計。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">into the wall - wiedenhofer 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</span><span>米蘭, 布里克森, 義大利</span><span>資料來源：Architizer A+Awards 2025</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/into-the-wall-wiedenhofer/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-frame-api-121459" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_01 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">27B Aida Street<small>Renaissance Planners and Designers<br>27B 愛達街, 新加坡 459954<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">27B Aida Street 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>27B Aida Street 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_01 · </p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-122547" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">DJ&#x27;s House<small>Pitsou Kedem Architects<br>特拉維夫-雅法, 以色列<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">DJ&#x27;s House 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>DJ&#x27;s House 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · </p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-false-bay-heliotrope-house-washington" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_03 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Heliotrope tucks False Bay house into rocky site on a Washington island<small>Unknown architect<br>USA<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">Heliotrope tucks False Bay house into rocky site on a Washington island 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Heliotrope tucks False Bay house into rocky site on a Washington island 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_03 · </p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-house-in-amagansett-khanna-schultz-hamptons" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Khanna Schultz infuses House in Amagansett with atmosphere of quiet contemplation<small>Unknown architect<br>Black<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">Khanna Schultz infuses House in Amagansett with atmosphere of quiet contemplation 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Khanna Schultz infuses House in Amagansett with atmosphere of quiet contemplation 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · </p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2025-winelands-villa" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/25_05 · Architizer / 2025</p>
+        <h2 class="ac-title reveal">Winelands Villa<small>ARRCC<br>南非開普敦<br>大眾選擇獎得主，2025 年 A+Awards，住宅 &gt; 住宅室內設計（&lt;3000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">Winelands Villa 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Winelands Villa 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/25_05 · </p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2025-into-the-wall-wiedenhofer" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/25_06 · Architizer / 2025</p>
+        <h2 class="ac-title reveal">into the wall - wiedenhofer<small>bergmeisterwolf architekten<br>米蘭, 布里克森, 義大利<br>2025 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">into the wall - wiedenhofer 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>into the wall - wiedenhofer 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/25_06 · </p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

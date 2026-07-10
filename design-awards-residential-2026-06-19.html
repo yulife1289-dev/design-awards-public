@@ -3,643 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-19</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-19 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-19</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-19 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-19.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-19.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adus-david-hockney-at-home-see-28-colorful-photographs-of-the-artists-domestic-life">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6966b4fc599d44ddc8d82ac2/1:1/w_90%2Cc_limit/Unknown-15.jpg" class="slide active" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd72/16:10/w_2560%2Cc_limit/GettyImages-1277035137.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd77/master/w_1600%2Cc_limit/GettyImages-110875061.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd78/master/w_1600%2Cc_limit/GettyImages-110875506.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd79/master/w_1600%2Cc_limit/GettyImages-1322699373.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd7a/master/w_1600%2Cc_limit/GettyImages-110876248.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd7b/master/w_1600%2Cc_limit/GettyImages-144607403.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd7c/master/w_1600%2Cc_limit/GettyImages-120065925.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd86/2:3/w_1600%2Cc_limit/GettyImages-1002884890.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd87/2:3/w_1600%2Cc_limit/GettyImages-2202139946.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd83/master/w_1600%2Cc_limit/GettyImages-1404936180.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd81/master/w_1600%2Cc_limit/GettyImages-145661222.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd82/master/w_1600%2Cc_limit/GettyImages-145661328.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd84/master/w_1600%2Cc_limit/GettyImages-1460945344.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd85/master/w_1600%2Cc_limit/GettyImages-90758462.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd88/master/w_1600%2Cc_limit/GettyImages-112925080.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd89/master/w_1600%2Cc_limit/GettyImages-163303596.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd8a/master/w_1600%2Cc_limit/GettyImages-163303599.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd8b/master/w_1600%2Cc_limit/GettyImages-163303604.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 19" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd8c/master/w_1600%2Cc_limit/GettyImages-163303606.jpg" class="slide" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span></span>
-                  </div>
-                  <h3 class="card-title">David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">這位已故畫家帶著他忠誠的臘腸犬往返於歐洲和加州之間</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。這位已故畫家帶著他忠誠的臘腸犬往返於歐洲和加州之間</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>位置未列出</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/david-hockney-at-home-see-28-colorful-photographs-of-the-artists-domestic-life" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-122885">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214332/Linea_01.jpg" class="slide active" alt="Linea 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214347/23rd-Floor-Plan.jpg" class="slide" alt="Linea 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214348/Ground-Floor-Plan.jpg" class="slide" alt="Linea 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214333/Linea_02.jpg" class="slide" alt="Linea 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214334/Linea_03.jpg" class="slide" alt="Linea 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214335/Linea_04.jpg" class="slide" alt="Linea 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214336/Linea_05.jpg" class="slide" alt="Linea 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214337/Linea_06.jpg" class="slide" alt="Linea 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214338/Linea_07.jpg" class="slide" alt="Linea 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214339/Linea_08.jpg" class="slide" alt="Linea 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214340/Linea_09.jpg" class="slide" alt="Linea 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214341/Linea_10.jpg" class="slide" alt="Linea 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214342/Linea_11.jpg" class="slide" alt="Linea 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214343/Linea_12.jpg" class="slide" alt="Linea 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214344/Linea_13.jpg" class="slide" alt="Linea 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214345/Linea_14.jpg" class="slide" alt="Linea 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214346/Linea_15.jpg" class="slide" alt="Linea 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，共享居住綜合體</span>
-                    <span>2026</span>
-                    <span>2161 Hawkins St, 夏洛特, NC 28203, 美國</span>
-                  </div>
-                  <h3 class="card-title">Linea</h3>
-                  <p class="card-by">Fogarty Finger</p>
-                  <p class="card-desc">Linea 是一棟 24 層樓的現代化豪華住宅大樓，擁有 370 個單元，位於夏洛特歷史悠久且充滿活力的南端區。 Linea 不僅位於南端中心，而且還直接連接到夏洛特鐵路步道和 LYNX 藍線，從城市的任何地方都可以輕鬆到達。 Linea 的體驗始於大樓外的零售店和餐館，這些零售店和餐廳向公眾開放，位於廣闊的公共廣場內。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Linea 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>Co-Living Complex</span><span>2161 Hawkins St, 夏洛特, NC 28203, 美國</span><span>發佈日期: 2026 年 6 月 18 日</span><span>標籤： 獎項 / 夏洛特 / 共同居住綜合體 / fa26</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/linea" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-122709">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212763/Coffman-Klima-1.jpg" class="slide active" alt="PowdrHaus 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212778/Coffman-Klima-FloorPlan-1.jpg" class="slide" alt="PowdrHaus 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212779/Coffman-Klima-FloorPlan-2.jpg" class="slide" alt="PowdrHaus 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212764/Coffman-Klima-2.jpg" class="slide" alt="PowdrHaus 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212765/Coffman-Klima-3.jpg" class="slide" alt="PowdrHaus 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212766/Coffman-Klima-4.jpg" class="slide" alt="PowdrHaus 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212767/Coffman-Klima-5.jpg" class="slide" alt="PowdrHaus 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212768/Coffman-Klima-6.jpg" class="slide" alt="PowdrHaus 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212769/Coffman-Klima-7.jpg" class="slide" alt="PowdrHaus 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212770/Coffman-Klima-8.jpg" class="slide" alt="PowdrHaus 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212771/Coffman-Klima-9.jpg" class="slide" alt="PowdrHaus 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212772/Coffman-Klima-10.jpg" class="slide" alt="PowdrHaus 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212773/Coffman-Klima-11.jpg" class="slide" alt="PowdrHaus 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212774/Coffman-Klima-12.jpg" class="slide" alt="PowdrHaus 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212775/Coffman-Klima-13.jpg" class="slide" alt="PowdrHaus 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212776/Coffman-Klima-14.jpg" class="slide" alt="PowdrHaus 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212777/Coffman-Klima-15.jpg" class="slide" alt="PowdrHaus 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>美國猶他州帕克城</span>
-                  </div>
-                  <h3 class="card-title">PowdrHaus</h3>
-                  <p class="card-by">Klima Architecture</p>
-                  <p class="card-desc">身為 Klima 的創辦人和負責人，建築師 Chris Price 建立了與環境深度合作的設計實踐。這一理念塑造了公司的建築、室內設計和景觀設計及其整體的可持續發展方法。雖然 Klima 的作品集充滿了已完成的客戶住宅，但普萊斯最近的作品也是他最個人化的作品，這讓他有機會在最私密的範圍內進一步探索他的方法：他自己的家。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">PowdrHaus 的強度在於它沒有把 住宅室內 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>House</span><span>美國猶他州帕克城</span><span>發佈日期: 2026 年 6 月 18 日</span><span>標籤： 獎項 / fa26 / 住宅 / klima-architecture</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/powdrhaus-1" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-ava-gardner-at-home-inside-the-golden-age-it-girls-off-set-life">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6a29c203da7246eac0456881/16:9/w_2560%2Cc_limit/GettyImages-102058598.jpg" class="slide active" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a29be07df1f73f38e8ae9e2/master/w_1600%2Cc_limit/GettyImages-2078623699.jpg" class="slide" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a29bee6da7246eac045686a/master/w_1600%2Cc_limit/GettyImages-1360190058.jpg" class="slide" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29bf75da7246eac0456873/master/w_1600%2Cc_limit/GettyImages-515335598.jpg" class="slide" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29bfdf87297da385c0a4b2/master/w_1600%2Cc_limit/GettyImages-517397462.jpg" class="slide" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29c0c8e8cb9ee9232d86b3/master/w_1600%2Cc_limit/GettyImages-3349101.jpg" class="slide" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29c165e8cb9ee9232d86c4/master/w_1600%2Cc_limit/GettyImages-55949322.jpg" class="slide" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29c2bfda7246eac045688a/master/w_1600%2Cc_limit/GettyImages-517761602.jpg" class="slide" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29cc162a2f95868b264afb/master/w_1600%2Cc_limit/GettyImages-1450803572.jpg" class="slide" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a29cd651ce24e77ec8f266d/master/w_1600%2Cc_limit/GettyImages-175807044.jpg" class="slide" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos 圖片 10" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 10</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>Image</span>
-                  </div>
-                  <h3 class="card-title">Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">這位傳奇演員在洛杉磯度過了她的早期職業生涯，但在 33 歲時離開了好萊塢的明亮燈光，前往歐洲的兩個地方</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos 最值得注意的不是外觀，而是它如何透過 光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>Image</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/ava-gardner-at-home-inside-the-golden-age-it-girls-off-set-life" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-casa-vicens-antoni-gaudi-centenary">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_sq_2-852x852.jpg" class="slide active" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_col_12.jpg" class="slide" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_col_10-scaled.jpg" class="slide" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_col_5.jpg" class="slide" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi_dezeen_2364_col_0-scaled.jpg" class="slide" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/gaudí-casa-batlló-barcelona_dezeen_2364_col_sq3-191x191.jpg" class="slide" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_col_0.jpg" class="slide" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_col_3-scaled.jpg" class="slide" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home 圖片 8" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_col_6.jpg" class="slide" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home 圖片 9" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/gaudi-series-illustration-sq-blue-852x852.png" class="slide" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home 圖片 10" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 10</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>高第一百週年</span>
-                  </div>
-                  <h3 class="card-title">Casa Vicens was Antoni Gaudí&#x27;s manifesto home</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">繼續我們的高第百年系列，我們看看安東尼高第設計的第一座房子，維森斯之家，它是他後來作品的試驗場，本身就是一件傑作。維森斯之家 (Casa Vicens) 於 1883 年動工，當時高第 31 歲，同年他接手了設計工作。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Casa Vicens was Antoni Gaudí&#x27;s manifesto home 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>高第一百週年</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/06/18/casa-vicens-antoni-gaudi-centenary/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-purbeck-cottage-renovation-type">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/05/stone-cottage-renovation-dorset-type-sq_dezeen_2364_col_2-852x852.jpg" class="slide active" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/stone-cottage-renovation-dorset-type_dezeen_2364_col_1edit.jpg" class="slide" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/stone-cottage-renovation-dorset-type_dezeen_2364_col_6.jpg" class="slide" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/stone-cottage-renovation-dorset-type2_dezeen_2364_col_6-scaled.jpg" class="slide" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/stone-cottage-renovation-dorset-type_dezeen_2364_col_12-scaled.jpg" class="slide" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-cottage-extension-ireland-architectural-farm-sq_dezeen_2364_col_0-191x191.jpg" class="slide" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/stone-cottage-renovation-dorset-type2_dezeen_2364_col_2.jpg" class="slide" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation 圖片 7" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 7</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>亮點</span>
-                  </div>
-                  <h3 class="card-title">TYPE rejects anything brand new or flashy in Purbeck Cottage renovation</h3>
-                  <p class="card-by">TYPE</p>
-                  <p class="card-desc">倫敦建築工作室 TYPE 將多塞特郡的兩座廢棄小屋改造成鄉村度假勝地，慶祝其風化的石頭和木結構。該計畫名為 Purbeck Cottage，將多塞特侏羅紀海岸一個小村莊中的兩座 19 世紀採石場小屋合併成一棟 85 平方米的住宅。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">TYPE rejects anything brand new or flashy in Purbeck Cottage renovation 不是靠單一造型取勝，而是把 舊屋改造 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>亮點</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/05/28/purbeck-cottage-renovation-type/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2024-vlogger-aguai-s-home">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091608211.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Vlogger Aguai&#x27;s Home 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091751973.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091648212.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091753584.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793698113_T5A3770-HDR_%E5%85%A8%E6%99%AF%E5%9B%BE-%E7%BC%96%E8%BE%91.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091819795.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091863256.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091938767.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135092022059.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793708203_T5A3859-HDR-Pano-%E7%BC%96%E8%BE%91.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793684842_T5A3611-HDR-%E7%BC%96%E8%BE%91.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793691141_T5A3643-HDR-%E7%BC%96%E8%BE%91.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793694016_T5A3646-HDR-%E7%BC%96%E8%BE%91.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793727338BS0A5561.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793684843_T5A3630-HDR-%E7%BC%96%E8%BE%91.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793694261_T5A3714-HDR-%E7%BC%96%E8%BE%91.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793697964_T5A3739-HDR-%E7%BC%96%E8%BE%91.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793701035_T5A3805-HDR-%E7%BC%96%E8%BE%91.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793701323_T5A3815-HDR-%E7%BC%96%E8%BE%91.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793691083_T5A3640-HDR-%E7%BC%96%E8%BE%91.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Vlogger Aguai&#x27;s Home 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2024 年 A+ 獎，住宅 &gt; 住宅室內設計（&lt;3000 平方英尺）</span>
-                    <span>2024</span>
-                    <span>寶山, 上海, 中國</span>
-                  </div>
-                  <h3 class="card-title">Vlogger Aguai&#x27;s Home</h3>
-                  <p class="card-by">LZA</p>
-                  <p class="card-desc">房子的主人是一位自媒體界的視頻部落客。設計師以剪貼簿的製作行為為設計核心，將業主的生活需求與新媒體影片部落客對家庭辦公室的需求結合。 創新：專案採用創新的混合方式，滿足家居設計中的居住和工作需求。傳統上，居住空間與工作空間是分開的。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Vlogger Aguai&#x27;s Home 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 住宅室內 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2024 年 A+ 獎，住宅 &gt; 住宅室內設計（&lt;3000 平方英尺）</span><span>寶山, 上海, 中國</span><span>資料來源：Architizer A+Awards 2024</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/scrapbook-vlogger-aguais-home/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2024-m-o-r-e-clt-cabin">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213583004121109-062.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="m.o.r.e. CLT Cabin 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652136090847Plan.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713449047850elevation_1_with_setbacks_.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713449047851elevation_2.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213583003721109-024.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652136091909DSCF8331.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652136024051DJI_0645.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213590706721109-263.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213594227621109-494-Pano.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652136052368DSCF8228.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213592504621109-374-Pano.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652136023697DJI_0635.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213590696921109-215.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652136062192DSCF8293.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652136072969DSCF8329.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213600944321109-729.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213584863221109-088.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652136036821DJI_0654-Pano.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213585817221109-100.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213588672721109-200.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="m.o.r.e. CLT Cabin 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2024 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</span>
-                    <span>2024</span>
-                    <span>QC，加拿大</span>
-                  </div>
-                  <h3 class="card-title">m.o.r.e. CLT Cabin</h3>
-                  <p class="card-by">Kariouk Architects</p>
-                  <p class="card-desc">典型的北美小屋被浪漫化為荒野小木屋。儘管如此，典型的小屋是郊區住宅的“木質”版本，配備了一切現代便利設施。這些建築維持著這樣一種神話：與土地融為一體就等於減少對環境的影響。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">m.o.r.e. CLT Cabin 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2024 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</span><span>QC，加拿大</span><span>資料來源：Architizer A+Awards 2024</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/more-cabin/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adus-david-hockney-at-home-see-28-colorful-photographs-of-the-artists-domestic-life" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6966b4fc599d44ddc8d82ac2/1:1/w_90%2Cc_limit/Unknown-15.jpg" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd72/16:10/w_2560%2Cc_limit/GettyImages-1277035137.jpg" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd77/master/w_1600%2Cc_limit/GettyImages-110875061.jpg" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd78/master/w_1600%2Cc_limit/GettyImages-110875506.jpg" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd79/master/w_1600%2Cc_limit/GettyImages-1322699373.jpg" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd7a/master/w_1600%2Cc_limit/GettyImages-110876248.jpg" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd7b/master/w_1600%2Cc_limit/GettyImages-144607403.jpg" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd7c/master/w_1600%2Cc_limit/GettyImages-120065925.jpg" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd86/2:3/w_1600%2Cc_limit/GettyImages-1002884890.jpg" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c079920ce570bd124cd87/2:3/w_1600%2Cc_limit/GettyImages-2202139946.jpg" alt="David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_01 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">David Hockney at Home: See 31 Colorful Photographs of the Artist&#x27;s Domestic Life<small>AD editorial<br><br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">這位已故畫家帶著他忠誠的臘腸犬往返於歐洲和加州之間</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>這位已故畫家帶著他忠誠的臘腸犬往返於歐洲和加州之間</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_01 · <a href="https://www.architecturaldigest.com/story/david-hockney-at-home-see-28-colorful-photographs-of-the-artists-domestic-life" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-122885" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214332/Linea_01.jpg" alt="Linea image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214347/23rd-Floor-Plan.jpg" alt="Linea image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214348/Ground-Floor-Plan.jpg" alt="Linea image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214333/Linea_02.jpg" alt="Linea image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214334/Linea_03.jpg" alt="Linea image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214335/Linea_04.jpg" alt="Linea image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214336/Linea_05.jpg" alt="Linea image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214337/Linea_06.jpg" alt="Linea image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214338/Linea_07.jpg" alt="Linea image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214339/Linea_08.jpg" alt="Linea image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Linea<small>Fogarty Finger<br>2161 Hawkins St, 夏洛特, NC 28203, 美國<br>FRAME 獎，共享居住綜合體</small></h2>
+        <p class="ac-lead reveal">Linea 是一棟 24 層樓的現代化豪華住宅大樓，擁有 370 個單元，位於夏洛特歷史悠久且充滿活力的南端區。 Linea 不僅位於南端中心，而且還直接連接到夏洛特鐵路步道和 LYNX 藍線，從城市的任何地方都可以輕鬆到達。 Linea 的體驗始於大樓外的零售店和餐館，這些零售店和餐廳向公眾開放，位於廣闊的公共廣場內</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Linea 是一棟 24 層樓的現代化豪華住宅大樓，擁有 370 個單元，位於夏洛特歷史悠久且充滿活力的南端區。 Linea 不僅位於南端中心，而且還直接連接到夏洛特鐵路步道和 LYNX 藍線，從城市的任何地方都可以輕鬆到達。 Linea 的體驗始於大樓外的零售店和餐館，這些零售店和餐廳向公眾開放，位於廣闊的公共廣場內。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/linea" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-122709" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212763/Coffman-Klima-1.jpg" alt="PowdrHaus image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212778/Coffman-Klima-FloorPlan-1.jpg" alt="PowdrHaus image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212779/Coffman-Klima-FloorPlan-2.jpg" alt="PowdrHaus image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212764/Coffman-Klima-2.jpg" alt="PowdrHaus image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212765/Coffman-Klima-3.jpg" alt="PowdrHaus image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212766/Coffman-Klima-4.jpg" alt="PowdrHaus image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212767/Coffman-Klima-5.jpg" alt="PowdrHaus image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212768/Coffman-Klima-6.jpg" alt="PowdrHaus image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212769/Coffman-Klima-7.jpg" alt="PowdrHaus image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/212770/Coffman-Klima-8.jpg" alt="PowdrHaus image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">PowdrHaus<small>Klima Architecture<br>美國猶他州帕克城<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">身為 Klima 的創辦人和負責人，建築師 Chris Price 建立了與環境深度合作的設計實踐。這一理念塑造了公司的建築、室內設計和景觀設計及其整體的可持續發展方法。雖然 Klima 的作品集充滿了已完成的客戶住宅，但普萊斯最近的作品也是他最個人化的作品，這讓他有機會在最私密的範圍內進一步探索他的方法：他自己的家。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>身為 Klima 的創辦人和負責人，建築師 Chris Price 建立了與環境深度合作的設計實踐。這一理念塑造了公司的建築、室內設計和景觀設計及其整體的可持續發展方法。雖然 Klima 的作品集充滿了已完成的客戶住宅，但普萊斯最近的作品也是他最個人化的作品，這讓他有機會在最私密的範圍內進一步探索他的方法：他自己的家。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · <a href="https://frameweb.com/project/powdrhaus-1" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-ava-gardner-at-home-inside-the-golden-age-it-girls-off-set-life" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29c203da7246eac0456881/16:9/w_2560%2Cc_limit/GettyImages-102058598.jpg" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29be07df1f73f38e8ae9e2/master/w_1600%2Cc_limit/GettyImages-2078623699.jpg" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29bee6da7246eac045686a/master/w_1600%2Cc_limit/GettyImages-1360190058.jpg" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29bf75da7246eac0456873/master/w_1600%2Cc_limit/GettyImages-515335598.jpg" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29bfdf87297da385c0a4b2/master/w_1600%2Cc_limit/GettyImages-517397462.jpg" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29c0c8e8cb9ee9232d86b3/master/w_1600%2Cc_limit/GettyImages-3349101.jpg" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29c165e8cb9ee9232d86c4/master/w_1600%2Cc_limit/GettyImages-55949322.jpg" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29c2bfda7246eac045688a/master/w_1600%2Cc_limit/GettyImages-517761602.jpg" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29cc162a2f95868b264afb/master/w_1600%2Cc_limit/GettyImages-1450803572.jpg" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a29cd651ce24e77ec8f266d/master/w_1600%2Cc_limit/GettyImages-175807044.jpg" alt="Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_04 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">Ava Gardner at Home: The Golden Age It-Girl’s Off-Set Life in 10 Photos<small>AD editorial<br>Image<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">這位傳奇演員在洛杉磯度過了她的早期職業生涯，但在 33 歲時離開了好萊塢的明亮燈光，前往歐洲的兩個地方</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>這位傳奇演員在洛杉磯度過了她的早期職業生涯，但在 33 歲時離開了好萊塢的明亮燈光，前往歐洲的兩個地方</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_04 · <a href="https://www.architecturaldigest.com/story/ava-gardner-at-home-inside-the-golden-age-it-girls-off-set-life" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-casa-vicens-antoni-gaudi-centenary" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_sq_2-852x852.jpg" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_col_12.jpg" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_col_10-scaled.jpg" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_col_5.jpg" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi_dezeen_2364_col_0-scaled.jpg" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/gaudí-casa-batlló-barcelona_dezeen_2364_col_sq3-191x191.jpg" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_col_0.jpg" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_col_3-scaled.jpg" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/casa-vicens-antoni-gaudi-centenary_dezeen_2364_col_6.jpg" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/gaudi-series-illustration-sq-blue-852x852.png" alt="Casa Vicens was Antoni Gaudí&#x27;s manifesto home image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_05 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Casa Vicens was Antoni Gaudí&#x27;s manifesto home<small>Unknown architect<br>高第一百週年<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">繼續我們的高第百年系列，我們看看安東尼高第設計的第一座房子，維森斯之家，它是他後來作品的試驗場，本身就是一件傑作。維森斯之家 (Casa Vicens) 於 1883 年動工，當時高第 31 歲，同年他接手了設計工作。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>繼續我們的高第百年系列，我們看看安東尼高第設計的第一座房子，維森斯之家，它是他後來作品的試驗場，本身就是一件傑作。維森斯之家 (Casa Vicens) 於 1883 年動工，當時高第 31 歲，同年他接手了設計工作。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_05 · <a href="https://www.dezeen.com/2026/06/18/casa-vicens-antoni-gaudi-centenary/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-purbeck-cottage-renovation-type" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/stone-cottage-renovation-dorset-type-sq_dezeen_2364_col_2-852x852.jpg" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/stone-cottage-renovation-dorset-type_dezeen_2364_col_1edit.jpg" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/stone-cottage-renovation-dorset-type_dezeen_2364_col_6.jpg" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/stone-cottage-renovation-dorset-type2_dezeen_2364_col_6-scaled.jpg" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/stone-cottage-renovation-dorset-type_dezeen_2364_col_12-scaled.jpg" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-cottage-extension-ireland-architectural-farm-sq_dezeen_2364_col_0-191x191.jpg" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/stone-cottage-renovation-dorset-type2_dezeen_2364_col_2.jpg" alt="TYPE rejects anything brand new or flashy in Purbeck Cottage renovation image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_06 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">TYPE rejects anything brand new or flashy in Purbeck Cottage renovation<small>TYPE<br>亮點<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">倫敦建築工作室 TYPE 將多塞特郡的兩座廢棄小屋改造成鄉村度假勝地，慶祝其風化的石頭和木結構。該計畫名為 Purbeck Cottage，將多塞特侏羅紀海岸一個小村莊中的兩座 19 世紀採石場小屋合併成一棟 85 平方米的住宅。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>倫敦建築工作室 TYPE 將多塞特郡的兩座廢棄小屋改造成鄉村度假勝地，慶祝其風化的石頭和木結構。該計畫名為 Purbeck Cottage，將多塞特侏羅紀海岸一個小村莊中的兩座 19 世紀採石場小屋合併成一棟 85 平方米的住宅。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_06 · <a href="https://www.dezeen.com/2026/05/28/purbeck-cottage-renovation-type/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2024-vlogger-aguai-s-home" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091608211.jpg?w=1680&amp;q=60&amp;auto=format" alt="Vlogger Aguai&#x27;s Home image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091751973.jpg?w=1680&amp;q=60&amp;auto=format" alt="Vlogger Aguai&#x27;s Home image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091648212.jpg?w=1680&amp;q=60&amp;auto=format" alt="Vlogger Aguai&#x27;s Home image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091753584.jpg?w=1680&amp;q=60&amp;auto=format" alt="Vlogger Aguai&#x27;s Home image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793698113_T5A3770-HDR_%E5%85%A8%E6%99%AF%E5%9B%BE-%E7%BC%96%E8%BE%91.jpg?w=1680&amp;q=60&amp;auto=format" alt="Vlogger Aguai&#x27;s Home image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091819795.jpg?w=1680&amp;q=60&amp;auto=format" alt="Vlogger Aguai&#x27;s Home image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091863256.jpg?w=1680&amp;q=60&amp;auto=format" alt="Vlogger Aguai&#x27;s Home image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135091938767.jpg?w=1680&amp;q=60&amp;auto=format" alt="Vlogger Aguai&#x27;s Home image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/17135092022059.jpg?w=1680&amp;q=60&amp;auto=format" alt="Vlogger Aguai&#x27;s Home image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713793708203_T5A3859-HDR-Pano-%E7%BC%96%E8%BE%91.jpg?w=1680&amp;q=60&amp;auto=format" alt="Vlogger Aguai&#x27;s Home image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/24_07 · Architizer / 2024</p>
+        <h2 class="ac-title reveal">Vlogger Aguai&#x27;s Home<small>LZA<br>寶山, 上海, 中國<br>大眾選擇獎得主，2024 年 A+ 獎，住宅 &gt; 住宅室內設計（&lt;3000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">房子的主人是一位自媒體界的視頻部落客。設計師以剪貼簿的製作行為為設計核心，將業主的生活需求與新媒體影片部落客對家庭辦公室的需求結合。 創新：專案採用創新的混合方式，滿足家居設計中的居住和工作需求。傳統上，居住空間與工作空間是分開的。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>房子的主人是一位自媒體界的視頻部落客。設計師以剪貼簿的製作行為為設計核心，將業主的生活需求與新媒體影片部落客對家庭辦公室的需求結合。 創新：專案採用創新的混合方式，滿足家居設計中的居住和工作需求。傳統上，居住空間與工作空間是分開的。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/24_07 · <a href="https://architizer.com/projects/scrapbook-vlogger-aguais-home/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2024-m-o-r-e-clt-cabin" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213583004121109-062.jpg?w=1680&amp;q=60&amp;auto=format" alt="m.o.r.e. CLT Cabin image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652136090847Plan.jpg?w=1680&amp;q=60&amp;auto=format" alt="m.o.r.e. CLT Cabin image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713449047850elevation_1_with_setbacks_.jpg?w=1680&amp;q=60&amp;auto=format" alt="m.o.r.e. CLT Cabin image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713449047851elevation_2.jpg?w=1680&amp;q=60&amp;auto=format" alt="m.o.r.e. CLT Cabin image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213583003721109-024.jpg?w=1680&amp;q=60&amp;auto=format" alt="m.o.r.e. CLT Cabin image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652136091909DSCF8331.jpg?w=1680&amp;q=60&amp;auto=format" alt="m.o.r.e. CLT Cabin image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652136024051DJI_0645.jpg?w=1680&amp;q=60&amp;auto=format" alt="m.o.r.e. CLT Cabin image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213590706721109-263.jpg?w=1680&amp;q=60&amp;auto=format" alt="m.o.r.e. CLT Cabin image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165213594227621109-494-Pano.jpg?w=1680&amp;q=60&amp;auto=format" alt="m.o.r.e. CLT Cabin image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652136052368DSCF8228.jpg?w=1680&amp;q=60&amp;auto=format" alt="m.o.r.e. CLT Cabin image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/24_08 · Architizer / 2024</p>
+        <h2 class="ac-title reveal">m.o.r.e. CLT Cabin<small>Kariouk Architects<br>QC，加拿大<br>2024 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">典型的北美小屋被浪漫化為荒野小木屋。儘管如此，典型的小屋是郊區住宅的“木質”版本，配備了一切現代便利設施。這些建築維持著這樣一種神話：與土地融為一體就等於減少對環境的影響。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>典型的北美小屋被浪漫化為荒野小木屋。儘管如此，典型的小屋是郊區住宅的“木質”版本，配備了一切現代便利設施。這些建築維持著這樣一種神話：與土地融為一體就等於減少對環境的影響。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/24_08 · <a href="https://architizer.com/projects/more-cabin/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

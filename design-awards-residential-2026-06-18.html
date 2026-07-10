@@ -3,672 +3,195 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-18</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD Style、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-18 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-18</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-18 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 9 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD Style 1 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-18.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD Style、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-18.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adus-inside-a-couples-900-square-foot-los-angeles-loft">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6a2c657d853da758c5c95817/16:9/w_2560%2Cc_limit/260523_AD_SoftGeometry_44340008.jpg" class="slide active" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a2c657bde102266b2a7276a/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44310001.jpg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a2c657b20ce570bd124d395/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44330008.jpg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a299eee036e74d7c0c58057/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(3).jpeg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a299eee24ed5d661839da34/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(4).jpeg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c657bd3179c377144fc75/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44300001.jpg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c657b853da758c5c95810/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44330009.jpg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a299eee24ed5d661839da36/3:4/w_748%2Cc_limit/Product%2520Image%2520Template.jpeg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a299eeeda7246eac045659f/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(5).jpeg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c657bcccc0b724f395e11/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44320005.jpg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c657bc531b9c8a8e4a129/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44300007.jpg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c657ed27fb041d2f0e57d/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44380034.jpg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c657de2e6ce179c699d1b/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44360007.jpg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c657d187c9f659a99a91c/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44380009.jpg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c657f838568c5e9be9cac/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44390006.jpg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c657fc3d20d9c49b60546/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44390021.jpg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c657dcccc0b724f395e18/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44380027.jpg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2c657d20ce570bd124d39c/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44380030.jpg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a299eee7e4460c2af53cabf/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(1).jpeg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 19" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a299eee87297da385c0a2f4/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(2).jpeg" class="slide" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘公寓之旅</span>
-                    <span>2026</span>
-                    <span>洛杉磯</span>
-                  </div>
-                  <h3 class="card-title">Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">設計公司 Soft-Geometry 聯合創始人 Palaash Chaudhary 表示：“我們希望一覺醒來，就能準確地看到前一天晚上我們離開的地方。”</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>建築文摘公寓之旅</span><span>洛杉磯</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/inside-a-couples-900-square-foot-los-angeles-loft" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-123614">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216490/La-Jolla-(4).jpeg" class="slide active" alt="Portside 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216491/La-Jolla-(1).jpeg" class="slide" alt="Portside 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216492/La-Jolla-(2).jpeg" class="slide" alt="Portside 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216493/La-Jolla-(3).jpeg" class="slide" alt="Portside 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216494/La-Jolla-(5).jpeg" class="slide" alt="Portside 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216495/La-Jolla-(6).jpeg" class="slide" alt="Portside 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216496/La-Jolla-(7).jpeg" class="slide" alt="Portside 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216497/La-Jolla-(8).jpeg" class="slide" alt="Portside 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216498/La-Jolla-(9).jpeg" class="slide" alt="Portside 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216499/La-Jolla-(10).jpeg" class="slide" alt="Portside 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216500/La-Jolla-(11).jpeg" class="slide" alt="Portside 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216501/Daniel-Joseph-Chenin---La-Jolla-02.jpeg" class="slide" alt="Portside 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216502/Daniel-Joseph-Chenin---La-Jolla-05-Open-Door.jpeg" class="slide" alt="Portside 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/217359/Daniel-Joseph-Chenin---La-Jolla-37.jpeg" class="slide" alt="Portside 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/217360/Daniel-Joseph-Chenin---La-Jolla-46.jpeg" class="slide" alt="Portside 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216504/Port-Side-Presentation-Graphics-Grand-Prix-Large_Page_3.jpg" class="slide" alt="Portside 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216505/Port-Side-Presentation-Graphics-Grand-Prix-Large_Page_1.jpg" class="slide" alt="Portside 圖片 17" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216506/Port-Side-Presentation-Graphics-Grand-Prix-Large_Page_4.jpg" class="slide" alt="Portside 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>拉霍亞海岸海灘，聖地牙哥，CA 92037，美國</span>
-                  </div>
-                  <h3 class="card-title">Portside</h3>
-                  <p class="card-by">Daniel Joseph Chenin</p>
-                  <p class="card-desc">這棟住宅沿著拉霍亞海岸線而建，將一座樸素的中世紀海濱別墅重新構想為光線、物質性和空間清晰度的安靜工具。設計並沒有追求真正的沿海美學，而是將太平洋的氛圍提煉成比例、紋理、節奏和陰影，使建築成為日常儀式和反思的平靜框架。結果是精心策劃的靜修，平衡了克制與豐富的感官體驗。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Portside 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>House</span><span>拉霍亞海岸海灘，聖地牙哥，CA 92037，美國</span><span>發佈日期: 2026 年 6 月 17 日</span><span>標籤： 獎項 / 丹尼爾-約瑟夫-謝寧 / 執行 / fa26</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/portside" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-123721">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216875/001_Featured-Image_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide active" alt="The Harmonizing House 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216895/totonoeru-plan_1_c_720.jpg" class="slide" alt="The Harmonizing House 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216896/totonoeru-plan_2_c_720.jpg" class="slide" alt="The Harmonizing House 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216897/totonoeru_section.jpg" class="slide" alt="The Harmonizing House 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216879/005_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216876/001_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216877/003_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216878/004_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216881/007_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216882/009_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216883/010_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216884/011_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216885/012_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216886/013_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216887/014_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216889/016_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216893/020_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 17" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216894/021_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" class="slide" alt="The Harmonizing House 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>日本山梨縣北斗市</span>
-                  </div>
-                  <h3 class="card-title">The Harmonizing House</h3>
-                  <p class="card-by">Sobokuya</p>
-                  <p class="card-desc">追求簡潔、開闊的宏偉建築著眼於周圍的景觀，精心設計了大型木門和窗戶，從客廳和二樓的私人房間可以欣賞到附近山脈的壯麗景色。這些大開口營造出天然藝術畫廊的感覺，彷彿木製邊框框住了風景。內牆透過將黑木炭與白色灰泥混合來調和，以反映室外景觀。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">The Harmonizing House 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」建立基本秩序，再用「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」調整空間氣質，最後透過「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>House</span><span>日本山梨縣北斗市</span><span>發佈日期: 2026 年 6 月 17 日</span><span>標籤： 獎項 / fa26 / 北斗 / house</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/the-harmonizing-house" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-tuscan-villa-airbnb">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/66c4df2df78c1aa49ac498b0/1:1/w_90%2Cc_limit/IMG_0194.JPG" class="slide active" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a2b0b92f6a06757b9287b74/16:9/w_2560%2Cc_limit/imgi_501_c137345e-b7e5-49e9-bf2c-ba3991571e11.jpg" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a2b0d5ef38c51706f46cc66/master/w_1600%2Cc_limit/IMG_2823.JPG" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2b0d60fa06b0181cab2933/3:4/w_1600%2Cc_limit/Villa%2520Le%2520Pratola%2520Chianti%2520Italy-1.jpg" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2b0d60f6a06757b9287b80/master/w_1600%2Cc_limit/IMG_2846.JPG" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2b10af20ce570bd124baad/master/w_1600%2Cc_limit/IMG_3084.JPG" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2b0b92df1f73f38e8af7d1/master/w_1600%2Cc_limit/imgi_360_f36e3145-a4a4-414c-b997-fc3c1cbc3508.jpg" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2b0d5e2a2f95868b265c5f/master/w_1600%2Cc_limit/6971832B-5A93-457B-A956-838262199F5A.JPG" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2b0d602ca7957ae00fb780/master/w_1600%2Cc_limit/IMG_2838.JPG" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a189957838e1c630dc9380a/1:1/w_640%2Cc_limit/JT-Pioneertown-airbnb%2520(18).jpg" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6859851e3b0faec7ad2a0ccf/1:1/w_640%2Cc_limit/8beb1cda-eba1-4441-a2e3-2230b6c9f718.jpg" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/68139512f13facbdba11709f/1:1/w_640%2Cc_limit/the%2520boheme.jpg" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6792b426d233f6290c956d62/1:1/w_640%2Cc_limit/fce1b6f9-fa1b-4b67-836b-e1524294c8cc.jpeg" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/697250e9bd79adb88ad25f5b/1:1/w_640%2Cc_limit/imgi_1_f2c91998-9300-4af4-ab5f-09996122d1b2.jpeg" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f3b81cd3cd4b27c23b9fd9/1:1/w_640%2Cc_limit/imgi_1_imgi_1_81039d6a-1ef7-42dd-bb1d-f837dc8e8c42.jpg" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f3963fa2b24d55006681cf/1:1/w_640%2Cc_limit/imgi_1_9059bebc-6c43-4875-99ad-887ccd199e99.jpeg" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/64b6a4851f2cecf5ed75f0eb/1:1/w_640%2Cc_limit/a4506c8c-70d8-4016-bc57-d64abbf2702d-1.jpg" class="slide" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>Tuscan</span>
-                  </div>
-                  <h3 class="card-title">A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026)</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">田園詩般的景色和眾多的露天用餐空間構成了這座風景如畫的托斯卡納別墅愛彼迎別墅。閱讀購物製作人 Lauren Arzbaecher 的完整評論。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。田園詩般的景色和眾多的露天用餐空間構成了這座風景如畫的托斯卡納別墅愛彼迎別墅。閱讀購物製作人 Lauren Arzbaecher 的完整評論。</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>Tuscan</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/tuscan-villa-airbnb" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-anthill-house-kaushal-tatiya-architects">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_sq-852x852.jpg" class="slide active" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_col_34.jpg" class="slide" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_col_5-scaled.jpg" class="slide" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_col_12-scaled.jpg" class="slide" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2022/09/pma-madhushala-gadi-house-resdential-architecture-india-sq_dezeen_2364_col_0-191x191.jpg" class="slide" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_col_59-scaled.jpg" class="slide" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_col_66-scaled.jpg" class="slide" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects 圖片 7" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 7</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>India</span>
-                  </div>
-                  <h3 class="card-title">Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">這座位於印度馬哈拉施特拉邦的住宅由當地工作室 Kaushal Tatiya Architects 設計，蟻丘的洞穴狀土室與彎曲的磚砌陽台形成鮮明對比。這座位於阿希利亞納加爾 (Ahilyanagar) 的 650 平方米住宅被恰當地命名為「蟻丘」(The Anthill)，旨在為該地區炎熱乾燥的氣候提供涼爽的生活空間，無需機械通風。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>India</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/06/17/anthill-house-kaushal-tatiya-architects/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-house-iron-doors-tbilisi-timm-architecture-perforated-shutte">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/03/house-of-iron-doors-timm-architecture-residential-georgia-weathered-steel_dezeen_2364_sq-852x852.jpg" class="slide active" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/03/house-of-iron-doors-timm-architecture-residential-georgia-weathered-steel_dezeen_2364_col_7.jpg" class="slide" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/03/house-of-iron-doors-timm-architecture-residential-georgia-weathered-steel_dezeen_2364_col_34-scaled.jpg" class="slide" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/house-of-iron-doors-timm-architecture-residential-georgia-weathered-steel_dezeen_2364_col_13-scaled.jpg" class="slide" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/house-of-iron-doors-timm-architecture-residential-georgia-weathered-steel_dezeen_2364_col_12-scaled.jpg" class="slide" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2025/02/robbie-walker-sawmill-treehouse-australia-sq_dezeen_2364_col_sq-191x191.jpg" class="slide" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/house-of-iron-doors-timm-architecture-residential-georgia-weathered-steel_dezeen_2364_col_15-scaled.jpg" class="slide" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters 圖片 7" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 7</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>亮點</span>
-                  </div>
-                  <h3 class="card-title">TIMM Architecture fronts House of Iron Doors with weathered steel shutters</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">格魯吉亞工作室 TIMM Architecture 完成了鐵門之家，這是第比利斯郊區的一座住宅，其特點是可打開的穿孔風化鋼百葉窗立面。 TIMM Architecture 旨在將附近許多房屋的高柵欄和牆壁的美感轉變為「一種建築體驗，而不是防禦屏障」。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">TIMM Architecture fronts House of Iron Doors with weathered steel shutters 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>亮點</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/03/29/house-iron-doors-tbilisi-timm-architecture-perforated-shutters/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2024-tower-15">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713783463808OODA_FG_TORRE_15_158.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Tower 15 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931717499OODA_FG_TORRE_15_119.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931724681OODA_FG_TORRE_15_340.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931710971OODA_FG_TORRE_15_018.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931708295OODA_FG_TORRE_15_010.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931711278OODA_FG_TORRE_15_019.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931716080OODA_FG_TORRE_15_101.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931716028OODA_FG_TORRE_15_095.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931716531OODA_FG_TORRE_15_109.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931719305OODA_FG_TORRE_15_151.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931721106OODA_FG_TORRE_15_159.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931718591OODA_FG_TORRE_15_134.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931719641OODA_FG_TORRE_15_153.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931716517OODA_FG_TORRE_15_102.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931718027OODA_FG_TORRE_15_123.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712932046821OODA_FG_TORRE_15_032.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931721176OODA_FG_TORRE_15_168.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712932046979OODA_FG_TORRE_15_036.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931722141OODA_FG_TORRE_15_199.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712932046778OODA_FG_TORRE_15_028.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Tower 15 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2024 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 高層（16 層以上）</span>
-                    <span>2024</span>
-                    <span>萊薩達帕爾梅拉, 葡萄牙</span>
-                  </div>
-                  <h3 class="card-title">Tower 15</h3>
-                  <p class="card-by">OODA Architecture</p>
-                  <p class="card-desc">多樣性和統一性的人性化“Tower 15 &amp; 1”位於葡萄牙波爾圖，注重與繼承下來的鄉村遺留下來的有機結構進行對話，並進一步被城市同化，“Tower 15 &amp; 1”是一個綜合城市和景觀設計項目，公共空間佔據底層，用作居民和遊客的零售和休閒場所。塔內設有一到三間臥室的公寓和四間複式頂層公寓，結合了統一性和形式多樣性。組合和垂直構圖是動態的，並在監管和結構網格中創建漸變——這是以誇張的正交性和良性構圖三維性為標誌的獨特結構。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Tower 15 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2024 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 高層（16 層以上）</span><span>萊薩達帕爾梅拉, 葡萄牙</span><span>資料來源：Architizer A+Awards 2024</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/tower-15-1/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2024-upper-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749950283Upper_House_08_Koichi_Takada_Architects_Photo_by_Scott_Burrows_inde.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Upper House 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749951241Upper_House_Koichi_Takada_Architects_Typical_Floor_Plan.png?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749951433Upper_House_Koichi_Takada_Architects_East__South_Elevations.png?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749946218Upper_House_00_Koichi_Takada_Architects_Nature_Reference.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749946219Upper_House_01_Koichi_Takada_Architects_Photo_by_Scott_Burrows_Photography.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749948762Upper_House_02_Koichi_Takada_Architects_Photo_by_Scott_Burrows.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749949391Upper_House_03_Koichi_Takada_Architects__Photo_by_Mark_Nilon.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749949516Upper_House_04_Koichi_Takada_Architects_Photo_by_Tom_Ferguson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749949741Upper_House_05_Koichi_Takada_Architects_Photo_by_Mark_Nilon.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749950259Upper_House_06_Koichi_Takada_Architects_Photo_by_Mark_Nilon_inde.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749950587Upper_House_09_Koichi_Takada_Architects_Photo_by_Mark_Nilon.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749950888Upper_House_10_Koichi_Takada_Architects_Photo_by_Scott_Burrows.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749951044Upper_House_Level_32_Wellness_Club_Koichi_Takada_Architects_Photo_Mark_Nilon.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749951575Upper_House_Koichi_Takada_Architects_L32_Amenities.png?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749951983Upper_House_Koichi_Takada_Architects_L33_Amenities.png?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749952000Upper_House_Level_33_Upper_Club_Koichi_Takada_Architects_Photo_Tom_Ferguson.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749952302Upper_House_07_Koichi_Takada_Architects_Photo_by_Scott_Burrows_inde.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Upper House 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2024 年 A+ 獎，住宅 &gt; 多單元住宅 - 高層（16 層以上）</span>
-                    <span>2024</span>
-                    <span>澳洲南布里斯班</span>
-                  </div>
-                  <h3 class="card-title">Upper House</h3>
-                  <p class="card-by">KOICHI TAKADA ARCHITECTS</p>
-                  <p class="card-desc">Upper House 位於澳洲南布里斯班，是一個多住宅項目，提供 33 層樓高的 188 套公寓。這種富有表現力的形式從莫頓灣本土無花果樹中汲取靈感，標誌著多住宅設計的新時代，與自然的聯繫、設計品質、居民福祉和環境永續性相結合。建築頌揚布里斯班的自然美景和悠閒的城市生活方式，以天然木材涼棚和熱帶屋頂綠洲點綴城市天際線。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Upper House 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2024 年 A+ 獎，住宅 &gt; 多單元住宅 - 高層（16 層以上）</span><span>澳洲南布里斯班</span><span>資料來源：Architizer A+Awards 2024</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/upper-house-2/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adstyle-news_192578043681ffba">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1683301671_doyz8a.jpg?x-oss-process=image/resize" class="slide active" alt="3种有生机的餐厨方案，将倦怠一扫而空 圖片 1" loading="eager"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1661144495_08lrch.jpg?x-oss-process=image/resize" class="slide" alt="3种有生机的餐厨方案，将倦怠一扫而空 圖片 2" loading="eager"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1559640410_GcRpYo.jpg?x-oss-process=image/resize" class="slide" alt="3种有生机的餐厨方案，将倦怠一扫而空 圖片 3" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 3</span>
-                  <span class="photo-tag photo-tag-a">AD Style</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>AD 風格節省空間</span>
-                    <span>2023</span>
-                    <span>厨房</span>
-                  </div>
-                  <h3 class="card-title">3种有生机的餐厨方案，将倦怠一扫而空</h3>
-                  <p class="card-by">AD Style 編輯部</p>
-                  <p class="card-desc">Architectural Digest推出的Space Saver系列视频栏日，每期都会有一个要改造的空间主题，从局部几平米，到客厅、餐厅、厨房、浴室、办公间……由三位设计师分别展示设计方案让你在15分钟里获取不同的思路和灵感。第三期改造主题为“厨房”案例来自一间真实的旧式厨房，邀请了三位颇有想法的设计师，每个人都为这个空间带来了不同的亮点！</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">3种有生机的餐厨方案，将倦怠一扫而空 最值得注意的不是外觀，而是它如何透過 以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序，把 舊屋改造 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>AD 風格節省空間</span><span>厨房</span><span>發佈時間：2023-05-05</span><span>Tags: 厨房 / 空间救星 / 客厅装修</span></div>
-                  <div class="card-links"><a href="https://www.adstyle.com.cn/home/space-saver/news_192578043681ffba.html" target="_blank" rel="noopener">文章頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adus-inside-a-couples-900-square-foot-los-angeles-loft" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c657d853da758c5c95817/16:9/w_2560%2Cc_limit/260523_AD_SoftGeometry_44340008.jpg" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c657bde102266b2a7276a/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44310001.jpg" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c657b20ce570bd124d395/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44330008.jpg" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a299eee036e74d7c0c58057/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(3).jpeg" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a299eee24ed5d661839da34/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(4).jpeg" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c657bd3179c377144fc75/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44300001.jpg" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c657b853da758c5c95810/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44330009.jpg" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a299eee24ed5d661839da36/3:4/w_748%2Cc_limit/Product%2520Image%2520Template.jpeg" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a299eeeda7246eac045659f/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(5).jpeg" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2c657bcccc0b724f395e11/master/w_1600%2Cc_limit/260523_AD_SoftGeometry_44320005.jpg" alt="Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_01 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">Inside a Couple’s 900-Square-Foot Los Angeles Loft That Functions as Both Office and Home<small>AD editorial<br>洛杉磯<br>建築文摘公寓之旅</small></h2>
+        <p class="ac-lead reveal">設計公司 Soft-Geometry 聯合創始人 Palaash Chaudhary 表示：“我們希望一覺醒來，就能準確地看到前一天晚上我們離開的地方。”</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>設計公司 Soft-Geometry 聯合創始人 Palaash Chaudhary 表示：“我們希望一覺醒來，就能準確地看到前一天晚上我們離開的地方。”</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_01 · <a href="https://www.architecturaldigest.com/story/inside-a-couples-900-square-foot-los-angeles-loft" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-123614" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216490/La-Jolla-(4).jpeg" alt="Portside image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216491/La-Jolla-(1).jpeg" alt="Portside image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216492/La-Jolla-(2).jpeg" alt="Portside image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216493/La-Jolla-(3).jpeg" alt="Portside image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216494/La-Jolla-(5).jpeg" alt="Portside image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216495/La-Jolla-(6).jpeg" alt="Portside image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216496/La-Jolla-(7).jpeg" alt="Portside image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216497/La-Jolla-(8).jpeg" alt="Portside image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216498/La-Jolla-(9).jpeg" alt="Portside image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216499/La-Jolla-(10).jpeg" alt="Portside image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Portside<small>Daniel Joseph Chenin<br>拉霍亞海岸海灘，聖地牙哥，CA 92037，美國<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">這棟住宅沿著拉霍亞海岸線而建，將一座樸素的中世紀海濱別墅重新構想為光線、物質性和空間清晰度的安靜工具。設計並沒有追求真正的沿海美學，而是將太平洋的氛圍提煉成比例、紋理、節奏和陰影，使建築成為日常儀式和反思的平靜框架。結果是精心策劃的靜修，平衡了克制與豐富的感官體驗。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>這棟住宅沿著拉霍亞海岸線而建，將一座樸素的中世紀海濱別墅重新構想為光線、物質性和空間清晰度的安靜工具。設計並沒有追求真正的沿海美學，而是將太平洋的氛圍提煉成比例、紋理、節奏和陰影，使建築成為日常儀式和反思的平靜框架。結果是精心策劃的靜修，平衡了克制與豐富的感官體驗。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/portside" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-123721" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216875/001_Featured-Image_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" alt="The Harmonizing House image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216895/totonoeru-plan_1_c_720.jpg" alt="The Harmonizing House image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216896/totonoeru-plan_2_c_720.jpg" alt="The Harmonizing House image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216897/totonoeru_section.jpg" alt="The Harmonizing House image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216879/005_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" alt="The Harmonizing House image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216876/001_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" alt="The Harmonizing House image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216877/003_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" alt="The Harmonizing House image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216878/004_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" alt="The Harmonizing House image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216881/007_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" alt="The Harmonizing House image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216882/009_Totonoeru-no-ie---Sobokuya-Inc.-Courtesy-of-Sobokuya_by-Sobokuya.jpg" alt="The Harmonizing House image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">The Harmonizing House<small>Sobokuya<br>日本山梨縣北斗市<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">追求簡潔、開闊的宏偉建築著眼於周圍的景觀，精心設計了大型木門和窗戶，從客廳和二樓的私人房間可以欣賞到附近山脈的壯麗景色。這些大開口營造出天然藝術畫廊的感覺，彷彿木製邊框框住了風景。內牆透過將黑木炭與白色灰泥混合來調和，以反映室外景觀。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>追求簡潔、開闊的宏偉建築著眼於周圍的景觀，精心設計了大型木門和窗戶，從客廳和二樓的私人房間可以欣賞到附近山脈的壯麗景色。這些大開口營造出天然藝術畫廊的感覺，彷彿木製邊框框住了風景。內牆透過將黑木炭與白色灰泥混合來調和，以反映室外景觀。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · <a href="https://frameweb.com/project/the-harmonizing-house" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-tuscan-villa-airbnb" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/66c4df2df78c1aa49ac498b0/1:1/w_90%2Cc_limit/IMG_0194.JPG" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2b0b92f6a06757b9287b74/16:9/w_2560%2Cc_limit/imgi_501_c137345e-b7e5-49e9-bf2c-ba3991571e11.jpg" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2b0d5ef38c51706f46cc66/master/w_1600%2Cc_limit/IMG_2823.JPG" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2b0d60fa06b0181cab2933/3:4/w_1600%2Cc_limit/Villa%2520Le%2520Pratola%2520Chianti%2520Italy-1.jpg" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2b0d60f6a06757b9287b80/master/w_1600%2Cc_limit/IMG_2846.JPG" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2b10af20ce570bd124baad/master/w_1600%2Cc_limit/IMG_3084.JPG" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2b0b92df1f73f38e8af7d1/master/w_1600%2Cc_limit/imgi_360_f36e3145-a4a4-414c-b997-fc3c1cbc3508.jpg" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2b0d5e2a2f95868b265c5f/master/w_1600%2Cc_limit/6971832B-5A93-457B-A956-838262199F5A.JPG" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2b0d602ca7957ae00fb780/master/w_1600%2Cc_limit/IMG_2838.JPG" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a189957838e1c630dc9380a/1:1/w_640%2Cc_limit/JT-Pioneertown-airbnb%2520(18).jpg" alt="A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026) image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_04 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">A Tuscan Villa Airbnb Celebrating Classic Italian Design, Reviewed (2026)<small>AD editorial<br>Tuscan<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">田園詩般的景色和眾多的露天用餐空間構成了這座風景如畫的托斯卡納別墅愛彼迎別墅。閱讀購物製作人 Lauren Arzbaecher 的完整評論。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>田園詩般的景色和眾多的露天用餐空間構成了這座風景如畫的托斯卡納別墅愛彼迎別墅。閱讀購物製作人 Lauren Arzbaecher 的完整評論。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_04 · <a href="https://www.architecturaldigest.com/story/tuscan-villa-airbnb" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-anthill-house-kaushal-tatiya-architects" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_sq-852x852.jpg" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_col_34.jpg" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_col_5-scaled.jpg" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_col_12-scaled.jpg" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2022/09/pma-madhushala-gadi-house-resdential-architecture-india-sq_dezeen_2364_col_0-191x191.jpg" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_col_59-scaled.jpg" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_col_66-scaled.jpg" alt="Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_05 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Anthill caverns inform earthy and tactile Indian home by Kaushal Tatiya Architects<small>Unknown architect<br>India<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">這座位於印度馬哈拉施特拉邦的住宅由當地工作室 Kaushal Tatiya Architects 設計，蟻丘的洞穴狀土室與彎曲的磚砌陽台形成鮮明對比。這座位於阿希利亞納加爾 (Ahilyanagar) 的 650 平方米住宅被恰當地命名為「蟻丘」(The Anthill)，旨在為該地區炎熱乾燥的氣候提供涼爽的生活空間，</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>這座位於印度馬哈拉施特拉邦的住宅由當地工作室 Kaushal Tatiya Architects 設計，蟻丘的洞穴狀土室與彎曲的磚砌陽台形成鮮明對比。這座位於阿希利亞納加爾 (Ahilyanagar) 的 650 平方米住宅被恰當地命名為「蟻丘」(The Anthill)，旨在為該地區炎熱乾燥的氣候提供涼爽的生活空間，無需機械通風。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_05 · <a href="https://www.dezeen.com/2026/06/17/anthill-house-kaushal-tatiya-architects/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-house-iron-doors-tbilisi-timm-architecture-perforated-shutte" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/house-of-iron-doors-timm-architecture-residential-georgia-weathered-steel_dezeen_2364_sq-852x852.jpg" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/house-of-iron-doors-timm-architecture-residential-georgia-weathered-steel_dezeen_2364_col_7.jpg" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/house-of-iron-doors-timm-architecture-residential-georgia-weathered-steel_dezeen_2364_col_34-scaled.jpg" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/house-of-iron-doors-timm-architecture-residential-georgia-weathered-steel_dezeen_2364_col_13-scaled.jpg" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/house-of-iron-doors-timm-architecture-residential-georgia-weathered-steel_dezeen_2364_col_12-scaled.jpg" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2025/02/robbie-walker-sawmill-treehouse-australia-sq_dezeen_2364_col_sq-191x191.jpg" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/house-of-iron-doors-timm-architecture-residential-georgia-weathered-steel_dezeen_2364_col_15-scaled.jpg" alt="TIMM Architecture fronts House of Iron Doors with weathered steel shutters image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_06 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">TIMM Architecture fronts House of Iron Doors with weathered steel shutters<small>Unknown architect<br>亮點<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">格魯吉亞工作室 TIMM Architecture 完成了鐵門之家，這是第比利斯郊區的一座住宅，其特點是可打開的穿孔風化鋼百葉窗立面。 TIMM Architecture 旨在將附近許多房屋的高柵欄和牆壁的美感轉變為「一種建築體驗，而不是防禦屏障」。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>格魯吉亞工作室 TIMM Architecture 完成了鐵門之家，這是第比利斯郊區的一座住宅，其特點是可打開的穿孔風化鋼百葉窗立面。 TIMM Architecture 旨在將附近許多房屋的高柵欄和牆壁的美感轉變為「一種建築體驗，而不是防禦屏障」。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_06 · <a href="https://www.dezeen.com/2026/03/29/house-iron-doors-tbilisi-timm-architecture-perforated-shutters/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2024-tower-15" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713783463808OODA_FG_TORRE_15_158.jpg?w=1680&amp;q=60&amp;auto=format" alt="Tower 15 image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931717499OODA_FG_TORRE_15_119.jpg?w=1680&amp;q=60&amp;auto=format" alt="Tower 15 image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931724681OODA_FG_TORRE_15_340.jpg?w=1680&amp;q=60&amp;auto=format" alt="Tower 15 image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931710971OODA_FG_TORRE_15_018.jpg?w=1680&amp;q=60&amp;auto=format" alt="Tower 15 image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931708295OODA_FG_TORRE_15_010.jpg?w=1680&amp;q=60&amp;auto=format" alt="Tower 15 image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931711278OODA_FG_TORRE_15_019.jpg?w=1680&amp;q=60&amp;auto=format" alt="Tower 15 image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931716080OODA_FG_TORRE_15_101.jpg?w=1680&amp;q=60&amp;auto=format" alt="Tower 15 image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931716028OODA_FG_TORRE_15_095.jpg?w=1680&amp;q=60&amp;auto=format" alt="Tower 15 image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931716531OODA_FG_TORRE_15_109.jpg?w=1680&amp;q=60&amp;auto=format" alt="Tower 15 image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1712931719305OODA_FG_TORRE_15_151.jpg?w=1680&amp;q=60&amp;auto=format" alt="Tower 15 image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/24_07 · Architizer / 2024</p>
+        <h2 class="ac-title reveal">Tower 15<small>OODA Architecture<br>萊薩達帕爾梅拉, 葡萄牙<br>2024 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 高層（16 層以上）</small></h2>
+        <p class="ac-lead reveal">多樣性和統一性的人性化“Tower 15 &amp; 1”位於葡萄牙波爾圖，注重與繼承下來的鄉村遺留下來的有機結構進行對話，並進一步被城市同化，“Tower 15 &amp; 1”是一個綜合城市和景觀設計項目，公共空間佔據底層，用作居民和遊客的零售和休閒場所。塔內設有一到三間臥室的公寓和四間複式頂層公寓，結合了統一性和形式多樣性。組合</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>多樣性和統一性的人性化“Tower 15 &amp; 1”位於葡萄牙波爾圖，注重與繼承下來的鄉村遺留下來的有機結構進行對話，並進一步被城市同化，“Tower 15 &amp; 1”是一個綜合城市和景觀設計項目，公共空間佔據底層，用作居民和遊客的零售和休閒場所。塔內設有一到三間臥室的公寓和四間複式頂層公寓，結合了統一性和形式多樣性。組合和垂直構圖是動態的，並在監管和結構網格中創建漸變——這是以誇張的正交性和良性構圖三維性為標誌的獨特結構。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/24_07 · <a href="https://architizer.com/projects/tower-15-1/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2024-upper-house" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749950283Upper_House_08_Koichi_Takada_Architects_Photo_by_Scott_Burrows_inde.jpg?w=1680&amp;q=60&amp;auto=format" alt="Upper House image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749951241Upper_House_Koichi_Takada_Architects_Typical_Floor_Plan.png?w=1680&amp;q=60&amp;auto=format" alt="Upper House image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749951433Upper_House_Koichi_Takada_Architects_East__South_Elevations.png?w=1680&amp;q=60&amp;auto=format" alt="Upper House image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749946218Upper_House_00_Koichi_Takada_Architects_Nature_Reference.jpg?w=1680&amp;q=60&amp;auto=format" alt="Upper House image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749946219Upper_House_01_Koichi_Takada_Architects_Photo_by_Scott_Burrows_Photography.jpg?w=1680&amp;q=60&amp;auto=format" alt="Upper House image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749948762Upper_House_02_Koichi_Takada_Architects_Photo_by_Scott_Burrows.jpg?w=1680&amp;q=60&amp;auto=format" alt="Upper House image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749949391Upper_House_03_Koichi_Takada_Architects__Photo_by_Mark_Nilon.jpg?w=1680&amp;q=60&amp;auto=format" alt="Upper House image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749949516Upper_House_04_Koichi_Takada_Architects_Photo_by_Tom_Ferguson.jpg?w=1680&amp;q=60&amp;auto=format" alt="Upper House image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749949741Upper_House_05_Koichi_Takada_Architects_Photo_by_Mark_Nilon.jpg?w=1680&amp;q=60&amp;auto=format" alt="Upper House image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1713749950259Upper_House_06_Koichi_Takada_Architects_Photo_by_Mark_Nilon_inde.jpg?w=1680&amp;q=60&amp;auto=format" alt="Upper House image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/24_08 · Architizer / 2024</p>
+        <h2 class="ac-title reveal">Upper House<small>KOICHI TAKADA ARCHITECTS<br>澳洲南布里斯班<br>大眾選擇獎得主，2024 年 A+ 獎，住宅 &gt; 多單元住宅 - 高層（16 層以上）</small></h2>
+        <p class="ac-lead reveal">Upper House 位於澳洲南布里斯班，是一個多住宅項目，提供 33 層樓高的 188 套公寓。這種富有表現力的形式從莫頓灣本土無花果樹中汲取靈感，標誌著多住宅設計的新時代，與自然的聯繫、設計品質、居民福祉和環境永續性相結合。建築頌揚布里斯班的自然美景和悠閒的城市生活方式，以天然木材涼棚和熱帶屋頂綠洲點綴城市天際線</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Upper House 位於澳洲南布里斯班，是一個多住宅項目，提供 33 層樓高的 188 套公寓。這種富有表現力的形式從莫頓灣本土無花果樹中汲取靈感，標誌著多住宅設計的新時代，與自然的聯繫、設計品質、居民福祉和環境永續性相結合。建築頌揚布里斯班的自然美景和悠閒的城市生活方式，以天然木材涼棚和熱帶屋頂綠洲點綴城市天際線。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/24_08 · <a href="https://architizer.com/projects/upper-house-2/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adstyle-news_192578043681ffba" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1683301671_doyz8a.jpg?x-oss-process=image/resize" alt="3种有生机的餐厨方案，将倦怠一扫而空 image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1661144495_08lrch.jpg?x-oss-process=image/resize" alt="3种有生机的餐厨方案，将倦怠一扫而空 image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1559640410_GcRpYo.jpg?x-oss-process=image/resize" alt="3种有生机的餐厨方案，将倦怠一扫而空 image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · ADS/23_09 · AD Style / 2023</p>
+        <h2 class="ac-title reveal">3种有生机的餐厨方案，将倦怠一扫而空<small>AD Style 編輯部<br>厨房<br>AD 風格節省空間</small></h2>
+        <p class="ac-lead reveal">Architectural Digest推出的Space Saver系列视频栏日，每期都会有一个要改造的空间主题，从局部几平米，到客厅、餐厅、厨房、浴室、办公间……由三位设计师分别展示设计方案让你在15分钟里获取不同的思路和灵感。第三期改造主题为“厨房”案例来自一间真实的旧式厨房，邀请了三位颇有想法的设计师，每个人都为</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Architectural Digest推出的Space Saver系列视频栏日，每期都会有一个要改造的空间主题，从局部几平米，到客厅、餐厅、厨房、浴室、办公间……由三位设计师分别展示设计方案让你在15分钟里获取不同的思路和灵感。第三期改造主题为“厨房”案例来自一间真实的旧式厨房，邀请了三位颇有想法的设计师，每个人都为这个空间带来了不同的亮点！</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE ADS/23_09 · <a href="https://www.adstyle.com.cn/home/space-saver/news_192578043681ffba.html" target="_blank" rel="noopener">文章頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

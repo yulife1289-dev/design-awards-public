@@ -3,706 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --bg-soft: #171717;
-      --panel: #121212;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    body.lb-open { overflow: hidden; }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 26px;
-      margin-top: 26px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-direction: column;
-      min-height: 100%;
-    }
-    .card-photo {
-      position: relative;
-      overflow: hidden;
-      min-height: 440px;
-      cursor: pointer;
-      background: #090909;
-    }
-    .card-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      transform: scale(1.01);
-      transition: transform .45s ease;
-    }
-    .card:hover .card-photo img { transform: scale(1.05); }
-    .photo-num, .photo-tag, .photo-count {
-      position: absolute;
-      z-index: 2;
-    }
-    .photo-num {
-      top: 14px;
-      left: 14px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.5);
-      font-size: .8rem;
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      right: 14px;
-      top: 14px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.16); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.18); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.18); color: #d6b07a; }
-    .photo-count {
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%) scale(.92);
-      opacity: 0;
-      padding: 12px 18px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.62);
-      transition: opacity .25s ease, transform .25s ease;
-    }
-    .card:hover .photo-count {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
-    }
-    .card-body {
-      padding: 22px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(300px, .9fr);
-      align-items: start;
-      gap: 24px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.5rem, 2vw, 2.3rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    #lb {
-      position: fixed;
-      inset: 0;
-      z-index: 9000;
-      display: none;
-      flex-direction: column;
-      background: rgba(5,5,5,.96);
-      padding: 20px;
-    }
-    #lb.open { display: flex; }
-    #lb-bar, #lb-footer {
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
-      color: var(--muted);
-    }
-    #lb-name {
-      color: var(--text);
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: 1.1rem;
-    }
-    #lb-close {
-      border: 0;
-      color: var(--text);
-      background: transparent;
-      font-size: 2rem;
-      cursor: pointer;
-    }
-    #lb-stage {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 72px 1fr 72px;
-      align-items: center;
-      gap: 14px;
-      min-height: 0;
-    }
-    #lb-img-wrap {
-      min-height: 0;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-img {
-      max-width: 100%;
-      max-height: calc(100vh - 220px);
-      object-fit: contain;
-      transition: opacity .2s ease;
-    }
-    #lb-img.loading { opacity: 0; }
-    .lb-nav {
-      border: 1px solid rgba(255,255,255,.18);
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      font-size: 2rem;
-      border-radius: 18px;
-      height: 72px;
-      cursor: pointer;
-    }
-    #lb-thumbs {
-      display: flex;
-      gap: .4rem;
-      overflow-x: auto;
-      padding: 12px 0;
-      scrollbar-width: thin;
-    }
-    .lb-thumb {
-      width: 60px;
-      height: 40px;
-      object-fit: cover;
-      border-radius: 10px;
-      border: 1px solid transparent;
-      opacity: .5;
-      cursor: pointer;
-      flex: 0 0 auto;
-    }
-    .lb-thumb.active {
-      opacity: 1;
-      border-color: rgba(255,255,255,.55);
-    }
-    #lb-hint { font-size: .88rem; }
-    @media (max-width: 799px) {
-      .card-photo { min-height: 280px; }
-      .card-body { grid-template-columns: 1fr; }
-      #lb-stage { grid-template-columns: 54px 1fr 54px; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      cursor: zoom-out;
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-05-13</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD Style 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。版面依 design-awards-html 規格製作，保留雜誌感層次、深色奢雅基調與燈箱相冊互動；內文與說明已轉為繁體中文。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-05-13 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-05-13</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-05-13 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD Style 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-05-13.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD Style</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-05-13.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adstyle-news_1251699b76fb916c">
-              <div class="card-photo" data-gid="p01">
-                <span class="photo-num">01 / 08</span>
-                <img src="https://oimg3.selfimg.com.cn/adcms/20263/dcc37bec1774601413676.jpg" alt="木石之缘 When Wood Meets Stone" loading="eager">
-                <span class="photo-tag photo-tag-a">AD Style</span>
-                <span class="photo-count">查看 20 張圖片</span>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>AD風格居家旅遊</span>
-                    <span>2026</span>
-                    <span>纽约</span>
-                  </div>
-                  <h3 class="card-title">木石之缘 When Wood Meets Stone</h3>
-                  <p class="card-by">AD Style 編輯部</p>
-                  <p class="card-desc">在大洋彼岸的Catskill（卡茨基尔）小镇上，设计师琚宾为艺术家Emily Cheng（成瑞娴）设计的住宅中，东方与西方、人工与天然、理性与情感悄然相遇。这座摊开在山脚下的房子像Emily画布上的底稿，刚刚有了家的轮廓，等待未来一点点慢慢填充。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">木石之缘 When Wood Meets Stone 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>AD風格居家旅遊</span><span>纽约</span><span>發佈時間：2026-03-27</span><span>Tags: 2026年三月号 / 纽约 / 室内设计</span></div>
-                  <div class="card-links"><a href="https://www.adstyle.com.cn/home/home-tour/news_1251699b76fb916c.html" target="_blank" rel="noopener">文章頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-121409">
-              <div class="card-photo" data-gid="p02">
-                <span class="photo-num">02 / 08</span>
-                <img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/207427/1.jpg" alt="Jindi Xihai Open Floor" loading="eager">
-                <span class="photo-tag photo-tag-f">FRAME</span>
-                <span class="photo-count">查看 18 張圖片</span>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，共享居住綜合體</span>
-                    <span>2026</span>
-                    <span>中國, 廣東省, 佛山市, 順德區, 西海村 郵遞區號: 528311</span>
-                  </div>
-                  <h3 class="card-title">Jindi Xihai Open Floor</h3>
-                  <p class="card-by">Wei Banghui</p>
-                  <p class="card-desc">金地西海開放式樓層工程位於中國佛山，於2025年1月完工。超常態設計以「社區是一個自我生長的有機體」為理念，將一塊215平方公尺的閒置高架改造成「家外之家」。透過三個功能場景的差異化定位，打造出更愉悅舒適的過渡社區空間，讓生活與自然融為一體，讓住戶體驗人與人之間純粹的溫暖和真誠的聯繫。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Jindi Xihai Open Floor 不是靠單一造型取勝，而是把 舊屋改造 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>共享居住綜合體</span><span>中國, 廣東省, 佛山市, 順德區, 西海村 郵遞區號: 528311</span><span>發售日期：2026 年 4 月 22 日</span><span>標籤： 獎項 / 中國 / 共享居住綜合體 / fa26</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/jindi-xihai-open-floor" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-120689">
-              <div class="card-photo" data-gid="p03">
-                <span class="photo-num">03 / 08</span>
-                <img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205339/Palace-Deluxe-by-Lori-Morris-1.jpg" alt="Palace Deluxe" loading="lazy">
-                <span class="photo-tag photo-tag-f">FRAME</span>
-                <span class="photo-count">查看 18 張圖片</span>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>加拿大安大略省多倫多</span>
-                  </div>
-                  <h3 class="card-title">Palace Deluxe</h3>
-                  <p class="card-by">Lori Morris Design</p>
-                  <p class="card-desc">隆重介紹由 Lori Morris 設計的 Palace Deluxe，這座佔地 19,679 平方英尺的莊園定義了舊世界永恆的優雅，並注入了不可否認的性感。該住宅擁有五間臥室和一系列非凡的客製化空間，為精緻奢華的生活樹立了新的基準。從宏偉的入口處，Palace Deluxe 就展現出一個精緻工藝的世界。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Palace Deluxe 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>House</span><span>加拿大安大略省多倫多</span><span>發售日期：2026 年 4 月 10 日</span><span>標籤： 獎項 / 加拿大 / fa26 / house</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/palace-deluxe" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adstyle-news_15g393a6279d01c5">
-              <div class="card-photo" data-gid="p04">
-                <span class="photo-num">04 / 08</span>
-                <img src="https://oimg1.selfimg.com.cn/adcms/20263/3f2c982b1774603460480.jpg" alt="安好的世界 Family Tree" loading="lazy">
-                <span class="photo-tag photo-tag-a">AD Style</span>
-                <span class="photo-count">查看 11 張圖片</span>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>AD風格居家旅遊</span>
-                    <span>2026</span>
-                    <span>比利时</span>
-                  </div>
-                  <h3 class="card-title">安好的世界 Family Tree</h3>
-                  <p class="card-by">AD Style 編輯部</p>
-                  <p class="card-desc">在長期合作的日本建築師三木達郎（三木達郎）協助下，比利時設計師阿塞爾·維伍德（Axel Vervoordt）為親人打造了安特衛普近郊的一個鄉間舊屋，營造出樸素、安寧而充滿詩意的空間美學。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">安好的世界 Family Tree 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>AD風格居家旅遊</span><span>比利时</span><span>發佈時間：2026-03-27</span><span>Tags: 2026年三月号 / 室内设计 / 比利时</span></div>
-                  <div class="card-links"><a href="https://www.adstyle.com.cn/home/home-tour/news_15g393a6279d01c5.html" target="_blank" rel="noopener">文章頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2025-carmichael-residences">
-              <div class="card-photo" data-gid="p05">
-                <span class="photo-num">05 / 08</span>
-                <img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745849683909215059_000_N104_med.jpg?w=1680&amp;q=60&amp;auto=format" alt="Carmichael Residences" loading="lazy">
-                <span class="photo-tag photo-tag-d">Architizer</span>
-                <span class="photo-count">查看 13 張圖片</span>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 高層（16 層以上）</span>
-                    <span>2025</span>
-                    <span>印度孟買</span>
-                  </div>
-                  <h3 class="card-title">Carmichael Residences</h3>
-                  <p class="card-by">Skidmore, Owings &amp; Merrill (SOM)</p>
-                  <p class="card-desc">卡邁克爾住宅區滿足了卡邁克爾路日益增長的高層住宅需求，該街區以平房和花園而聞名。 SOM 的設計創造了一個寧靜的避難所，優雅地與周圍的環境相得益彰，其立面採用西部紅雪松，地板上的植物隨處可見。綠色植物沿著 21 層建築的懸垂而下，提供陰涼並構成建築的輪廓。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Carmichael Residences 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 高層（16 層以上）</span><span>印度孟買</span><span>資料來源：Architizer A+Awards 2025</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/carmichael-residences/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2025-diagonal">
-              <div class="card-photo" data-gid="p06">
-                <span class="photo-num">06 / 08</span>
-                <img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1745919352877_Featured_Diaognal.jpg?w=1680&amp;q=60&amp;auto=format" alt="Diagonal" loading="lazy">
-                <span class="photo-tag photo-tag-d">Architizer</span>
-                <span class="photo-count">查看 12 張圖片</span>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 公寓</span>
-                    <span>2025</span>
-                    <span>台灣新北市</span>
-                  </div>
-                  <h3 class="card-title">Diagonal</h3>
-                  <p class="card-by">StudioX4</p>
-                  <p class="card-desc">這個非常規的公寓被一條大尺度的對角線分割開來，並連接著幾道短寬的隔間牆，擺脫了這種典型的配置，呈現出一種新的居住形式，讓每個空間都是開放、平坦和混合的。在牆壁的間隔縫隙之間，光影的遞進、變化、移動清晰可見。礦物漆的運用凸顯了每個隔間的曲線、輪廓和流動性，讓整個居住空間充滿藝術性和無限的自由。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Diagonal 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2025 年 A+ 獎評審團得獎者，住宅 &gt; 公寓</span><span>台灣新北市</span><span>資料來源：Architizer A+Awards 2025</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/diagonal/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2025/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-2021-stone-garden-mina-image-center-and-housing">
-              <div class="card-photo" data-gid="p07">
-                <span class="photo-num">07 / 08</span>
-                <img src="https://static.dezeen.com/uploads/2021/11/11-stone-garden-a-lina-ghotmeh-a.jpeg" alt="Stone Garden — Mina Image Center and Housing" loading="lazy">
-                <span class="photo-tag photo-tag-d">Dezeen</span>
-                <span class="photo-count">查看 1 張圖片</span>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2021 年德澤恩獎</span>
-                    <span>2021</span>
-                    <span>黎巴嫩貝魯特</span>
-                  </div>
-                  <h3 class="card-title">Stone Garden — Mina Image Center and Housing</h3>
-                  <p class="card-by">Lina Ghotmeh — Architecture</p>
-                  <p class="card-desc">獲獎者：年度住房計畫和獲獎者：2021 年度建築項目 Lina Ghotmeh 在黎巴嫩貝魯特設計了一棟水泥和泥土的 13 層公寓大樓。貝魯特是永久性的考古學。這座城市歷經七次掩埋，講述我們祖先的故事，其建築景觀反映了其近代歷史。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Stone Garden — Mina Image Center and Housing 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>2021 年德澤恩獎</span><span>黎巴嫩貝魯特</span><span>資料來源：2021 年 Dezeen 獎</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/awards/2021/winners/stone-garden-mina-image-center-and-housing/" target="_blank" rel="noopener">得獎頁面</a> <a href="https://www.dezeen.com/awards/2021/winners/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-2020-the-borderless-community">
-              <div class="card-photo" data-gid="p08">
-                <span class="photo-num">08 / 08</span>
-                <img src="https://static.dezeen.com/uploads/2020/08/9m1GISsq9cmqitNoHe9nTDovYVnb9WQtD4xc5XLL_Z33nsize_2048.jpeg" alt="The Borderless Community" loading="lazy">
-                <span class="photo-tag photo-tag-d">Dezeen</span>
-                <span class="photo-count">查看 1 張圖片</span>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2020年住房項目</span>
-                    <span>2020</span>
-                    <span>中國 番禺區</span>
-                  </div>
-                  <h3 class="card-title">The Borderless Community</h3>
-                  <p class="card-by">Fei Architects</p>
-                  <p class="card-desc">得獎者：2020年住房計畫。紫泥十二門無邊界社區是中國番禺區的一個住房計畫。紫泥十二門無國界社區是為七位「斜槓青年」量身打造的公私生活混合空間。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">The Borderless Community 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>2020年住房項目</span><span>中國 番禺區</span><span>Source: Dezeen Awards 2020</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/awards/2020/winners/the-borderless-community/" target="_blank" rel="noopener">得獎頁面</a> <a href="https://www.dezeen.com/awards/2020/winners/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adstyle-news_1251699b76fb916c" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · ADS/26_01 · AD Style / 2026</p>
+        <h2 class="ac-title reveal">木石之缘 When Wood Meets Stone<small>AD Style 編輯部<br>纽约<br>AD風格居家旅遊</small></h2>
+        <p class="ac-lead reveal">木石之缘 When Wood Meets Stone 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>木石之缘 When Wood Meets Stone 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE ADS/26_01 · </p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-121409" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Jindi Xihai Open Floor<small>Wei Banghui<br>中國, 廣東省, 佛山市, 順德區, 西海村 郵遞區號: 528311<br>FRAME 獎，共享居住綜合體</small></h2>
+        <p class="ac-lead reveal">Jindi Xihai Open Floor 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Jindi Xihai Open Floor 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · </p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-120689" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Palace Deluxe<small>Lori Morris Design<br>加拿大安大略省多倫多<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">Palace Deluxe 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Palace Deluxe 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · </p>
+      </div>
+    </article>
+    
+    <article id="case-adstyle-news_15g393a6279d01c5" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · ADS/26_04 · AD Style / 2026</p>
+        <h2 class="ac-title reveal">安好的世界 Family Tree<small>AD Style 編輯部<br>比利时<br>AD風格居家旅遊</small></h2>
+        <p class="ac-lead reveal">安好的世界 Family Tree 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>安好的世界 Family Tree 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE ADS/26_04 · </p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2025-carmichael-residences" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/25_05 · Architizer / 2025</p>
+        <h2 class="ac-title reveal">Carmichael Residences<small>Skidmore, Owings &amp; Merrill (SOM)<br>印度孟買<br>2025 年 A+ 獎評審團得獎者，住宅 &gt; 多單元住宅 - 高層（16 層以上）</small></h2>
+        <p class="ac-lead reveal">Carmichael Residences 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Carmichael Residences 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/25_05 · </p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2025-diagonal" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/25_06 · Architizer / 2025</p>
+        <h2 class="ac-title reveal">Diagonal<small>StudioX4<br>台灣新北市<br>2025 年 A+ 獎評審團得獎者，住宅 &gt; 公寓</small></h2>
+        <p class="ac-lead reveal">Diagonal 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Diagonal 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/25_06 · </p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-2021-stone-garden-mina-image-center-and-housing" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/21_07 · Dezeen / 2021</p>
+        <h2 class="ac-title reveal">Stone Garden — Mina Image Center and Housing<small>Lina Ghotmeh — Architecture<br>黎巴嫩貝魯特<br>2021 年德澤恩獎</small></h2>
+        <p class="ac-lead reveal">Stone Garden — Mina Image Center and Housing 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Stone Garden — Mina Image Center and Housing 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/21_07 · </p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-2020-the-borderless-community" class="awards-case">
+      <div class="ac-gallery"></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/20_08 · Dezeen / 2020</p>
+        <h2 class="ac-title reveal">The Borderless Community<small>Fei Architects<br>中國 番禺區<br>2020年住房項目</small></h2>
+        <p class="ac-lead reveal">The Borderless Community 需要回到原始來源判讀其住宅策略。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>The Borderless Community 需要回到原始來源判讀其住宅策略。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/20_08 · </p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb" tabindex="-1" role="dialog" aria-modal="true">
-    <div id="lb-bar">
-      <span id="lb-name"></span>
-      <span id="lb-count"></span>
-      <button id="lb-close" aria-label="關閉">×</button>
-    </div>
-    <div id="lb-stage">
-      <button class="lb-nav" id="lb-prev" aria-label="上一張">‹</button>
-      <div id="lb-img-wrap"><img id="lb-img" alt=""></div>
-      <button class="lb-nav" id="lb-next" aria-label="下一張">›</button>
-    </div>
-    <div id="lb-thumbs"></div>
-    <div id="lb-footer">
-      <span id="lb-tag-wrap"><span id="lb-tag-text" class="photo-tag"></span></span>
-      <span id="lb-hint">← → 切換 · ESC 關閉</span>
-    </div>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    const GALLERIES = {
-      p01: {title: "\u6728\u77f3\u4e4b\u7f18 When Wood Meets Stone", tag: "AD\u98a8\u683c\u5c45\u5bb6\u65c5\u904a", tagClass: "photo-tag-a", images: ["https://oimg3.selfimg.com.cn/adcms/20263/dcc37bec1774601413676.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/d301e3ba1774601418210.jpg", "https://oimg2.selfimg.com.cn/adcms/20263/c34e62ca1774601421192.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/ac8a9311774601424549.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/bb65d4311774601428107.jpg", "https://oimg2.selfimg.com.cn/adcms/20263/5da8ac591774601431219.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/47ff3d8a1774601434207.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/d21c69711774601437333.jpg", "https://oimg2.selfimg.com.cn/adcms/20263/a815f9861774601440389.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/c6a4801b1774601443752.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/8d6be70e1774601447156.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/e475deb11774601450243.jpg", "https://oimg2.selfimg.com.cn/adcms/20263/f887bfcd1774601453536.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/361a905d1774601457084.jpg", "https://oimg2.selfimg.com.cn/adcms/20263/76de0d7b1774601460364.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/d99598ee1774601463435.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/61474a531774601466755.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/e099db4f1774601470302.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/9dee5ea91774601473497.jpg", "https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1664432462_x18vft.jpg?x-oss-process=image/resize"]},p02: {title: "Jindi Xihai Open Floor", tag: "FRAME \u734e\uff0c\u5171\u4eab\u5c45\u4f4f\u7d9c\u5408\u9ad4", tagClass: "photo-tag-f", images: ["https://d1tm14lrsghf7q.cloudfront.net/public/media/207427/1.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207487/\u591c\u95f4\u5916\u89c2.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207488/\u8001\u4eba\u4e0e\u5c0f\u5b69\u5728\u6b64\u6d3b\u52a8.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207491/\u513f\u7ae5\u6d3b\u52a8\u5ba4\u5b8c\u6574.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207492/\u508d\u665a\u7684\u4f11\u606f\u533a.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207493/\u513f\u7ae5\u6d3b\u52a8\u5ba4\u5185\u90e8.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207495/\u513f\u7ae5\u6d3b\u52a8\u5ba4\u5185\u90e82.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207496/\u6d3b\u52a8\u5ba4.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207498/\u7a7a\u95f4.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207500/\u6d3b\u52a8\u5ba42.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207501/\u6674\u5929-\u5c40\u90e8\u5916\u89c2.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207502/\u5ba4\u5916\u73a9\u5177.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207503/\u5929\u7a97\u4e0b\u7684\u5c0f\u4f11\u606f\u533a.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207504/\u591c\u95f4\u5916\u89c2-\u5c40\u90e8.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207505/\u4f11\u606f\u533a\u57df.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207506/\u5e73\u9762\u56fe1.png", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207507/\u5e73\u9762\u56fe2.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/207509/\u5e73\u9762\u56fe3.jpg"]},p03: {title: "Palace Deluxe", tag: "\u6846\u67b6\u734e\uff0c\u773e\u8b70\u9662", tagClass: "photo-tag-f", images: ["https://d1tm14lrsghf7q.cloudfront.net/public/media/205339/Palace-Deluxe-by-Lori-Morris-1.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205354/Floorplan-1.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205355/Floorplan-2.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205357/Floorplan-3.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205340/Palace-Deluxe-by-Lori-Morris-2.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205341/Palace-Deluxe-by-Lori-Morris-3.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205342/Palace-Deluxe-by-Lori-Morris-4.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205343/Palace-Deluxe-by-Lori-Morris-5.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205344/Palace-Deluxe-by-Lori-Morris-6.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205345/Palace-Deluxe-by-Lori-Morris-7.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205346/Palace-Deluxe-by-Lori-Morris-8.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205347/Palace-Deluxe-by-Lori-Morris-9.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205348/Palace-Deluxe-by-Lori-Morris-10.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205349/Palace-Deluxe-by-Lori-Morris-11.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205350/Palace-Deluxe-by-Lori-Morris-12.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205351/Palace-Deluxe-by-Lori-Morris-13.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205352/Palace-Deluxe-by-Lori-Morris-14.jpg", "https://d1tm14lrsghf7q.cloudfront.net/public/media/205353/Palace-Deluxe-by-Lori-Morris-15.jpg"]},p04: {title: "\u5b89\u597d\u7684\u4e16\u754c Family Tree", tag: "AD\u98a8\u683c\u5c45\u5bb6\u65c5\u904a", tagClass: "photo-tag-a", images: ["https://oimg1.selfimg.com.cn/adcms/20263/3f2c982b1774603460480.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/c964d981774603466649.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/fde9e3991774603469872.jpg", "https://oimg1.selfimg.com.cn/adcms/20263/29842bc11774603472998.jpg", "https://oimg2.selfimg.com.cn/adcms/20263/4fd44c351774603475215.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/4c17dc411774603479704.jpg", "https://oimg3.selfimg.com.cn/adcms/20263/8aeaa95c1774603482884.jpg", "https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1466491417_WvCJUS.jpg?x-oss-process=image/resize", "https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1467395195_9jF9bd.jpg?x-oss-process=image/resize", "https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1595317850_dSlFJG.png?x-oss-process=image/resize", "https://oimg1.selfimg.com.cn/adcms/history/cms/ad/1595324721_VHCzw7.png?x-oss-process=image/resize"]},p05: {title: "Carmichael Residences", tag: "2025 \u5e74 A+ \u734e\u8a55\u5be9\u5718\u5f97\u734e\u8005\uff0c\u4f4f\u5b85 > \u591a\u55ae\u5143\u4f4f\u5b85 - \u9ad8\u5c64\uff0816 \u5c64\u4ee5\u4e0a\uff09", tagClass: "photo-tag-d", images: ["http://architizer-prod.imgix.net/media/mediadata/uploads/1745849683909215059_000_N104_med.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745849683150215059_000_N117_med.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745849684356215059_000_N87_med.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745849684301215059_000_N90_med.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745849684018215059_000_N103_med.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745849684176215059_000_N92_med.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745849683787215059_000_N109_med.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745849683609215059_000_N112_med.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745849683623215059_000_N110_med.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745849683151215059_000_N113_med.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745849684159215059_000_N96_med.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745849684031215059_000_N97_med.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745849683817215059_000_N107_med.jpg?w=1680&q=60&auto=format"]},p06: {title: "Diagonal", tag: "2025 \u5e74 A+ \u734e\u8a55\u5be9\u5718\u5f97\u734e\u8005\uff0c\u4f4f\u5b85 > \u516c\u5bd3", tagClass: "photo-tag-d", images: ["http://architizer-prod.imgix.net/media/mediadata/uploads/1745919352877_Featured_Diaognal.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745919359958Diaognal_2.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745919364450Diaognal_3.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745919366771Diaognal_4.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745919370194Diaognal_5.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745919382839Diaognal_6.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745919382840Diaognal_7.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745919385597Diaognal_8.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745919385704Diaognal_9.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745919386697Diaognal_10.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745919386728Diaognal_11.jpg?w=1680&q=60&auto=format", "http://architizer-prod.imgix.net/media/mediadata/uploads/1745919387768Diaognal_12.jpg?w=1680&q=60&auto=format"]},p07: {title: "Stone Garden \u2014 Mina Image Center and Housing", tag: "2021 \u5e74\u5fb7\u6fa4\u6069\u734e", tagClass: "photo-tag-d", images: ["https://static.dezeen.com/uploads/2021/11/11-stone-garden-a-lina-ghotmeh-a.jpeg"]},p08: {title: "The Borderless Community", tag: "2020\u5e74\u4f4f\u623f\u9805\u76ee", tagClass: "photo-tag-d", images: ["https://static.dezeen.com/uploads/2020/08/9m1GISsq9cmqitNoHe9nTDovYVnb9WQtD4xc5XLL_Z33nsize_2048.jpeg"]}
-    };
-
-    const body = document.body;
-    const lb = document.getElementById('lb');
-    const lbName = document.getElementById('lb-name');
-    const lbCount = document.getElementById('lb-count');
-    const lbTagText = document.getElementById('lb-tag-text');
-    const lbImg = document.getElementById('lb-img');
-    const lbThumbs = document.getElementById('lb-thumbs');
-    const closeBtn = document.getElementById('lb-close');
-    let active = null;
-    let index = 0;
-
-    function preload(src) {
-      return new Promise((resolve) => {
-        const image = new Image();
-        image.onload = () => resolve(src);
-        image.onerror = () => resolve(src);
-        image.src = src;
-      });
-    }
-
-    async function renderImage() {
-      const gallery = GALLERIES[active];
-      const src = gallery.images[index];
-      lbImg.classList.add('loading');
-      await preload(src);
-      lbImg.src = src;
-      lbImg.alt = gallery.title + ' 圖片 ' + (index + 1);
-      lbImg.classList.remove('loading');
-      lbCount.textContent = String(index + 1).padStart(2, '0') + ' / ' + String(gallery.images.length).padStart(2, '0');
-      [...lbThumbs.children].forEach((thumb, thumbIndex) => {
-        thumb.classList.toggle('active', thumbIndex === index);
-        if (thumbIndex === index) {
-          thumb.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-        }
-      });
-    }
-
-    function renderThumbs() {
-      const gallery = GALLERIES[active];
-      lbThumbs.innerHTML = '';
-      gallery.images.forEach((src, thumbIndex) => {
-        const thumb = document.createElement('img');
-        thumb.src = src;
-        thumb.className = 'lb-thumb' + (thumbIndex === index ? ' active' : '');
-        thumb.alt = gallery.title + ' 縮圖 ' + (thumbIndex + 1);
-        thumb.addEventListener('click', () => {
-          index = thumbIndex;
-          renderImage();
-        });
-        lbThumbs.appendChild(thumb);
-      });
-    }
-
-    function openLightbox(gid, start = 0) {
-      active = gid;
-      index = start;
-      const gallery = GALLERIES[gid];
-      lbName.textContent = gallery.title;
-      lbTagText.className = 'photo-tag ' + gallery.tagClass;
-      lbTagText.textContent = gallery.tag;
-      renderThumbs();
-      renderImage();
-      lb.classList.add('open');
-      body.classList.add('lb-open');
-      lb.focus();
-    }
-
-    function closeLightbox() {
-      lb.classList.remove('open');
-      body.classList.remove('lb-open');
-      active = null;
-      lbImg.removeAttribute('src');
-    }
-
-    function move(delta) {
-      if (!active) return;
-      const gallery = GALLERIES[active];
-      index = (index + delta + gallery.images.length) % gallery.images.length;
-      renderImage();
-    }
-
-    document.querySelectorAll('.card-photo[data-gid]').forEach((node) => {
-      node.addEventListener('click', () => openLightbox(node.dataset.gid, 0));
-    });
-
-    document.getElementById('lb-prev').addEventListener('click', () => move(-1));
-    document.getElementById('lb-next').addEventListener('click', () => move(1));
-    closeBtn.addEventListener('click', closeLightbox);
-    lb.addEventListener('click', (event) => {
-      if (event.target === lb) closeLightbox();
-    });
-    document.addEventListener('keydown', (event) => {
-      if (!lb.classList.contains('open')) return;
-      if (event.key === 'Escape') closeLightbox();
-      if (event.key === 'ArrowLeft') move(-1);
-      if (event.key === 'ArrowRight') move(1);
-    });
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      function openLb(src, alt) {
-        lbImg.src = src;
-        lbImg.alt = alt;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-      }
-      document.querySelectorAll('.slide').forEach(img => {
-        img.addEventListener('click', () => openLb(img.src, img.alt));
-      });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLb(); });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

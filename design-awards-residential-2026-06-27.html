@@ -3,643 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-27</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-27 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-27</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-27 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-27.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-27.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adus-heidi-caillier-creates-a-charming-seaside-cottage">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6a0f5bbc7468eba151d5956b/16:9/w_2560%2Cc_limit/HCD_Carmel-1-(1).jpg" class="slide active" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a0750c318d2286a21396862/master/w_1600%2Cc_limit/HCD_Carmel-2.jpg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a0750c33c59dfd95a755db2/master/w_1600%2Cc_limit/HCD_Carmel-4.jpg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b5328a7b1cc5fc278b2a0/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(12).jpeg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b532a3eb9c947e4e44c95/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(5).jpeg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0750c0923e3de1eca31282/master/w_1600%2Cc_limit/HCD_Carmel-8.jpg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0750c2cfeabcfa2e1482b5/master/w_1600%2Cc_limit/HCD_Carmel-6.jpg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0750c91e957f5547140374/master/w_1600%2Cc_limit/HCD_Carmel-25.jpg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b532a170910333fc35bef/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(2).jpeg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b5328bfc2d1b97addc03a/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(11).jpeg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0750c63c59dfd95a755dbe/master/w_1600%2Cc_limit/HCD_Carmel-15.jpg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b5328eb97ed68a97fcf83/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(8).jpeg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b53283eb9c947e4e44c8f/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(9).jpeg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0750c7557442647cd5b992/master/w_1600%2Cc_limit/HCD_Carmel-18.jpg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b5328bfc2d1b97addc03c/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(10).jpeg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b532a171b82f81afbc1d8/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(6).jpeg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0750c81e957f554714036e/master/w_1600%2Cc_limit/HCD_Carmel-22.jpg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b532c69fc611bbd421c97/3:4/w_748%2Cc_limit/Product%2520Image%2520Template.jpeg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0b5328a7b1cc5fc278b2a2/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(13).jpeg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 19" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0750c71e957f5547140362/master/w_1600%2Cc_limit/HCD_Carmel-23.jpg" class="slide" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>歷史性</span>
-                  </div>
-                  <h3 class="card-title">Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">「但不是以一種過於甜蜜的方式，」AD100 設計師在談到卡梅爾海邊的家時說道</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage 最值得注意的不是外觀，而是它如何透過 以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>歷史性</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/heidi-caillier-creates-a-charming-seaside-cottage" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-119559">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200606/S12_VILLA_LowRes-20.jpg" class="slide active" alt="Mak Villa 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200589/S12_VILLA_LowRes-29.jpg" class="slide" alt="Mak Villa 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200607/S12_VILLA_LowRes-22.jpg" class="slide" alt="Mak Villa 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200623/S12_VILLA_LowRes-21.jpg" class="slide" alt="Mak Villa 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200624/S12_VILLA_LowRes-5.jpg" class="slide" alt="Mak Villa 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200625/S12_VILLA_LowRes-6.jpg" class="slide" alt="Mak Villa 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200626/S12_VILLA_LowRes-7.jpg" class="slide" alt="Mak Villa 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200627/S12_VILLA_LowRes-23.jpg" class="slide" alt="Mak Villa 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200628/S12_VILLA_LowRes-1.jpg" class="slide" alt="Mak Villa 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200629/S12_VILLA_LowRes-3.jpg" class="slide" alt="Mak Villa 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200632/S12_VILLA_LowRes-8.jpg" class="slide" alt="Mak Villa 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200633/S12_VILLA_LowRes-12.jpg" class="slide" alt="Mak Villa 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200634/S12_VILLA_LowRes-14.jpg" class="slide" alt="Mak Villa 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200635/S12_VILLA_LowRes-13.jpg" class="slide" alt="Mak Villa 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200636/S12_VILLA_LowRes-28.jpg" class="slide" alt="Mak Villa 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200659/MAK-ARCH.png" class="slide" alt="Mak Villa 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200660/MAK-ID-GF.jpg" class="slide" alt="Mak Villa 圖片 17" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200661/MAK-ID-FF.jpg" class="slide" alt="Mak Villa 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>卡達多哈</span>
-                  </div>
-                  <h3 class="card-title">Mak Villa</h3>
-                  <p class="card-by">Studio Twelve Designs</p>
-                  <p class="card-desc">十二工作室設計公司將多哈這棟私人別墅的建築和室內設計作為一個整體設計。該項目並沒有將室內視為應用於建築的一層，而是使用建築結構、流通和材料連續性來定義房屋的居住和體驗方式。設計方法以流通為關鍵組織原則。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Mak Villa 最值得注意的不是外觀，而是它如何透過 主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣，把 住宅室內 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>House</span><span>卡達多哈</span><span>發佈日期：2026 年 2 月 19 日</span><span>標籤： 獎項 / 多哈 / fa26 / house</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/mak-villa" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-arbour-house-andrei-saltykov">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2024/12/ao-ft-tree-courtyard-house-london-sq_dezeen_2364_col_2-191x191.jpg" class="slide active" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_sq_0-852x852.jpg" class="slide" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_2.jpg" class="slide" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_24.jpg" class="slide" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_3-scaled.jpg" class="slide" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_13-scaled.jpg" class="slide" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_5.jpg" class="slide" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_8-scaled.jpg" class="slide" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland 圖片 8" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_15.jpg" class="slide" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland 圖片 9" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 9</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>UK</span>
-                  </div>
-                  <h3 class="card-title">Andrei Saltykov installs house with timber diagrid roof on north London backland</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">Arbor House 的屋頂由縱橫交錯的膠合木板構成，這是一座由倫敦建築師 Andrei Saltykov 設計的家庭住宅。薩爾蒂科夫是安德烈薩爾蒂科夫和合夥人工作室的負責人，他在倫敦北部克勞奇恩德的一片偏僻地塊上完成了這座兩層半地下的房子，周圍環繞著住宅花園。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Andrei Saltykov installs house with timber diagrid roof on north London backland 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>UK</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/02/12/arbour-house-andrei-saltykov/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-decancq-vercruysse-bungalow-sint-martens-latem">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_sq_2-852x852.jpg" class="slide active" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_12-scaled.jpg" class="slide" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_0-scaled.jpg" class="slide" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_5.jpg" class="slide" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_7-scaled.jpg" class="slide" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_13.jpg" class="slide" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_11-scaled.jpg" class="slide" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_1-scaled.jpg" class="slide" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace 圖片 8" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_4-scaled.jpg" class="slide" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace 圖片 9" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_17-scaled.jpg" class="slide" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace 圖片 10" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 10</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>內飾</span>
-                  </div>
-                  <h3 class="card-title">Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">這座位於根特郊區的 1960 年代住宅由 Kortrijk studio Decancq Vercruysse 設計，經過改造，配有塊狀壁爐和折疊式書桌。 Decancq Vercruysse 監督了對中世紀 Sint-Martens-Latem 平房的徹底翻新，該平房位於 Sint-Martens-Latem 的一片林地中。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace 的強度在於它沒有把 舊屋改造 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>內飾</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/02/09/decancq-vercruysse-bungalow-sint-martens-latem/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-how-2-parisian-gallerists-reworked-a-historic-apartment-near-the-musée-dorsay">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e64/16:9/w_2560%2Cc_limit/TASSIN_8.jpg" class="slide active" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e65/master/w_1600%2Cc_limit/TASSIN_7.jpeg" class="slide" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e66/master/w_1600%2Cc_limit/TASSIN_9.jpg" class="slide" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e67/master/w_1600%2Cc_limit/TASSIN_4.jpeg" class="slide" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e68/master/w_1600%2Cc_limit/TASSIN_3.jpeg" class="slide" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e69/master/w_1600%2Cc_limit/TASSIN_6.jpg" class="slide" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e6a/master/w_1600%2Cc_limit/TASSIN_5.jpeg" class="slide" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e6b/master/w_1600%2Cc_limit/TASSIN_2.jpeg" class="slide" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e6c/master/w_1600%2Cc_limit/TASSIN_1.jpeg" class="slide" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay 圖片 9" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 9</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘公寓之旅</span>
-                    <span>2026</span>
-                    <span>歷史</span>
-                  </div>
-                  <h3 class="card-title">How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">提示：翻新工程涉及竹製五金件和引人注目的孔雀藍色油漆工作</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>建築文摘公寓之旅</span><span>歷史</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/how-2-parisian-gallerists-reworked-a-historic-apartment-near-the-musée-dorsay" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-122927">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214454/Living_room_2_Night.JPG" class="slide active" alt="W Residence Penthouse Dubai a Study in Restraint 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214467/Dining_2_curtain_open.JPG" class="slide" alt="W Residence Penthouse Dubai a Study in Restraint 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214471/Master_Bedroom_1_bed_Day-.JPG" class="slide" alt="W Residence Penthouse Dubai a Study in Restraint 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214472/Master_Bathroom-_fron-.JPG" class="slide" alt="W Residence Penthouse Dubai a Study in Restraint 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214474/W_Penthouse_Interior_Design_Concept_Presentation-.jpg" class="slide" alt="W Residence Penthouse Dubai a Study in Restraint 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214466/Lobby_1.JPG" class="slide" alt="W Residence Penthouse Dubai a Study in Restraint 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214468/Bar_Side_2-.JPG" class="slide" alt="W Residence Penthouse Dubai a Study in Restraint 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214469/Bar_4.jpg" class="slide" alt="W Residence Penthouse Dubai a Study in Restraint 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214470/Enterteinment_day.JPG" class="slide" alt="W Residence Penthouse Dubai a Study in Restraint 圖片 9" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 9</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，大型公寓</span>
-                    <span>2026</span>
-                    <span>西 - 朱美拉棕櫚島 - 新月路 - 朱美拉棕櫚島 - 杜拜 - 阿拉伯聯合大公國</span>
-                  </div>
-                  <h3 class="card-title">W Residence Penthouse Dubai a Study in Restraint</h3>
-                  <p class="card-by">Worldesignteam</p>
-                  <p class="card-desc">該項目被認為是在通常被過度定義的環境中對平靜的空間詮釋。公寓位於朱美拉棕櫚島 W Residences，探索克制、比例和材料連續性如何在不依賴姿態的情況下產生安靜清晰的感覺。該項目包括一個私人電梯大堂，作為頂層公寓的入口，從抵達的那一刻起就確立了建築語言。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">W Residence Penthouse Dubai a Study in Restraint 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>大型公寓</span><span>西 - 朱美拉棕櫚島 - 新月路 - 朱美拉棕櫚島 - 杜拜 - 阿拉伯聯合大公國</span><span>發佈日期: 2026 年 6 月 24 日</span><span>標籤： 獎項 / 杜拜 / fa26 / 大公寓</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/w-residence-penthouse-dubai-a-study-in-restraint" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-og-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585115868253-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="OG House 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585260024OG_Studio_Material_Sketch.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585115310091-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585114690004-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585114269302-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585113361417-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585113492335-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585116697375-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585115355408-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585116035403-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1639494218698OmarGandhiArch_OGStudio__1107.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585273711Model_Photo_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1639494243449OmarGandhiArch_OGStudio__1492.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1639494246900OmarGandhiArch_OGStudio__2061.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1639494256265OmarGandhiArch_OGStudio__0291-Pano.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1639494263528OmarGandhiArch_OGStudio__1876.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585308811Light_Analysis.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1639494268828OmarGandhiArch_OGStudio__1902.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1639494282592OmarGandhiArch_OGStudio__2013.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1639494291851OmarGandhiArch_OGStudio__2488.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="OG House 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2023 年 A+Awards 評審團得獎者，住宅 &gt; 私人住宅（M 2000 - 4000 平方英尺）</span>
-                    <span>2023</span>
-                    <span>加拿大哈利法克斯</span>
-                  </div>
-                  <h3 class="card-title">OG House</h3>
-                  <p class="card-by">Omar Gandhi Architects</p>
-                  <p class="card-desc">位於新斯科細亞省哈利法克斯充滿活力、歷史悠久的北端，位於一個狹窄且廢棄的土地上。幾十年前，鄰近的房產是附近一家非洲新斯科細亞理髮店的所在地。該項目的設計目的是成為奧馬爾甘地、他的合夥人和他的兒子的主要住所，坐落在建築工作室東海岸大本營的頂部。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">OG House 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2023 年 A+Awards 評審團得獎者，住宅 &gt; 私人住宅（M 2000 - 4000 平方英尺）</span><span>加拿大哈利法克斯</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/og-studio/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-panorama-penthouse">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190837735101_Bureau-Fraai_Panorama-Penthouse_05.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Panorama Penthouse 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681908408504Bureau-Fraai_Panorama-Penthouse_floorplan_new_00.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681908409298Bureau-Fraai_Panorama-Penthouse_floorplan_new_01.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681908410829Bureau-Fraai_Panorama-Penthouse_section_new.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190837736302_Bureau-Fraai_Panorama-Penthouse_09.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190838624303_Bureau-Fraai_Panorama-Penthouse_35.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190838680204_Bureau-Fraai_Panorama-Penthouse_22.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190838882605_Bureau-Fraai_Panorama-Penthouse_25.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190838914406_Bureau-Fraai_Panorama-Penthouse_19.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190839132207_Bureau-Fraai_Panorama-Penthouse_47.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190839279008_Bureau-Fraai_Panorama-Penthouse_01.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190839656509_Bureau-Fraai_Panorama-Penthouse_02.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190839658910_Bureau-Fraai_Panorama-Penthouse_38.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190839850411_Bureau-Fraai_Panorama-Penthouse_34.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190839914612_Bureau-Fraai_Panorama-Penthouse_08.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190840124913_Bureau-Fraai_Panorama-Penthouse_29.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190840128414_Bureau-Fraai_Panorama-Penthouse_13.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190840248715_Bureau-Fraai_Panorama-Penthouse_31.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190840349116_Bureau-Fraai_Panorama-Penthouse_40.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190840513917_Bureau-Fraai_Panorama-Penthouse_23.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Panorama Penthouse 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2023 年 A+ 獎評審團得獎者，住宅 &gt; 住宅室內設計（&gt;3000 平方英尺）</span>
-                    <span>2023</span>
-                    <span>荷蘭</span>
-                  </div>
-                  <h3 class="card-title">Panorama Penthouse</h3>
-                  <p class="card-by">Bureau Fraai</p>
-                  <p class="card-desc">Bureau Fraai 在一棟前辦公大樓改建為高端住宅大樓的基礎上設計了一套豪華頂層公寓，可欣賞海濱和市中心的全景。為了保持頂層公寓每個位置的 180 度視野，Bureau Fraai 決定引入獨立的橡木體量，創造出開放式樓層概念，而不是牆壁阻擋視野的傳統佈局。對於面積近 300 平方米、天花板高度高達 4.75m 的 casco 頂層公寓，Bureau Fraai 被要求進行一項設計，尊重並充分擁抱一側大海和另一側城市的美麗全景。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Panorama Penthouse 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2023 年 A+ 獎評審團得獎者，住宅 &gt; 住宅室內設計（&gt;3000 平方英尺）</span><span>荷蘭</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/panorama-penthouse/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adus-heidi-caillier-creates-a-charming-seaside-cottage" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0f5bbc7468eba151d5956b/16:9/w_2560%2Cc_limit/HCD_Carmel-1-(1).jpg" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0750c318d2286a21396862/master/w_1600%2Cc_limit/HCD_Carmel-2.jpg" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0750c33c59dfd95a755db2/master/w_1600%2Cc_limit/HCD_Carmel-4.jpg" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0b5328a7b1cc5fc278b2a0/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(12).jpeg" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0b532a3eb9c947e4e44c95/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(5).jpeg" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0750c0923e3de1eca31282/master/w_1600%2Cc_limit/HCD_Carmel-8.jpg" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0750c2cfeabcfa2e1482b5/master/w_1600%2Cc_limit/HCD_Carmel-6.jpg" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0750c91e957f5547140374/master/w_1600%2Cc_limit/HCD_Carmel-25.jpg" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0b532a170910333fc35bef/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(2).jpeg" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0b5328bfc2d1b97addc03a/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(11).jpeg" alt="Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_01 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">Designer Heidi Caillier Embraces Heart-Shaped Cutouts, Prints, and Patterns to Create a Charming Seaside Cottage<small>AD editorial<br>歷史性<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">「但不是以一種過於甜蜜的方式，」AD100 設計師在談到卡梅爾海邊的家時說道</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>「但不是以一種過於甜蜜的方式，」AD100 設計師在談到卡梅爾海邊的家時說道</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_01 · <a href="https://www.architecturaldigest.com/story/heidi-caillier-creates-a-charming-seaside-cottage" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-119559" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200606/S12_VILLA_LowRes-20.jpg" alt="Mak Villa image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200589/S12_VILLA_LowRes-29.jpg" alt="Mak Villa image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200607/S12_VILLA_LowRes-22.jpg" alt="Mak Villa image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200623/S12_VILLA_LowRes-21.jpg" alt="Mak Villa image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200624/S12_VILLA_LowRes-5.jpg" alt="Mak Villa image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200625/S12_VILLA_LowRes-6.jpg" alt="Mak Villa image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200626/S12_VILLA_LowRes-7.jpg" alt="Mak Villa image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200627/S12_VILLA_LowRes-23.jpg" alt="Mak Villa image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200628/S12_VILLA_LowRes-1.jpg" alt="Mak Villa image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200629/S12_VILLA_LowRes-3.jpg" alt="Mak Villa image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Mak Villa<small>Studio Twelve Designs<br>卡達多哈<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">十二工作室設計公司將多哈這棟私人別墅的建築和室內設計作為一個整體設計。該項目並沒有將室內視為應用於建築的一層，而是使用建築結構、流通和材料連續性來定義房屋的居住和體驗方式。設計方法以流通為關鍵組織原則。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>十二工作室設計公司將多哈這棟私人別墅的建築和室內設計作為一個整體設計。該項目並沒有將室內視為應用於建築的一層，而是使用建築結構、流通和材料連續性來定義房屋的居住和體驗方式。設計方法以流通為關鍵組織原則。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/mak-villa" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-arbour-house-andrei-saltykov" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2024/12/ao-ft-tree-courtyard-house-london-sq_dezeen_2364_col_2-191x191.jpg" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_sq_0-852x852.jpg" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_2.jpg" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_24.jpg" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_3-scaled.jpg" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_13-scaled.jpg" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_5.jpg" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_8-scaled.jpg" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/arbour-house-andrei-saltykov_dezeen_2364_col_15.jpg" alt="Andrei Saltykov installs house with timber diagrid roof on north London backland image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_03 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Andrei Saltykov installs house with timber diagrid roof on north London backland<small>Unknown architect<br>UK<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">Arbor House 的屋頂由縱橫交錯的膠合木板構成，這是一座由倫敦建築師 Andrei Saltykov 設計的家庭住宅。薩爾蒂科夫是安德烈薩爾蒂科夫和合夥人工作室的負責人，他在倫敦北部克勞奇恩德的一片偏僻地塊上完成了這座兩層半地下的房子，周圍環繞著住宅花園。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Arbor House 的屋頂由縱橫交錯的膠合木板構成，這是一座由倫敦建築師 Andrei Saltykov 設計的家庭住宅。薩爾蒂科夫是安德烈薩爾蒂科夫和合夥人工作室的負責人，他在倫敦北部克勞奇恩德的一片偏僻地塊上完成了這座兩層半地下的房子，周圍環繞著住宅花園。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_03 · <a href="https://www.dezeen.com/2026/02/12/arbour-house-andrei-saltykov/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-decancq-vercruysse-bungalow-sint-martens-latem" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_sq_2-852x852.jpg" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_12-scaled.jpg" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_0-scaled.jpg" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_5.jpg" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_7-scaled.jpg" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_13.jpg" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_11-scaled.jpg" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_1-scaled.jpg" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_4-scaled.jpg" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/02/bungalow-sint-martens-latem-decancq-vercruysse_dezeen_2364_col_17-scaled.jpg" alt="Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Decancq Vercruysse reorganises mid-century Belgian bungalow around fireplace<small>Unknown architect<br>內飾<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">這座位於根特郊區的 1960 年代住宅由 Kortrijk studio Decancq Vercruysse 設計，經過改造，配有塊狀壁爐和折疊式書桌。 Decancq Vercruysse 監督了對中世紀 Sint-Martens-Latem 平房的徹底翻新，該平房位於 Sint-Martens-Latem 的一片</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>這座位於根特郊區的 1960 年代住宅由 Kortrijk studio Decancq Vercruysse 設計，經過改造，配有塊狀壁爐和折疊式書桌。 Decancq Vercruysse 監督了對中世紀 Sint-Martens-Latem 平房的徹底翻新，該平房位於 Sint-Martens-Latem 的一片林地中。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · <a href="https://www.dezeen.com/2026/02/09/decancq-vercruysse-bungalow-sint-martens-latem/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-how-2-parisian-gallerists-reworked-a-historic-apartment-near-the-musée-dorsay" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e64/16:9/w_2560%2Cc_limit/TASSIN_8.jpg" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e65/master/w_1600%2Cc_limit/TASSIN_7.jpeg" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e66/master/w_1600%2Cc_limit/TASSIN_9.jpg" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e67/master/w_1600%2Cc_limit/TASSIN_4.jpeg" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e68/master/w_1600%2Cc_limit/TASSIN_3.jpeg" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e69/master/w_1600%2Cc_limit/TASSIN_6.jpg" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e6a/master/w_1600%2Cc_limit/TASSIN_5.jpeg" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e6b/master/w_1600%2Cc_limit/TASSIN_2.jpeg" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a01d2a4090e45f17b704e6c/master/w_1600%2Cc_limit/TASSIN_1.jpeg" alt="How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_05 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">How 2 Parisian Gallerists Reworked a Historic Apartment Near the Musée d’Orsay<small>AD editorial<br>歷史<br>建築文摘公寓之旅</small></h2>
+        <p class="ac-lead reveal">提示：翻新工程涉及竹製五金件和引人注目的孔雀藍色油漆工作</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>提示：翻新工程涉及竹製五金件和引人注目的孔雀藍色油漆工作</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_05 · <a href="https://www.architecturaldigest.com/story/how-2-parisian-gallerists-reworked-a-historic-apartment-near-the-musée-dorsay" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-122927" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214454/Living_room_2_Night.JPG" alt="W Residence Penthouse Dubai a Study in Restraint image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214467/Dining_2_curtain_open.JPG" alt="W Residence Penthouse Dubai a Study in Restraint image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214471/Master_Bedroom_1_bed_Day-.JPG" alt="W Residence Penthouse Dubai a Study in Restraint image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214472/Master_Bathroom-_fron-.JPG" alt="W Residence Penthouse Dubai a Study in Restraint image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214474/W_Penthouse_Interior_Design_Concept_Presentation-.jpg" alt="W Residence Penthouse Dubai a Study in Restraint image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214466/Lobby_1.JPG" alt="W Residence Penthouse Dubai a Study in Restraint image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214468/Bar_Side_2-.JPG" alt="W Residence Penthouse Dubai a Study in Restraint image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214469/Bar_4.jpg" alt="W Residence Penthouse Dubai a Study in Restraint image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/214470/Enterteinment_day.JPG" alt="W Residence Penthouse Dubai a Study in Restraint image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_06 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">W Residence Penthouse Dubai a Study in Restraint<small>Worldesignteam<br>西 - 朱美拉棕櫚島 - 新月路 - 朱美拉棕櫚島 - 杜拜 - 阿拉伯聯合大公國<br>FRAME 獎，大型公寓</small></h2>
+        <p class="ac-lead reveal">該項目被認為是在通常被過度定義的環境中對平靜的空間詮釋。公寓位於朱美拉棕櫚島 W Residences，探索克制、比例和材料連續性如何在不依賴姿態的情況下產生安靜清晰的感覺。該項目包括一個私人電梯大堂，作為頂層公寓的入口，從抵達的那一刻起就確立了建築語言。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>該項目被認為是在通常被過度定義的環境中對平靜的空間詮釋。公寓位於朱美拉棕櫚島 W Residences，探索克制、比例和材料連續性如何在不依賴姿態的情況下產生安靜清晰的感覺。該項目包括一個私人電梯大堂，作為頂層公寓的入口，從抵達的那一刻起就確立了建築語言。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_06 · <a href="https://frameweb.com/project/w-residence-penthouse-dubai-a-study-in-restraint" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-og-house" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585115868253-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" alt="OG House image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585260024OG_Studio_Material_Sketch.jpg?w=1680&amp;q=60&amp;auto=format" alt="OG House image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585115310091-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" alt="OG House image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585114690004-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" alt="OG House image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585114269302-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" alt="OG House image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585113361417-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" alt="OG House image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585113492335-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" alt="OG House image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585116697375-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" alt="OG House image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585115355408-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" alt="OG House image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1660585116035403-OGResidence.jpg?w=1680&amp;q=60&amp;auto=format" alt="OG House image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_07 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">OG House<small>Omar Gandhi Architects<br>加拿大哈利法克斯<br>2023 年 A+Awards 評審團得獎者，住宅 &gt; 私人住宅（M 2000 - 4000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">位於新斯科細亞省哈利法克斯充滿活力、歷史悠久的北端，位於一個狹窄且廢棄的土地上。幾十年前，鄰近的房產是附近一家非洲新斯科細亞理髮店的所在地。該項目的設計目的是成為奧馬爾甘地、他的合夥人和他的兒子的主要住所，坐落在建築工作室東海岸大本營的頂部。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>位於新斯科細亞省哈利法克斯充滿活力、歷史悠久的北端，位於一個狹窄且廢棄的土地上。幾十年前，鄰近的房產是附近一家非洲新斯科細亞理髮店的所在地。該項目的設計目的是成為奧馬爾甘地、他的合夥人和他的兒子的主要住所，坐落在建築工作室東海岸大本營的頂部。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_07 · <a href="https://architizer.com/projects/og-studio/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-panorama-penthouse" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190837735101_Bureau-Fraai_Panorama-Penthouse_05.jpg?w=1680&amp;q=60&amp;auto=format" alt="Panorama Penthouse image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681908408504Bureau-Fraai_Panorama-Penthouse_floorplan_new_00.jpg?w=1680&amp;q=60&amp;auto=format" alt="Panorama Penthouse image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681908409298Bureau-Fraai_Panorama-Penthouse_floorplan_new_01.jpg?w=1680&amp;q=60&amp;auto=format" alt="Panorama Penthouse image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681908410829Bureau-Fraai_Panorama-Penthouse_section_new.jpg?w=1680&amp;q=60&amp;auto=format" alt="Panorama Penthouse image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190837736302_Bureau-Fraai_Panorama-Penthouse_09.jpg?w=1680&amp;q=60&amp;auto=format" alt="Panorama Penthouse image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190838624303_Bureau-Fraai_Panorama-Penthouse_35.jpg?w=1680&amp;q=60&amp;auto=format" alt="Panorama Penthouse image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190838680204_Bureau-Fraai_Panorama-Penthouse_22.jpg?w=1680&amp;q=60&amp;auto=format" alt="Panorama Penthouse image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190838882605_Bureau-Fraai_Panorama-Penthouse_25.jpg?w=1680&amp;q=60&amp;auto=format" alt="Panorama Penthouse image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190838914406_Bureau-Fraai_Panorama-Penthouse_19.jpg?w=1680&amp;q=60&amp;auto=format" alt="Panorama Penthouse image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168190839132207_Bureau-Fraai_Panorama-Penthouse_47.jpg?w=1680&amp;q=60&amp;auto=format" alt="Panorama Penthouse image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_08 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">Panorama Penthouse<small>Bureau Fraai<br>荷蘭<br>2023 年 A+ 獎評審團得獎者，住宅 &gt; 住宅室內設計（&gt;3000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">Bureau Fraai 在一棟前辦公大樓改建為高端住宅大樓的基礎上設計了一套豪華頂層公寓，可欣賞海濱和市中心的全景。為了保持頂層公寓每個位置的 180 度視野，Bureau Fraai 決定引入獨立的橡木體量，創造出開放式樓層概念，而不是牆壁阻擋視野的傳統佈局。對於面積近 300 平方米、天花板高度高達 4.75m</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Bureau Fraai 在一棟前辦公大樓改建為高端住宅大樓的基礎上設計了一套豪華頂層公寓，可欣賞海濱和市中心的全景。為了保持頂層公寓每個位置的 180 度視野，Bureau Fraai 決定引入獨立的橡木體量，創造出開放式樓層概念，而不是牆壁阻擋視野的傳統佈局。對於面積近 300 平方米、天花板高度高達 4.75m 的 casco 頂層公寓，Bureau Fraai 被要求進行一項設計，尊重並充分擁抱一側大海和另一側城市的美麗全景。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_08 · <a href="https://architizer.com/projects/panorama-penthouse/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

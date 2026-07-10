@@ -3,643 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-25</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-25 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-25</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-25 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-25.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-25.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adus-historic-soho-loft-designed-by-fawn-galli">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/67ab86cea25684c288a608d7/3:4/w_748%2Cc_limit/Main%2520Product%2520Photo%2520Crop%2520Templates-1-CP%2520Products%2520(31).jpeg" class="slide active" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a15e681c7f855eaedbf35e9/16:9/w_2560%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252006%2520copy.jpg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a15e6835bc2353b6395eb90/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252001%2520copy.jpg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1da4ebe485212d2916406c/3:4/w_748%2Cc_limit/Untitled%2520-%2520May%252026%2C%25202026%2520at%252009.35.23-1-CP%2520Products%2520(27).jpeg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1da66186a233e32a4364c5/3:4/w_748%2Cc_limit/Untitled%2520-%2520May%252026%2C%25202026%2520at%252009.35.23-1-CP%2520Products%2520(29).jpeg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a15e6814261d42c9329ee16/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252008%2520copy.jpg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a15e6836cec02dde98ad11d/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252007%2520copy.jpg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a15e6834261d42c9329ee1c/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252026%2520copy.jpg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a15e685dd8a004a3d5ae1cc/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252029%2520copy.jpg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a15e68158e6972b2f1887de/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252013%2520copy.jpg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1da765e4d9de4a9fbf3908/3:4/w_748%2Cc_limit/Untitled%2520-%2520May%252026%2C%25202026%2520at%252009.35.23-1-CP%2520Products%2520(32).jpeg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a15e682cec382a9cb31f4e1/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252014%2520copy.jpg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1da723990e327197bfe69e/3:4/w_748%2Cc_limit/Untitled%2520-%2520May%252026%2C%25202026%2520at%252009.35.23-1-CP%2520Products%2520(31).jpeg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1da581e2850a24e869444f/3:4/w_748%2Cc_limit/Untitled%2520-%2520May%252026%2C%25202026%2520at%252009.35.23-1-CP%2520Products%2520(28).jpeg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a15e68358e6972b2f1887e4/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252015%2520copy.jpg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a15e6846179f0685d632880/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252024%2520copy.jpg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a15e6845bc2353b6395eb94/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252016%2520copy.jpg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1da47963b83cee6329ab60/3:4/w_748%2Cc_limit/Untitled%2520-%2520May%252026%2C%25202026%2520at%252009.35.23-1-CP%2520Products%2520(26).jpeg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1da6c37943b0a5d7d18dbf/3:4/w_748%2Cc_limit/Untitled%2520-%2520May%252026%2C%25202026%2520at%252009.35.23-1-CP%2520Products%2520(30).jpeg" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 19" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6615885089b0192ff55fa5a2/1:1/w_90%2Cc_limit/IMG_4321.JPG" class="slide" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘公寓之旅</span>
-                    <span>2026</span>
-                    <span>歷史悠久的蘇豪區</span>
-                  </div>
-                  <h3 class="card-title">In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight</h3>
-                  <p class="card-by">Fawn Galli</p>
-                  <p class="card-desc">AD PRO Directory 設計師 Fawn Galli 使用色彩和周到的佈局，將通風良好的公寓打造成可容納 6 人的舒適家庭住宅</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>建築文摘公寓之旅</span><span>歷史悠久的蘇豪區</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/historic-soho-loft-designed-by-fawn-galli" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-119160">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199221/033A5426-拷贝.jpg" class="slide active" alt="Fusion Residence 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199223/033A5525a.jpg" class="slide" alt="Fusion Residence 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199224/033A5574.jpg" class="slide" alt="Fusion Residence 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199225/033A5616.jpg" class="slide" alt="Fusion Residence 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199226/033A5637.jpg" class="slide" alt="Fusion Residence 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199227/033A5654a.jpg" class="slide" alt="Fusion Residence 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199228/033A5587.jpg" class="slide" alt="Fusion Residence 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199229/033A5593.jpg" class="slide" alt="Fusion Residence 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199230/033A5664-拷贝.jpg" class="slide" alt="Fusion Residence 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199231/033A5798.jpg" class="slide" alt="Fusion Residence 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199232/033A5804.jpg" class="slide" alt="Fusion Residence 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199234/033A5794.jpg" class="slide" alt="Fusion Residence 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199235/033A5819.jpg" class="slide" alt="Fusion Residence 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199236/033A5666.jpg" class="slide" alt="Fusion Residence 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199237/033A5673.jpg" class="slide" alt="Fusion Residence 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199238/平面(1).jpg" class="slide" alt="Fusion Residence 圖片 16" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 16</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，大型公寓</span>
-                    <span>2026</span>
-                    <span>北京市海淀區何慶路 287C+HQX, 北京市, 中國, 100084</span>
-                  </div>
-                  <h3 class="card-title">Fusion Residence</h3>
-                  <p class="card-by">ANG 3 Studio</p>
-                  <p class="card-desc">亨利曾提到，折衷主義是「對立」與「對比」的理解與融合。空間創造了邊界，但也提供了無限的整合和可能性。在這個計畫中，傳統與現代、東方與西方之間的界線變得模糊。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Fusion Residence 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>大型公寓</span><span>北京市海淀區何慶路 287C+HQX, 北京市, 中國, 100084</span><span>發售日期：2026 年 3 月 12 日</span><span>標籤： ang-3-studio / 獎項 / 北京 / 中國</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/fusion-residence" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-118839">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198500/△T-1.jpg" class="slide active" alt="△T 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198514/section.jpg" class="slide" alt="△T 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198515/plan.jpg" class="slide" alt="△T 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198501/△T-2.jpg" class="slide" alt="△T 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198502/△T-3.jpg" class="slide" alt="△T 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198503/△T-4.jpg" class="slide" alt="△T 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198504/△T-5.jpg" class="slide" alt="△T 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198505/△T-6.jpg" class="slide" alt="△T 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198506/△T-7.jpg" class="slide" alt="△T 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198507/△T-8.jpg" class="slide" alt="△T 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198508/△T-9.jpg" class="slide" alt="△T 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198509/△T-10.jpg" class="slide" alt="△T 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198510/△T-11.jpg" class="slide" alt="△T 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198511/△T-12.jpg" class="slide" alt="△T 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198512/△T-13.jpg" class="slide" alt="△T 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198513/△T-14.jpg" class="slide" alt="△T 圖片 16" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 16</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>日本埼玉縣大宮區</span>
-                  </div>
-                  <h3 class="card-title">△T</h3>
-                  <p class="card-by">Daiki Awaya</p>
-                  <p class="card-desc">這是在大宮車站近郊建造的獨棟住宅的平面圖。從市中心搭火車約一小時。在計畫的地方，開始育兒後的年輕家庭與老居民混在一起生活，被神社和廣場的綠色包裹著，安靜的氣氛瀰漫著。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">△T 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>House</span><span>日本埼玉縣大宮區</span><span>發售日期：2026 年 3 月 11 日</span><span>標籤： 獎 / daiki-awaya / fa26 / house</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/t-2" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-villa-corsica-neel-buddhadev-mumbai-india">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_0_square-852x852.jpg" class="slide active" alt="Curves and colours transform Indian home into sculptural installation 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_2.jpg" class="slide" alt="Curves and colours transform Indian home into sculptural installation 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_0.jpg" class="slide" alt="Curves and colours transform Indian home into sculptural installation 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_8.jpg" class="slide" alt="Curves and colours transform Indian home into sculptural installation 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_17-scaled.jpg" class="slide" alt="Curves and colours transform Indian home into sculptural installation 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_11.jpg" class="slide" alt="Curves and colours transform Indian home into sculptural installation 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_sq-191x191.jpg" class="slide" alt="Curves and colours transform Indian home into sculptural installation 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_14-scaled.jpg" class="slide" alt="Curves and colours transform Indian home into sculptural installation 圖片 8" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_13.jpg" class="slide" alt="Curves and colours transform Indian home into sculptural installation 圖片 9" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_19-scaled.jpg" class="slide" alt="Curves and colours transform Indian home into sculptural installation 圖片 10" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 10</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>India</span>
-                  </div>
-                  <h3 class="card-title">Curves and colours transform Indian home into sculptural installation</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">當地建築師尼爾·布達德夫 (Neel Buddhadev) 完成了科西嘉別墅 (Villa Corsica)，這是一座位於孟買郊區的房屋，由彎曲的牆壁和大膽的色彩定義，其設計是為了應對該市的熱帶氣候。這座 280 平方米（3,000 平方英尺）的住宅是與 Virtue 建築師 – Architect Cleon Colaco &amp; Associates 合作設計，專為具有無障礙需求的多代家庭設計。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Curves and colours transform Indian home into sculptural installation 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>India</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/06/24/villa-corsica-neel-buddhadev-mumbai-india/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-top-houses-may-2026">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/05/the-blue-house-atelier-backlar-adaptive-reuse-sao-miguel-island-azores-portugal-architecture_dezeen_2364_sq-852x852.jpg" class="slide active" alt="Dezeen&#x27;s top five houses of May 2026 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/pend-canon-mews-edinburgh-scotland-renovation_dezeen_2364_sq.jpg" class="slide" alt="Dezeen&#x27;s top five houses of May 2026 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/house-kala-caceres-tous-bali_dezeen_2364_sq.jpg" class="slide" alt="Dezeen&#x27;s top five houses of May 2026 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/summer-home-mindspark-architects-architecture-residential-house-kerala-india_dezeen_2364_sq-1.jpg" class="slide" alt="Dezeen&#x27;s top five houses of May 2026 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/sono-residence-ateliercarle-quebec-house_dezeen_2364_sq.jpg" class="slide" alt="Dezeen&#x27;s top five houses of May 2026 圖片 5" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 5</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>亮點</span>
-                  </div>
-                  <h3 class="card-title">Dezeen&#x27;s top five houses of May 2026</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">石酒館的廢墟和茂盛的小荳蔻種植園指導了 Dezeen 本月最新版房屋中兩棟房屋的設計。這兩棟住宅分別名為“藍屋”和“避暑別墅”，是本月 Dezeen 上最受歡迎的五棟房屋之一。 《Dezeen 報》2026 年 5 月排名前五的房屋首先出現在 Dezeen 上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Dezeen&#x27;s top five houses of May 2026 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>亮點</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/05/31/top-houses-may-2026/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-doris-day-at-home-photos-of-the-golden-age-goddesss-socal-life">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6a0c8394c1cebc9db1f5fc5f/1:1/w_120%2Cc_limit/PBDDODA_EC150.jpg" class="slide active" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6851c4dfc62a323e4b26a7fc/master/w_320%2Cc_limit/GettyImages-1478068032.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a0c844dcd3d44a060a0c444/master/w_320%2Cc_limit/PBDDODA_EC189.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6851c6cd014b4ba1f1bf77fa/master/w_320%2Cc_limit/GettyImages-980043698.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6851c82b47a46d1bcd2ff6b9/master/w_320%2Cc_limit/GettyImages-1193573959.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0c8593bb3c0141600d73f0/master/w_320%2Cc_limit/PBDDODA_EC097.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6851c93c8b12774f24f6436c/master/w_320%2Cc_limit/GettyImages-980043842.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6851ca5256cabde3101effb0/master/w_320%2Cc_limit/GettyImages-980043778.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0c86dcbb3c0141600d73f9/master/w_320%2Cc_limit/PBDDODA_EC236.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6851cb912915c395462d0e49/master/w_320%2Cc_limit/GettyImages-980043806.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6851caec86b2fa7dfc877fef/master/w_320%2Cc_limit/GettyImages-980043818.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6851ccdec62a323e4b26add3/master/w_320%2Cc_limit/GettyImages-980043766.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6851cdd38b12774f24f6436e/master/w_320%2Cc_limit/GettyImages-980043832.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6851cc42c62a323e4b26add1/master/w_320%2Cc_limit/GettyImages-3207913.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6849968c107830e151bd74d4/master/w_320%2Cc_limit/GettyImages-1077142370.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a0c87e238082e693d020a6d/master/w_320%2Cc_limit/PBDDODA_EC003%2520(1).jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6851ce941f20e69bae90a7d5/master/w_320%2Cc_limit/GettyImages-1492968930.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/68499719107830e151bd74d6/master/w_320%2Cc_limit/GettyImages-1466076785.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6851cf868b12774f24f64370/master/w_320%2Cc_limit/GettyImages-1488436774.jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 19" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6851d0478b12774f24f64372/master/w_320%2Cc_limit/GettyImages-643402066%2520(1).jpg" class="slide" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2025</span>
-                    <span></span>
-                  </div>
-                  <h3 class="card-title">Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">20 世紀 50 年代的藝人多麗絲·戴 (Doris Day) 已經做好了備用職業的準備，以防好萊塢不再打電話：“如果我放棄表演，我會成為一名室內設計師”</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life 最值得注意的不是外觀，而是它如何透過 光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性，把 住宅室內 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>位置未列出</span><span>資料來源：《建築文摘 2025》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/gallery/doris-day-at-home-photos-of-the-golden-age-goddesss-socal-life" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-jonas-ijburg">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681826292716orange_architects-jonas-72.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Jonas, IJburg 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816190922orange_architects-jonas-010-long_section_over_canyon.png?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816187088orange_architects-jonas-008-site_plan_and_floor_plan_ground_floor.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816187092orange_architects-jonas-009-_floor_plan_sixth_floor.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816123655Jonas__Orange_Architects__Amvest__015__Kalwij_Vastgoed.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816088341Jonas__Orange_Architects__Amvest__002__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816102519Jonas__Orange_Architects__Amvest__003__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816104308Jonas__Orange_Architects__Amvest__004__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816107692Jonas__Orange_Architects__Amvest__005__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816108141Jonas__Orange_Architects__Amvest__006__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816109810Jonas__Orange_Architects__Amvest__007__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816112204Jonas__Orange_Architects__Amvest__008__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816113875Jonas__Orange_Architects__Amvest__009__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816114036Jonas__Orange_Architects__Amvest__010__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816115261Jonas__Orange_Architects__Amvest__011__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816116775Jonas__Orange_Architects__Amvest__012__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816117922Jonas__Orange_Architects__Amvest__013__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816119666Jonas__Orange_Architects__Amvest__014__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816125525Jonas__Orange_Architects__Amvest__016__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816130381Jonas__Orange_Architects__Amvest__017__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Jonas, IJburg 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2023 年 A+ 獎，住宅 &gt; 多單元住宅 - 中層（5 - 15 層）</span>
-                    <span>2023</span>
-                    <span>荷蘭阿姆斯特丹</span>
-                  </div>
-                  <h3 class="card-title">Jonas, IJburg</h3>
-                  <p class="card-by">Orange Architects</p>
-                  <p class="card-desc">Jonas位於阿姆斯特丹IJburg港，擁有190棟中價位出租屋、83棟自住屋以及一系列配套設施。該建築擁有創新的住房概念和壯觀的內部空間，並獲得了最高的永續發展證書：BREEAM Outstanding。喬納斯將透過為社區打造一個永續發展、吸引人的中心，增強這個新區的社會凝聚力。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Jonas, IJburg 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2023 年 A+ 獎，住宅 &gt; 多單元住宅 - 中層（5 - 15 層）</span><span>荷蘭阿姆斯特丹</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/jonas-ijburg/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-lightly-weighted">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824618874741.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Lightly Weighted 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824618927652.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824618966173.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682462277842_DSF7972web.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824618994494.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682462155659_DSF7841web.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824619014795.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824619628123.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824620479044.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682462220161_DSF7450web.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682462190478Copy_of__DSF6578web.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824619035896.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824619043187.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682462170692maybe4.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682462448744_DSF6505web.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682462480763_DSF6487web.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682462502644_DSF7270web.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824619081788.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682462518435_DSF7260web.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 19" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824619584298.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Lightly Weighted 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2023 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</span>
-                    <span>2023</span>
-                    <span>紐西蘭奧克蘭</span>
-                  </div>
-                  <h3 class="card-title">Lightly Weighted</h3>
-                  <p class="card-by">Oli Booth Architecture</p>
-                  <p class="card-desc">輕量級被認為是城市環境中填充式住房的一個例子。它試圖解決如何在通常被認為是“小”的規模上不影響架構品質的問題。這座 85 平方米的住宅坐落在同樣樸素的 280 平方米場地上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Lightly Weighted 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>2023 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</span><span>紐西蘭奧克蘭</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/lightly-weighted/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adus-historic-soho-loft-designed-by-fawn-galli" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/67ab86cea25684c288a608d7/3:4/w_748%2Cc_limit/Main%2520Product%2520Photo%2520Crop%2520Templates-1-CP%2520Products%2520(31).jpeg" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a15e681c7f855eaedbf35e9/16:9/w_2560%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252006%2520copy.jpg" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a15e6835bc2353b6395eb90/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252001%2520copy.jpg" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1da4ebe485212d2916406c/3:4/w_748%2Cc_limit/Untitled%2520-%2520May%252026%2C%25202026%2520at%252009.35.23-1-CP%2520Products%2520(27).jpeg" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1da66186a233e32a4364c5/3:4/w_748%2Cc_limit/Untitled%2520-%2520May%252026%2C%25202026%2520at%252009.35.23-1-CP%2520Products%2520(29).jpeg" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a15e6814261d42c9329ee16/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252008%2520copy.jpg" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a15e6836cec02dde98ad11d/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252007%2520copy.jpg" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a15e6834261d42c9329ee1c/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252026%2520copy.jpg" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a15e685dd8a004a3d5ae1cc/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252029%2520copy.jpg" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a15e68158e6972b2f1887de/master/w_1600%2Cc_limit/Fawn%2520Galli%2520Greene%2520St%252013%2520copy.jpg" alt="In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_01 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">In This Historic SoHo Loft, a Feather Ceiling Sculpture Takes Flight<small>Fawn Galli<br>歷史悠久的蘇豪區<br>建築文摘公寓之旅</small></h2>
+        <p class="ac-lead reveal">AD PRO Directory 設計師 Fawn Galli 使用色彩和周到的佈局，將通風良好的公寓打造成可容納 6 人的舒適家庭住宅</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>AD PRO Directory 設計師 Fawn Galli 使用色彩和周到的佈局，將通風良好的公寓打造成可容納 6 人的舒適家庭住宅</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_01 · <a href="https://www.architecturaldigest.com/story/historic-soho-loft-designed-by-fawn-galli" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-119160" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199221/033A5426-拷贝.jpg" alt="Fusion Residence image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199223/033A5525a.jpg" alt="Fusion Residence image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199224/033A5574.jpg" alt="Fusion Residence image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199225/033A5616.jpg" alt="Fusion Residence image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199226/033A5637.jpg" alt="Fusion Residence image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199227/033A5654a.jpg" alt="Fusion Residence image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199228/033A5587.jpg" alt="Fusion Residence image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199229/033A5593.jpg" alt="Fusion Residence image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199230/033A5664-拷贝.jpg" alt="Fusion Residence image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199231/033A5798.jpg" alt="Fusion Residence image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Fusion Residence<small>ANG 3 Studio<br>北京市海淀區何慶路 287C+HQX, 北京市, 中國, 100084<br>FRAME 獎，大型公寓</small></h2>
+        <p class="ac-lead reveal">亨利曾提到，折衷主義是「對立」與「對比」的理解與融合。空間創造了邊界，但也提供了無限的整合和可能性。在這個計畫中，傳統與現代、東方與西方之間的界線變得模糊。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>亨利曾提到，折衷主義是「對立」與「對比」的理解與融合。空間創造了邊界，但也提供了無限的整合和可能性。在這個計畫中，傳統與現代、東方與西方之間的界線變得模糊。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/fusion-residence" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-118839" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198500/△T-1.jpg" alt="△T image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198514/section.jpg" alt="△T image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198515/plan.jpg" alt="△T image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198501/△T-2.jpg" alt="△T image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198502/△T-3.jpg" alt="△T image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198503/△T-4.jpg" alt="△T image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198504/△T-5.jpg" alt="△T image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198505/△T-6.jpg" alt="△T image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198506/△T-7.jpg" alt="△T image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/198507/△T-8.jpg" alt="△T image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">△T<small>Daiki Awaya<br>日本埼玉縣大宮區<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">這是在大宮車站近郊建造的獨棟住宅的平面圖。從市中心搭火車約一小時。在計畫的地方，開始育兒後的年輕家庭與老居民混在一起生活，被神社和廣場的綠色包裹著，安靜的氣氛瀰漫著。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>這是在大宮車站近郊建造的獨棟住宅的平面圖。從市中心搭火車約一小時。在計畫的地方，開始育兒後的年輕家庭與老居民混在一起生活，被神社和廣場的綠色包裹著，安靜的氣氛瀰漫著。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · <a href="https://frameweb.com/project/t-2" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-villa-corsica-neel-buddhadev-mumbai-india" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_0_square-852x852.jpg" alt="Curves and colours transform Indian home into sculptural installation image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_2.jpg" alt="Curves and colours transform Indian home into sculptural installation image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_0.jpg" alt="Curves and colours transform Indian home into sculptural installation image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_8.jpg" alt="Curves and colours transform Indian home into sculptural installation image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_17-scaled.jpg" alt="Curves and colours transform Indian home into sculptural installation image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_11.jpg" alt="Curves and colours transform Indian home into sculptural installation image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/the-anthill-kaushal-tatiya-architects-architecture-residential-houses_dezeen_2364_sq-191x191.jpg" alt="Curves and colours transform Indian home into sculptural installation image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_14-scaled.jpg" alt="Curves and colours transform Indian home into sculptural installation image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_13.jpg" alt="Curves and colours transform Indian home into sculptural installation image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/villa-corsica-neel-buddhadev-house-mumbai-india-residential-architecture_dezeen_2364_col_19-scaled.jpg" alt="Curves and colours transform Indian home into sculptural installation image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Curves and colours transform Indian home into sculptural installation<small>Unknown architect<br>India<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">當地建築師尼爾·布達德夫 (Neel Buddhadev) 完成了科西嘉別墅 (Villa Corsica)，這是一座位於孟買郊區的房屋，由彎曲的牆壁和大膽的色彩定義，其設計是為了應對該市的熱帶氣候。這座 280 平方米（3,000 平方英尺）的住宅是與 Virtue 建築師 – Architect Cleon Col</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>當地建築師尼爾·布達德夫 (Neel Buddhadev) 完成了科西嘉別墅 (Villa Corsica)，這是一座位於孟買郊區的房屋，由彎曲的牆壁和大膽的色彩定義，其設計是為了應對該市的熱帶氣候。這座 280 平方米（3,000 平方英尺）的住宅是與 Virtue 建築師 – Architect Cleon Colaco &amp; Associates 合作設計，專為具有無障礙需求的多代家庭設計。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · <a href="https://www.dezeen.com/2026/06/24/villa-corsica-neel-buddhadev-mumbai-india/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-top-houses-may-2026" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/the-blue-house-atelier-backlar-adaptive-reuse-sao-miguel-island-azores-portugal-architecture_dezeen_2364_sq-852x852.jpg" alt="Dezeen&#x27;s top five houses of May 2026 image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/pend-canon-mews-edinburgh-scotland-renovation_dezeen_2364_sq.jpg" alt="Dezeen&#x27;s top five houses of May 2026 image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/house-kala-caceres-tous-bali_dezeen_2364_sq.jpg" alt="Dezeen&#x27;s top five houses of May 2026 image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/summer-home-mindspark-architects-architecture-residential-house-kerala-india_dezeen_2364_sq-1.jpg" alt="Dezeen&#x27;s top five houses of May 2026 image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/sono-residence-ateliercarle-quebec-house_dezeen_2364_sq.jpg" alt="Dezeen&#x27;s top five houses of May 2026 image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_05 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Dezeen&#x27;s top five houses of May 2026<small>Unknown architect<br>亮點<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">石酒館的廢墟和茂盛的小荳蔻種植園指導了 Dezeen 本月最新版房屋中兩棟房屋的設計。這兩棟住宅分別名為“藍屋”和“避暑別墅”，是本月 Dezeen 上最受歡迎的五棟房屋之一。 《Dezeen 報》2026 年 5 月排名前五的房屋首先出現在 Dezeen 上。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>石酒館的廢墟和茂盛的小荳蔻種植園指導了 Dezeen 本月最新版房屋中兩棟房屋的設計。這兩棟住宅分別名為“藍屋”和“避暑別墅”，是本月 Dezeen 上最受歡迎的五棟房屋之一。 《Dezeen 報》2026 年 5 月排名前五的房屋首先出現在 Dezeen 上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_05 · <a href="https://www.dezeen.com/2026/05/31/top-houses-may-2026/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-doris-day-at-home-photos-of-the-golden-age-goddesss-socal-life" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0c8394c1cebc9db1f5fc5f/1:1/w_120%2Cc_limit/PBDDODA_EC150.jpg" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6851c4dfc62a323e4b26a7fc/master/w_320%2Cc_limit/GettyImages-1478068032.jpg" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0c844dcd3d44a060a0c444/master/w_320%2Cc_limit/PBDDODA_EC189.jpg" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6851c6cd014b4ba1f1bf77fa/master/w_320%2Cc_limit/GettyImages-980043698.jpg" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6851c82b47a46d1bcd2ff6b9/master/w_320%2Cc_limit/GettyImages-1193573959.jpg" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0c8593bb3c0141600d73f0/master/w_320%2Cc_limit/PBDDODA_EC097.jpg" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6851c93c8b12774f24f6436c/master/w_320%2Cc_limit/GettyImages-980043842.jpg" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6851ca5256cabde3101effb0/master/w_320%2Cc_limit/GettyImages-980043778.jpg" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a0c86dcbb3c0141600d73f9/master/w_320%2Cc_limit/PBDDODA_EC236.jpg" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6851cb912915c395462d0e49/master/w_320%2Cc_limit/GettyImages-980043806.jpg" alt="Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/25_06 · AD (US) / 2025</p>
+        <h2 class="ac-title reveal">Doris Day at Home: 20 Photos of the Golden Age Goddess’s Sunny SoCal Life<small>AD editorial<br><br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">20 世紀 50 年代的藝人多麗絲·戴 (Doris Day) 已經做好了備用職業的準備，以防好萊塢不再打電話：“如果我放棄表演，我會成為一名室內設計師”</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>20 世紀 50 年代的藝人多麗絲·戴 (Doris Day) 已經做好了備用職業的準備，以防好萊塢不再打電話：“如果我放棄表演，我會成為一名室內設計師”</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/25_06 · <a href="https://www.architecturaldigest.com/gallery/doris-day-at-home-photos-of-the-golden-age-goddesss-socal-life" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-jonas-ijburg" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681826292716orange_architects-jonas-72.jpg?w=1680&amp;q=60&amp;auto=format" alt="Jonas, IJburg image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816190922orange_architects-jonas-010-long_section_over_canyon.png?w=1680&amp;q=60&amp;auto=format" alt="Jonas, IJburg image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816187088orange_architects-jonas-008-site_plan_and_floor_plan_ground_floor.jpg?w=1680&amp;q=60&amp;auto=format" alt="Jonas, IJburg image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816187092orange_architects-jonas-009-_floor_plan_sixth_floor.jpg?w=1680&amp;q=60&amp;auto=format" alt="Jonas, IJburg image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816123655Jonas__Orange_Architects__Amvest__015__Kalwij_Vastgoed.jpg?w=1680&amp;q=60&amp;auto=format" alt="Jonas, IJburg image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816088341Jonas__Orange_Architects__Amvest__002__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" alt="Jonas, IJburg image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816102519Jonas__Orange_Architects__Amvest__003__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" alt="Jonas, IJburg image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816104308Jonas__Orange_Architects__Amvest__004__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" alt="Jonas, IJburg image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816107692Jonas__Orange_Architects__Amvest__005__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" alt="Jonas, IJburg image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681816108141Jonas__Orange_Architects__Amvest__006__Sebastian_van_Damme.jpg?w=1680&amp;q=60&amp;auto=format" alt="Jonas, IJburg image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_07 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">Jonas, IJburg<small>Orange Architects<br>荷蘭阿姆斯特丹<br>大眾選擇獎得主，2023 年 A+ 獎，住宅 &gt; 多單元住宅 - 中層（5 - 15 層）</small></h2>
+        <p class="ac-lead reveal">Jonas位於阿姆斯特丹IJburg港，擁有190棟中價位出租屋、83棟自住屋以及一系列配套設施。該建築擁有創新的住房概念和壯觀的內部空間，並獲得了最高的永續發展證書：BREEAM Outstanding。喬納斯將透過為社區打造一個永續發展、吸引人的中心，增強這個新區的社會凝聚力。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Jonas位於阿姆斯特丹IJburg港，擁有190棟中價位出租屋、83棟自住屋以及一系列配套設施。該建築擁有創新的住房概念和壯觀的內部空間，並獲得了最高的永續發展證書：BREEAM Outstanding。喬納斯將透過為社區打造一個永續發展、吸引人的中心，增強這個新區的社會凝聚力。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_07 · <a href="https://architizer.com/projects/jonas-ijburg/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-lightly-weighted" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824618874741.jpg?w=1680&amp;q=60&amp;auto=format" alt="Lightly Weighted image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824618927652.jpg?w=1680&amp;q=60&amp;auto=format" alt="Lightly Weighted image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824618966173.jpg?w=1680&amp;q=60&amp;auto=format" alt="Lightly Weighted image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682462277842_DSF7972web.jpg?w=1680&amp;q=60&amp;auto=format" alt="Lightly Weighted image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824618994494.jpg?w=1680&amp;q=60&amp;auto=format" alt="Lightly Weighted image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682462155659_DSF7841web.jpg?w=1680&amp;q=60&amp;auto=format" alt="Lightly Weighted image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824619014795.jpg?w=1680&amp;q=60&amp;auto=format" alt="Lightly Weighted image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824619628123.jpg?w=1680&amp;q=60&amp;auto=format" alt="Lightly Weighted image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16824620479044.jpg?w=1680&amp;q=60&amp;auto=format" alt="Lightly Weighted image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682462220161_DSF7450web.jpg?w=1680&amp;q=60&amp;auto=format" alt="Lightly Weighted image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_08 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">Lightly Weighted<small>Oli Booth Architecture<br>紐西蘭奧克蘭<br>2023 年 A+ 獎評審團得獎者，住宅 &gt; 私人住宅（XS &lt;1000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">輕量級被認為是城市環境中填充式住房的一個例子。它試圖解決如何在通常被認為是“小”的規模上不影響架構品質的問題。這座 85 平方米的住宅坐落在同樣樸素的 280 平方米場地上。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>輕量級被認為是城市環境中填充式住房的一個例子。它試圖解決如何在通常被認為是“小”的規模上不影響架構品質的問題。這座 85 平方米的住宅坐落在同樣樸素的 280 平方米場地上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_08 · <a href="https://architizer.com/projects/lightly-weighted/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

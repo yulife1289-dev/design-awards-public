@@ -3,643 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-23</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-23 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-23</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-23 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-23.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-23.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-frame-api-119621">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200973/06.jpg" class="slide active" alt="As Wished 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200968/01.jpg" class="slide" alt="As Wished 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200969/02.jpg" class="slide" alt="As Wished 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200970/03.jpg" class="slide" alt="As Wished 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200971/04.jpg" class="slide" alt="As Wished 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200972/05.jpg" class="slide" alt="As Wished 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200974/07.jpg" class="slide" alt="As Wished 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200975/08.jpg" class="slide" alt="As Wished 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200976/09.jpg" class="slide" alt="As Wished 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200977/10.jpg" class="slide" alt="As Wished 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200978/11.jpg" class="slide" alt="As Wished 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200979/12.jpg" class="slide" alt="As Wished 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200980/13.jpg" class="slide" alt="As Wished 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200981/14.jpg" class="slide" alt="As Wished 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200982/15.jpg" class="slide" alt="As Wished 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201619/1F平面.jpg" class="slide" alt="As Wished 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201620/2F平面.jpg" class="slide" alt="As Wished 圖片 17" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/201621/空间爆炸图.jpg" class="slide" alt="As Wished 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>中國廣東省廣州市</span>
-                  </div>
-                  <h3 class="card-title">As Wished</h3>
-                  <p class="card-by">Jade Simple Design</p>
-                  <p class="card-desc">該計畫重新構想了高層公寓，將剛性的模組化單元轉變為動態且個性化的空間。高層生活往往冰冷、標準化，缺乏情感共鳴。為了解決這個問題，我們專注於創建一個靈活、開放的佈局來適應客戶的需求。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">As Wished 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>House</span><span>中國廣東省廣州市</span><span>發售日期：2026 年 3 月 13 日</span><span>標籤： 獎項 / 中國 / fa26 / 廣州</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/as-wished" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-120249">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204476/7-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide active" alt="Mellem Manoir-des-Trembles 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204487/4-Mellem-plan-de-site.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204488/5-Mellem_plan-rdc.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204489/6-Mellem_Plan-Niv-1.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204470/1-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204471/2-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204472/3-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204473/4-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204475/6-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204477/8-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204478/9-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204479/10-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204480/11-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204481/13-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204482/14-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204483/15-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204484/16-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 17" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204485/17-JPEG-HR-MELLEM-GATINEAU.jpg" class="slide" alt="Mellem Manoir-des-Trembles 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，共享居住綜合體</span>
-                    <span>2026</span>
-                    <span>256 Bd Saint-Raymond, 加蒂諾, QC J9A 0B7, 加拿大</span>
-                  </div>
-                  <h3 class="card-title">Mellem Manoir-des-Trembles</h3>
-                  <p class="card-by">ACDF Architecture</p>
-                  <p class="card-desc">在住房危機促使迅速取消眾多監管限制以加速和增加住房生產之際，建築業面臨著巨大的風險，即建築將變得不那麼敏感和貢獻更少——這主要是由速度和財務效率驅動的。 MELLEM Les Trembles 與這一趨勢背道而馳，提出了一個在建設預算方面節儉但堅定致力於建築和城市品質的項目。該項目是 ACDF Architecture 和 Maître Carré 密切合作開發的，它表明可以用同樣的方式做更多的事情——為城市創造持久的價值，為居民提供真正的生活質量，並達到開發商完全足夠的財務生存能力。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Mellem Manoir-des-Trembles 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>共享居住綜合體</span><span>256 Bd Saint-Raymond, 加蒂諾, QC J9A 0B7, 加拿大</span><span>發佈日期: 2026 年 6 月 22 日</span><span>標籤： acdf-architecture / 獎項 / 加拿大 / 共享居住綜合體</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/mellem-manoir-des-trembles" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-jonathan-groff-greenwich-village-apartment">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6a1f1391223fb94f568df15e/16:9/w_2560%2Cc_limit/LeydenLewis_JGroff_23006_.jpg" class="slide active" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a1f1393653d9152351b8e90/master/w_1600%2Cc_limit/LeydenLewis_JGroff_24239.jpg" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a1f1391223fb94f568df15c/master/w_1600%2Cc_limit/LeydenLewis_JGroff_23084_.jpg" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a21d1f80cffcb62e1c040ad/3:4/w_748%2Cc_limit/2.png" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/67112c4090b61775dd055f01/3:4/w_748%2Cc_limit/Untitled%2520(22).png" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a21d912ce5c42c2149d000d/3:4/w_748%2Cc_limit/Untitled%2520-%2520June%252004%2C%25202026%2520at%252015.58.20-1-CP%2520Products.png" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1f139154b353f63cf3075b/master/w_1600%2Cc_limit/LeydenLewis_JGroff_23203_.jpg" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1f1393f80e9a88792951a7/master/w_1600%2Cc_limit/LeydenLewis_JGroff_24336.jpg" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f12137cb535134a38f282d/3:4/w_748%2Cc_limit/Product%2520Image%2520Template.jpeg" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a21d1f941ef4bd7909555a3/3:4/w_748%2Cc_limit/7.png" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1f13915136abfd31147f01/master/w_1600%2Cc_limit/LeydenLewis_JGroff_23377_.jpg" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/68a77cf1e9e8bcffad1930c3/3:4/w_748%2Cc_limit/AD%2520Product%2520Image%2520-%25202025-08-21T150900.741.png" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a21d32556daf5a1b1087d79/3:4/w_748%2Cc_limit/4.png" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1f1391653d9152351b8e87/master/w_1600%2Cc_limit/LeydenLewis_JGroff_23419_.jpg" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/660d7732265f5510a4572a44/3:4/w_748%2Cc_limit/3x4-1%2520(7).png" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69dfd651d82b1f271190b432/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(8).jpeg" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1f13934c4bdd12dd682905/master/w_1600%2Cc_limit/LeydenLewis_JGroff_23516_.jpg" class="slide" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘公寓之旅</span>
-                    <span>2026</span>
-                    <span>早上在</span>
-                  </div>
-                  <h3 class="card-title">Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">這位托尼獎獲獎演員與 AD100 設計師 Leyden Lewis 合作，為他量身定制了格林威治村公寓</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>建築文摘公寓之旅</span><span>早上在</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/jonathan-groff-greenwich-village-apartment" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-frank-lloyd-wrights-home-life-in-vintage-photos">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6a1f3d02653d9152351ba269/1:1/w_120%2Cc_limit/GettyImages-541072683.jpg" class="slide active" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a1ee588812853c177468d11/master/w_320%2Cc_limit/GettyImages-99331697%2520(1).jpg" class="slide" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a1eea6af214dc74807a03fe/master/w_320%2Cc_limit/GettyImages-99363634.jpg" class="slide" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1ee907831b4c3f5426192a/master/w_320%2Cc_limit/GettyImages-92542726.jpg" class="slide" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1ee61b1d65981aec417903/master/w_320%2Cc_limit/GettyImages-92491195.jpg" class="slide" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1f28e0290c6f2c992aada8/master/w_320%2Cc_limit/3BEG5DM.jpg" class="slide" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1eeb673272d9f54558db89/master/w_320%2Cc_limit/GettyImages-92491262.jpg" class="slide" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1eeb32e4fdcb34397fc139/master/w_320%2Cc_limit/GettyImages-92491178%2520(1).jpg" class="slide" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1f2aaff80e9a88792952d9/master/w_320%2Cc_limit/GettyImages-92555659.jpg" class="slide" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a1eeaf663b83cee6329baad/master/w_320%2Cc_limit/GettyImages-3208967.jpg" class="slide" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos 圖片 10" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 10</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>建設A</span>
-                  </div>
-                  <h3 class="card-title">Frank Lloyd Wright’s Home Life in 9 Vintage Photos</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">為了紀念這位建築師的 159 歲生日，透過塔里埃森、西塔里埃森等地的歷史圖像體驗他的故事</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Frank Lloyd Wright’s Home Life in 9 Vintage Photos 最值得注意的不是外觀，而是它如何透過 以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>建設A</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/gallery/frank-lloyd-wrights-home-life-in-vintage-photos" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-whistler-hideaway-bricault-design-vancouver-cabin">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/05/whistler-hideaway-bricault-design-vancouver-cabin_dezeen_2364_sq_0-852x852.jpg" class="slide active" alt="Bricault Design shapes house to share a language with the surrounding peaks in Canada 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/whistler-hideaway-bricault-design-vancouver-cabin_dezeen_2364_col_0.jpg" class="slide" alt="Bricault Design shapes house to share a language with the surrounding peaks in Canada 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/05/whistler-hideaway-bricault-design-vancouver-cabin_dezeen_2364_col_11-scaled.jpg" class="slide" alt="Bricault Design shapes house to share a language with the surrounding peaks in Canada 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2024/08/big-sky-beach-house-vancouver-andrea-mclean-studio-airey-group_dezeen_2364_sq-1-191x191.jpg" class="slide" alt="Bricault Design shapes house to share a language with the surrounding peaks in Canada 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/whistler-hideaway-bricault-design-vancouver-cabin_dezeen_2364_col_2.jpg" class="slide" alt="Bricault Design shapes house to share a language with the surrounding peaks in Canada 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/05/whistler-hideaway-bricault-design-vancouver-cabin_dezeen_2364_col_8.jpg" class="slide" alt="Bricault Design shapes house to share a language with the surrounding peaks in Canada 圖片 6" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 6</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>加拿大的房子</span>
-                  </div>
-                  <h3 class="card-title">Bricault Design shapes house to share a language with the surrounding peaks in Canada</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">加拿大工作室 Bricault Design 設計了一座小屋，以鄰近的山峰為特色，採用綠色屋頂和石板覆層，與其位於加拿大不列顛哥倫比亞省樹木繁茂的場地同步老化。這座佔地 1,268 平方英尺（118 平方米）的住宅被稱為惠斯勒世外桃源，平衡了內部庇護所與小屋周圍崎嶇景觀之間的關係。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Bricault Design shapes house to share a language with the surrounding peaks in Canada 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>加拿大的房子</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/05/12/whistler-hideaway-bricault-design-vancouver-cabin/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-top-houses-april-2026">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/04/the-corner-store-residential-extension-ian-moore-architects-surry-hills-sydney-australia-architecture_dezeen_2364_col_3_sq-852x852.jpg" class="slide active" alt="Dezeen&#x27;s top five houses of April 2026 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/01/casa-tupin-bloco-arquitetos-brazil-house_dezeen_2364_sq_2.jpg" class="slide" alt="Dezeen&#x27;s top five houses of April 2026 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/a-house-born-of-four-soils-hiren-patel-architects-design-india_dezeen_2364_sq.jpg" class="slide" alt="Dezeen&#x27;s top five houses of April 2026 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/studioninedots-light-house-amsterdam-sq_dezeen_2364_col_1-1.jpg" class="slide" alt="Dezeen&#x27;s top five houses of April 2026 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/taller-alberto-calleja-casa-mavra-mexico_dezeen_2364_sq.jpg" class="slide" alt="Dezeen&#x27;s top five houses of April 2026 圖片 5" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 5</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>亮點</span>
-                  </div>
-                  <h3 class="card-title">Dezeen&#x27;s top five houses of April 2026</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">玻璃磚和夯土是用來建造四月份 Dezeen 上最受歡迎的房屋的非常規材料之一。我們每月對讀者最喜歡的住宅進行的綜述中還包括一棟由黑色混凝土建造的房屋和另一棟由穿孔磚砌成的房屋。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Dezeen&#x27;s top five houses of April 2026 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>亮點</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/05/01/top-houses-april-2026/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-courtyards-renovation-of-the-moshikou-neighborhood">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969758253_ALI7148.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681970209374diagram1.png?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969636812_ALI6689-HDR_%E5%85%A8%E6%99%AF%E5%9B%BE.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969646086_ALI6711.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969648066_ALI6717.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969660052_ALI6806.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969674429_ALI6814.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969675220_ALI6926.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969684067_ALI6934.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969700160_ALI6944.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969707066_ALI6950.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969711132_ALI6963.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969725856_ALI7121-HDR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969735490_ALI7133-HDR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969740535_ALI7139-HDR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969748864_ALI7142-HDR.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/16819702088376.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Courtyards Renovation of the Moshikou Neighborhood 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2023 年 A+Awards，住宅 &gt; 住宅翻新與擴建</span>
-                    <span>2023</span>
-                    <span>中國北京</span>
-                  </div>
-                  <h3 class="card-title">Courtyards Renovation of the Moshikou Neighborhood</h3>
-                  <p class="card-by">Beijing AN-Design Architects</p>
-                  <p class="card-desc">此項目位於北京磨市口歷史文化保護區。磨市口是古代北京西部重要的軍事、商業據點。來自西方的貨物都是由駱駝商隊運送到這裡的。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Courtyards Renovation of the Moshikou Neighborhood 不是靠單一造型取勝，而是把 舊屋改造 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2023 年 A+Awards，住宅 &gt; 住宅翻新與擴建</span><span>中國北京</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/architectural-design-for-the-courtyards-renovation-of-the-moshikou-neighborhood/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-empire-loft">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682699387690RAAD_129_Duane_0048-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Empire Loft 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253520603205-RAAD_129_Duane_0432-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253520267003-RAAD_129_Duane_0037-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682539413418N23A0019-Edit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682539413416N23A0093-Edit.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253520591104-RAAD_129_Duane_0402-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253520266802-RAAD_129_Duane_0213-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682699403439RAAD_129_Duane_0258-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253520732906-RAAD_129_Duane_0435-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253520994208-RAAD_129_Duane_0305-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253932158709-RAAD_129_Duane_0318-min-cecily2.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682698513056RAAD_129_Duane_0292-min-ART.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253521287111-RAAD_129_Duane_0367-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253521078510-RAAD_129_Duane_0352-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682699436386RAAD_129_Duane_0352crop-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253521452112-RAAD_129_Duane_0426-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253520916307-RAAD_129_Duane_0110-min.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Empire Loft 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>Jury Winner, 2023 A+Awards, Residential &gt; Residential Interiors (&lt;3000 sq ft)</span>
-                    <span>2023</span>
-                    <span>紐約, 紐約州, 美國</span>
-                  </div>
-                  <h3 class="card-title">Empire Loft</h3>
-                  <p class="card-by">Raad Studio</p>
-                  <p class="card-desc">該住宅包含一系列意想不到的體驗和空間移動，挑戰了紐約市錯層公寓的典型佈局。設計團隊的任務是創造一個既高度舒適又優雅的空間，足以招待各種不拘一格的創意客人，他們專注於可以令人難忘的普通居住體驗時刻。這種方法在二樓的戲劇性剖面圖中最為明顯，該剖面圖在廚房和下面的起居區上方懸掛了一座橋。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Empire Loft 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>Jury Winner, 2023 A+Awards, Residential &gt; Residential Interiors (&lt;3000 sq ft)</span><span>紐約, 紐約州, 美國</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/empire-loft-1/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-frame-api-119621" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200973/06.jpg" alt="As Wished image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200968/01.jpg" alt="As Wished image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200969/02.jpg" alt="As Wished image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200970/03.jpg" alt="As Wished image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200971/04.jpg" alt="As Wished image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200972/05.jpg" alt="As Wished image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200974/07.jpg" alt="As Wished image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200975/08.jpg" alt="As Wished image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200976/09.jpg" alt="As Wished image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200977/10.jpg" alt="As Wished image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_01 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">As Wished<small>Jade Simple Design<br>中國廣東省廣州市<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">該計畫重新構想了高層公寓，將剛性的模組化單元轉變為動態且個性化的空間。高層生活往往冰冷、標準化，缺乏情感共鳴。為了解決這個問題，我們專注於創建一個靈活、開放的佈局來適應客戶的需求。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>該計畫重新構想了高層公寓，將剛性的模組化單元轉變為動態且個性化的空間。高層生活往往冰冷、標準化，缺乏情感共鳴。為了解決這個問題，我們專注於創建一個靈活、開放的佈局來適應客戶的需求。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_01 · <a href="https://frameweb.com/project/as-wished" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-120249" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204476/7-JPEG-HR-MELLEM-GATINEAU.jpg" alt="Mellem Manoir-des-Trembles image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204487/4-Mellem-plan-de-site.jpg" alt="Mellem Manoir-des-Trembles image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204488/5-Mellem_plan-rdc.jpg" alt="Mellem Manoir-des-Trembles image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204489/6-Mellem_Plan-Niv-1.jpg" alt="Mellem Manoir-des-Trembles image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204470/1-JPEG-HR-MELLEM-GATINEAU.jpg" alt="Mellem Manoir-des-Trembles image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204471/2-JPEG-HR-MELLEM-GATINEAU.jpg" alt="Mellem Manoir-des-Trembles image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204472/3-JPEG-HR-MELLEM-GATINEAU.jpg" alt="Mellem Manoir-des-Trembles image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204473/4-JPEG-HR-MELLEM-GATINEAU.jpg" alt="Mellem Manoir-des-Trembles image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204475/6-JPEG-HR-MELLEM-GATINEAU.jpg" alt="Mellem Manoir-des-Trembles image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/204477/8-JPEG-HR-MELLEM-GATINEAU.jpg" alt="Mellem Manoir-des-Trembles image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Mellem Manoir-des-Trembles<small>ACDF Architecture<br>256 Bd Saint-Raymond, 加蒂諾, QC J9A 0B7, 加拿大<br>FRAME 獎，共享居住綜合體</small></h2>
+        <p class="ac-lead reveal">在住房危機促使迅速取消眾多監管限制以加速和增加住房生產之際，建築業面臨著巨大的風險，即建築將變得不那麼敏感和貢獻更少——這主要是由速度和財務效率驅動的。 MELLEM Les Trembles 與這一趨勢背道而馳，提出了一個在建設預算方面節儉但堅定致力於建築和城市品質的項目。該項目是 ACDF Architecture</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>在住房危機促使迅速取消眾多監管限制以加速和增加住房生產之際，建築業面臨著巨大的風險，即建築將變得不那麼敏感和貢獻更少——這主要是由速度和財務效率驅動的。 MELLEM Les Trembles 與這一趨勢背道而馳，提出了一個在建設預算方面節儉但堅定致力於建築和城市品質的項目。該項目是 ACDF Architecture 和 Maître Carré 密切合作開發的，它表明可以用同樣的方式做更多的事情——為城市創造持久的價值，為居民提供真正的生活質量，並達到開發商完全足夠的財務生存能力。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/mellem-manoir-des-trembles" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-jonathan-groff-greenwich-village-apartment" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1f1391223fb94f568df15e/16:9/w_2560%2Cc_limit/LeydenLewis_JGroff_23006_.jpg" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1f1393653d9152351b8e90/master/w_1600%2Cc_limit/LeydenLewis_JGroff_24239.jpg" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1f1391223fb94f568df15c/master/w_1600%2Cc_limit/LeydenLewis_JGroff_23084_.jpg" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a21d1f80cffcb62e1c040ad/3:4/w_748%2Cc_limit/2.png" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/67112c4090b61775dd055f01/3:4/w_748%2Cc_limit/Untitled%2520(22).png" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a21d912ce5c42c2149d000d/3:4/w_748%2Cc_limit/Untitled%2520-%2520June%252004%2C%25202026%2520at%252015.58.20-1-CP%2520Products.png" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1f139154b353f63cf3075b/master/w_1600%2Cc_limit/LeydenLewis_JGroff_23203_.jpg" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1f1393f80e9a88792951a7/master/w_1600%2Cc_limit/LeydenLewis_JGroff_24336.jpg" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f12137cb535134a38f282d/3:4/w_748%2Cc_limit/Product%2520Image%2520Template.jpeg" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a21d1f941ef4bd7909555a3/3:4/w_748%2Cc_limit/7.png" alt="Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_03 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">Jonathan Groff Wanted a Sofa He Could Canoodle on in His Manhattan Apartment<small>AD editorial<br>早上在<br>建築文摘公寓之旅</small></h2>
+        <p class="ac-lead reveal">這位托尼獎獲獎演員與 AD100 設計師 Leyden Lewis 合作，為他量身定制了格林威治村公寓</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>這位托尼獎獲獎演員與 AD100 設計師 Leyden Lewis 合作，為他量身定制了格林威治村公寓</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_03 · <a href="https://www.architecturaldigest.com/story/jonathan-groff-greenwich-village-apartment" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-frank-lloyd-wrights-home-life-in-vintage-photos" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1f3d02653d9152351ba269/1:1/w_120%2Cc_limit/GettyImages-541072683.jpg" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1ee588812853c177468d11/master/w_320%2Cc_limit/GettyImages-99331697%2520(1).jpg" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1eea6af214dc74807a03fe/master/w_320%2Cc_limit/GettyImages-99363634.jpg" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1ee907831b4c3f5426192a/master/w_320%2Cc_limit/GettyImages-92542726.jpg" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1ee61b1d65981aec417903/master/w_320%2Cc_limit/GettyImages-92491195.jpg" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1f28e0290c6f2c992aada8/master/w_320%2Cc_limit/3BEG5DM.jpg" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1eeb673272d9f54558db89/master/w_320%2Cc_limit/GettyImages-92491262.jpg" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1eeb32e4fdcb34397fc139/master/w_320%2Cc_limit/GettyImages-92491178%2520(1).jpg" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1f2aaff80e9a88792952d9/master/w_320%2Cc_limit/GettyImages-92555659.jpg" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a1eeaf663b83cee6329baad/master/w_320%2Cc_limit/GettyImages-3208967.jpg" alt="Frank Lloyd Wright’s Home Life in 9 Vintage Photos image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_04 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">Frank Lloyd Wright’s Home Life in 9 Vintage Photos<small>AD editorial<br>建設A<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">為了紀念這位建築師的 159 歲生日，透過塔里埃森、西塔里埃森等地的歷史圖像體驗他的故事</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>為了紀念這位建築師的 159 歲生日，透過塔里埃森、西塔里埃森等地的歷史圖像體驗他的故事</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_04 · <a href="https://www.architecturaldigest.com/gallery/frank-lloyd-wrights-home-life-in-vintage-photos" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-whistler-hideaway-bricault-design-vancouver-cabin" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/whistler-hideaway-bricault-design-vancouver-cabin_dezeen_2364_sq_0-852x852.jpg" alt="Bricault Design shapes house to share a language with the surrounding peaks in Canada image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/whistler-hideaway-bricault-design-vancouver-cabin_dezeen_2364_col_0.jpg" alt="Bricault Design shapes house to share a language with the surrounding peaks in Canada image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/whistler-hideaway-bricault-design-vancouver-cabin_dezeen_2364_col_11-scaled.jpg" alt="Bricault Design shapes house to share a language with the surrounding peaks in Canada image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2024/08/big-sky-beach-house-vancouver-andrea-mclean-studio-airey-group_dezeen_2364_sq-1-191x191.jpg" alt="Bricault Design shapes house to share a language with the surrounding peaks in Canada image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/whistler-hideaway-bricault-design-vancouver-cabin_dezeen_2364_col_2.jpg" alt="Bricault Design shapes house to share a language with the surrounding peaks in Canada image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/whistler-hideaway-bricault-design-vancouver-cabin_dezeen_2364_col_8.jpg" alt="Bricault Design shapes house to share a language with the surrounding peaks in Canada image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_05 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Bricault Design shapes house to share a language with the surrounding peaks in Canada<small>Unknown architect<br>加拿大的房子<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">加拿大工作室 Bricault Design 設計了一座小屋，以鄰近的山峰為特色，採用綠色屋頂和石板覆層，與其位於加拿大不列顛哥倫比亞省樹木繁茂的場地同步老化。這座佔地 1,268 平方英尺（118 平方米）的住宅被稱為惠斯勒世外桃源，平衡了內部庇護所與小屋周圍崎嶇景觀之間的關係。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>加拿大工作室 Bricault Design 設計了一座小屋，以鄰近的山峰為特色，採用綠色屋頂和石板覆層，與其位於加拿大不列顛哥倫比亞省樹木繁茂的場地同步老化。這座佔地 1,268 平方英尺（118 平方米）的住宅被稱為惠斯勒世外桃源，平衡了內部庇護所與小屋周圍崎嶇景觀之間的關係。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_05 · <a href="https://www.dezeen.com/2026/05/12/whistler-hideaway-bricault-design-vancouver-cabin/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-top-houses-april-2026" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/the-corner-store-residential-extension-ian-moore-architects-surry-hills-sydney-australia-architecture_dezeen_2364_col_3_sq-852x852.jpg" alt="Dezeen&#x27;s top five houses of April 2026 image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/01/casa-tupin-bloco-arquitetos-brazil-house_dezeen_2364_sq_2.jpg" alt="Dezeen&#x27;s top five houses of April 2026 image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/a-house-born-of-four-soils-hiren-patel-architects-design-india_dezeen_2364_sq.jpg" alt="Dezeen&#x27;s top five houses of April 2026 image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/studioninedots-light-house-amsterdam-sq_dezeen_2364_col_1-1.jpg" alt="Dezeen&#x27;s top five houses of April 2026 image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/taller-alberto-calleja-casa-mavra-mexico_dezeen_2364_sq.jpg" alt="Dezeen&#x27;s top five houses of April 2026 image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_06 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Dezeen&#x27;s top five houses of April 2026<small>Unknown architect<br>亮點<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">玻璃磚和夯土是用來建造四月份 Dezeen 上最受歡迎的房屋的非常規材料之一。我們每月對讀者最喜歡的住宅進行的綜述中還包括一棟由黑色混凝土建造的房屋和另一棟由穿孔磚砌成的房屋。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>玻璃磚和夯土是用來建造四月份 Dezeen 上最受歡迎的房屋的非常規材料之一。我們每月對讀者最喜歡的住宅進行的綜述中還包括一棟由黑色混凝土建造的房屋和另一棟由穿孔磚砌成的房屋。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_06 · <a href="https://www.dezeen.com/2026/05/01/top-houses-april-2026/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-courtyards-renovation-of-the-moshikou-neighborhood" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969758253_ALI7148.jpg?w=1680&amp;q=60&amp;auto=format" alt="Courtyards Renovation of the Moshikou Neighborhood image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681970209374diagram1.png?w=1680&amp;q=60&amp;auto=format" alt="Courtyards Renovation of the Moshikou Neighborhood image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969636812_ALI6689-HDR_%E5%85%A8%E6%99%AF%E5%9B%BE.jpg?w=1680&amp;q=60&amp;auto=format" alt="Courtyards Renovation of the Moshikou Neighborhood image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969646086_ALI6711.jpg?w=1680&amp;q=60&amp;auto=format" alt="Courtyards Renovation of the Moshikou Neighborhood image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969648066_ALI6717.jpg?w=1680&amp;q=60&amp;auto=format" alt="Courtyards Renovation of the Moshikou Neighborhood image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969660052_ALI6806.jpg?w=1680&amp;q=60&amp;auto=format" alt="Courtyards Renovation of the Moshikou Neighborhood image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969674429_ALI6814.jpg?w=1680&amp;q=60&amp;auto=format" alt="Courtyards Renovation of the Moshikou Neighborhood image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969675220_ALI6926.jpg?w=1680&amp;q=60&amp;auto=format" alt="Courtyards Renovation of the Moshikou Neighborhood image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969684067_ALI6934.jpg?w=1680&amp;q=60&amp;auto=format" alt="Courtyards Renovation of the Moshikou Neighborhood image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1681969700160_ALI6944.jpg?w=1680&amp;q=60&amp;auto=format" alt="Courtyards Renovation of the Moshikou Neighborhood image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_07 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">Courtyards Renovation of the Moshikou Neighborhood<small>Beijing AN-Design Architects<br>中國北京<br>大眾選擇獎得主，2023 年 A+Awards，住宅 &gt; 住宅翻新與擴建</small></h2>
+        <p class="ac-lead reveal">此項目位於北京磨市口歷史文化保護區。磨市口是古代北京西部重要的軍事、商業據點。來自西方的貨物都是由駱駝商隊運送到這裡的。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>此項目位於北京磨市口歷史文化保護區。磨市口是古代北京西部重要的軍事、商業據點。來自西方的貨物都是由駱駝商隊運送到這裡的。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_07 · <a href="https://architizer.com/projects/architectural-design-for-the-courtyards-renovation-of-the-moshikou-neighborhood/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-empire-loft" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682699387690RAAD_129_Duane_0048-min.jpg?w=1680&amp;q=60&amp;auto=format" alt="Empire Loft image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253520603205-RAAD_129_Duane_0432-min.jpg?w=1680&amp;q=60&amp;auto=format" alt="Empire Loft image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253520267003-RAAD_129_Duane_0037-min.jpg?w=1680&amp;q=60&amp;auto=format" alt="Empire Loft image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682539413418N23A0019-Edit.jpg?w=1680&amp;q=60&amp;auto=format" alt="Empire Loft image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682539413416N23A0093-Edit.jpg?w=1680&amp;q=60&amp;auto=format" alt="Empire Loft image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253520591104-RAAD_129_Duane_0402-min.jpg?w=1680&amp;q=60&amp;auto=format" alt="Empire Loft image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253520266802-RAAD_129_Duane_0213-min.jpg?w=1680&amp;q=60&amp;auto=format" alt="Empire Loft image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682699403439RAAD_129_Duane_0258-min.jpg?w=1680&amp;q=60&amp;auto=format" alt="Empire Loft image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253520732906-RAAD_129_Duane_0435-min.jpg?w=1680&amp;q=60&amp;auto=format" alt="Empire Loft image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168253520994208-RAAD_129_Duane_0305-min.jpg?w=1680&amp;q=60&amp;auto=format" alt="Empire Loft image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_08 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">Empire Loft<small>Raad Studio<br>紐約, 紐約州, 美國<br>Jury Winner, 2023 A+Awards, Residential &gt; Residential Interiors (&lt;3000 sq ft)</small></h2>
+        <p class="ac-lead reveal">該住宅包含一系列意想不到的體驗和空間移動，挑戰了紐約市錯層公寓的典型佈局。設計團隊的任務是創造一個既高度舒適又優雅的空間，足以招待各種不拘一格的創意客人，他們專注於可以令人難忘的普通居住體驗時刻。這種方法在二樓的戲劇性剖面圖中最為明顯，該剖面圖在廚房和下面的起居區上方懸掛了一座橋。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>該住宅包含一系列意想不到的體驗和空間移動，挑戰了紐約市錯層公寓的典型佈局。設計團隊的任務是創造一個既高度舒適又優雅的空間，足以招待各種不拘一格的創意客人，他們專注於可以令人難忘的普通居住體驗時刻。這種方法在二樓的戲劇性剖面圖中最為明顯，該剖面圖在廚房和下面的起居區上方懸掛了一座橋。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_08 · <a href="https://architizer.com/projects/empire-loft-1/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

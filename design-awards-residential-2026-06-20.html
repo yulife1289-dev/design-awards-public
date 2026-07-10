@@ -3,643 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-20</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-20 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-20</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-20 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-20.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-20.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adus-fashion-designer-kay-unger-soho-apartment">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6a2adb82829da14cea8d1aae/16:9/w_2560%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-110-Edit-copy.jpg" class="slide active" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a2adb83f38c51706f46ca88/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-230-Edit-copy.jpg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a2adb81569dd84fe06643da/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-079-Edit-copy.jpg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2adb81829da14cea8d1aa8/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-125-Edit-copy.jpg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2adb81f38c51706f46ca82/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-173-Edit-copy.jpg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a297e37817481d43a3d3acb/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(4).jpeg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a297e37da7246eac0456487/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(5).jpeg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2adc55c3d20d9c49b5ed67/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-187-Edit-copy.jpg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2adb852ca7957ae00fb670/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-396-Edit-copy.jpg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a297e3724ed5d661839d349/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(6).jpeg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a297e371ce24e77ec8f22cb/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(7).jpeg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2adb84587f7c498e6a4037/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-381-Edit-copy.jpg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a297e397e4460c2af53c81d/3:4/w_748%2Cc_limit/Product%2520Image%2520Template.jpeg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a297e392a2f95868b264625/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(1).jpeg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2adb81817481d43a3d4e04/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-027-Edit-copy.jpg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a297e3924ed5d661839d354/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(2).jpeg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a297e39bfc185cea3a9fb22/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(3).jpeg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a297e3724ed5d661839d34b/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(8).jpeg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a297e377e4460c2af53c817/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(9).jpeg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 19" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2adb84de102266b2a70aaa/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-325-Edit-copy.jpg" class="slide" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘公寓之旅</span>
-                    <span>2026</span>
-                    <span>經典蘇豪區</span>
-                  </div>
-                  <h3 class="card-title">Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">兩位朋友大膽地重新構想了昂格爾的 SoHo 公寓，利用她現有的藝術收藏——包括勞森伯格、畢卡索和沃霍爾——以及健康的材料、重新利用的家具以及她天生的樂觀精神作為指導力量</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity 的強度在於它沒有把 多單元住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>建築文摘公寓之旅</span><span>經典蘇豪區</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/fashion-designer-kay-unger-soho-apartment" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-123576">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216437/Cambra-Buro_GF-17.jpg" class="slide active" alt="The Plinth House 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216441/Cambra-Buro_GF-13-R1.jpg" class="slide" alt="The Plinth House 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216443/Cambra-Buro_GF-11-R1.jpg" class="slide" alt="The Plinth House 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216445/Cambra-Buro_GF-01.jpg" class="slide" alt="The Plinth House 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216446/Cambra-Buro_GF-05.jpg" class="slide" alt="The Plinth House 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216447/Cambra-Buro_GF-03.jpg" class="slide" alt="The Plinth House 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216448/Cambra-Buro_GF-02.jpg" class="slide" alt="The Plinth House 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216449/Cambra-Buro_1F-07.jpg" class="slide" alt="The Plinth House 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216450/Cambra-Buro_1F-14.jpg" class="slide" alt="The Plinth House 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216451/Cambra-Buro_1F-11.jpg" class="slide" alt="The Plinth House 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216452/Cambra-Buro_1F-02.jpg" class="slide" alt="The Plinth House 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216453/Cambra-Buro_1F-06.jpg" class="slide" alt="The Plinth House 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216455/Cambra-Buro_1F-01.jpg" class="slide" alt="The Plinth House 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216456/Cambra-Buro_1F-24.jpg" class="slide" alt="The Plinth House 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216458/Cambra-Buro_2F-04.jpg" class="slide" alt="The Plinth House 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216327/01.png" class="slide" alt="The Plinth House 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216328/02.png" class="slide" alt="The Plinth House 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>阿布哈桑尼亞, 科威特</span>
-                  </div>
-                  <h3 class="card-title">The Plinth House</h3>
-                  <p class="card-by">Cambra Buró</p>
-                  <p class="card-desc">創新底座之家拒絕一切慣例。 Cambra Buró 從頭開始發明了一種完整的建築語言。重量與輕盈之間的對話：雕刻的石灰華底座支撐著結構；一個寧靜的上部體積升起在它之上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">The Plinth House 最值得注意的不是外觀，而是它如何透過 主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣，把 獨棟住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>House</span><span>阿布哈桑尼亞, 科威特</span><span>發佈日期: 2026 年 6 月 16 日</span><span>標籤： 獎項 / cambra-buro / fa26 / house</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/the-plinth-house" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-122848">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213820/1__Tres-mini-duplex-en-un-piso_vilablanch_42.jpg" class="slide active" alt="Three Mini-Duplexes 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213834/15__Mini-Duplex_pavimentos_page-0001PLANOS-JUNTOS_MOD.png" class="slide" alt="Three Mini-Duplexes 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213821/2b.png" class="slide" alt="Three Mini-Duplexes 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213822/3b.png" class="slide" alt="Three Mini-Duplexes 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213823/04.0.JPG" class="slide" alt="Three Mini-Duplexes 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213824/4b.png" class="slide" alt="Three Mini-Duplexes 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213825/6b.png" class="slide" alt="Three Mini-Duplexes 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213826/7b.png" class="slide" alt="Three Mini-Duplexes 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213827/8.JPG" class="slide" alt="Three Mini-Duplexes 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213828/9b.png" class="slide" alt="Three Mini-Duplexes 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213829/10b.png" class="slide" alt="Three Mini-Duplexes 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213830/11b.png" class="slide" alt="Three Mini-Duplexes 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213831/12b__Tres-mini-duplex-en-un-piso_vilablanch_07.png" class="slide" alt="Three Mini-Duplexes 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213832/13b__.png" class="slide" alt="Three Mini-Duplexes 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213833/14.JPG" class="slide" alt="Three Mini-Duplexes 圖片 15" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 15</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，大型公寓</span>
-                    <span>2026</span>
-                    <span>Carrer de Balmes, 48, 擴展區, 08007 巴塞隆納, 西班牙</span>
-                  </div>
-                  <h3 class="card-title">Three Mini-Duplexes</h3>
-                  <p class="card-by">Elina Vilá and Estudio Vilablanch</p>
-                  <p class="card-desc">一套 220 平方米的 Eixample 公寓最初是在 20 世紀 90 年代為一對夫婦翻修的，隨著家庭的成長，需要徹底重新考慮空間。現有的鐵製夾層結構於 1996 年添加，沿著公寓的中央脊柱延伸，尺寸為 1.8 m × 11 m，僅提供視覺走廊，沒有產生可用的私人空間。該項目將這種表現不佳的元素轉變為整個住宅的組織原則。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Three Mini-Duplexes 最值得注意的不是外觀，而是它如何透過 把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值，把 多單元住宅 中原本零散的需求收束成一致的空間敘事。</p>
-                  <div class="card-facts"><span>大型公寓</span><span>Carrer de Balmes, 48, 擴展區, 08007 巴塞隆納, 西班牙</span><span>發佈日期: 2026 年 6 月 19 日</span><span>標籤： 獎項 / 巴塞隆納 / elina-vila / estudio-vilablanch</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/three-mini-duplexes" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-seagull-cottage-architectural-farm">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-cottage-extension-ireland-architectural-farm-sq_dezeen_2364_col_0-852x852.jpg" class="slide active" alt="Timber bird hides inform Irish cottage extension by Architectural Farm 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-ireland-architectural-farm_dezeen_2364_col_17.jpg" class="slide" alt="Timber bird hides inform Irish cottage extension by Architectural Farm 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-ireland-architectural-farm_dezeen_2364_col_19-scaled.jpg" class="slide" alt="Timber bird hides inform Irish cottage extension by Architectural Farm 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-ireland-architectural-farm_dezeen_2364_col_20.jpg" class="slide" alt="Timber bird hides inform Irish cottage extension by Architectural Farm 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2025/12/borova-lada-cottage-studio-plys-architecture-residential-houses-czech-republic_dezeen_2364_sq-191x191.jpg" class="slide" alt="Timber bird hides inform Irish cottage extension by Architectural Farm 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-ireland-architectural-farm_dezeen_2364_col_12-scaled.jpg" class="slide" alt="Timber bird hides inform Irish cottage extension by Architectural Farm 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-ireland-architectural-farm_dezeen_2364_col_8.jpg" class="slide" alt="Timber bird hides inform Irish cottage extension by Architectural Farm 圖片 7" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 7</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>亮點</span>
-                  </div>
-                  <h3 class="card-title">Timber bird hides inform Irish cottage extension by Architectural Farm</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">都柏林工作室 Architectural Farm 翻新了愛爾蘭一棟名為“海鷗小屋”的住宅，增加了由鐵路棚和鳥皮覆蓋的落葉松覆蓋的擴建部分。該住宅位於大海和威克洛海岸一片受保護的濕地之間的鐵軌旁，由兩座 19 世紀的鐵路小屋組成，這些小屋之前已合併在一起。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Timber bird hides inform Irish cottage extension by Architectural Farm 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>亮點</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/04/02/seagull-cottage-architectural-farm/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-wadhal-wade-house-london">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/05/studio-hallett-cemetery-house-extension-london-sq_dezeen_2364_col_1-191x191.jpg" class="slide active" alt="Wadhal subverts suburban architecture for home in west London 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/wadhal-wade-house-london-sq_dezeen_2364_col_0-852x852.jpg" class="slide" alt="Wadhal subverts suburban architecture for home in west London 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/wadhal-wade-house-london_dezeen_2364_col_0.jpg" class="slide" alt="Wadhal subverts suburban architecture for home in west London 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/wadhal-wade-house-london_dezeen_2364_col_3.jpg" class="slide" alt="Wadhal subverts suburban architecture for home in west London 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/wadhal-wade-house-london_dezeen_2364_col_7.jpg" class="slide" alt="Wadhal subverts suburban architecture for home in west London 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/wadhal-wade-house-london_dezeen_2364_col_14-scaled.jpg" class="slide" alt="Wadhal subverts suburban architecture for home in west London 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/wadhal-wade-house-london_dezeen_2364_col_11-scaled.jpg" class="slide" alt="Wadhal subverts suburban architecture for home in west London 圖片 7" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 7</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>London</span>
-                  </div>
-                  <h3 class="card-title">Wadhal subverts suburban architecture for home in west London</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">建築工作室 Wadhal 完成了倫敦的韋德住宅 (Wade House)，採用紋理磚砌、精簡的開窗和隱藏式排水溝，為典型的郊區建築增添了微妙的現代氣息。為了取代 Ruislip 的一對破舊車庫，嚴格的規劃規定要求新的獨立住宅模仿其鄰居，所有這些都是在 1920 世紀 30 年代設計的。後 Wadhal 顛覆了倫敦西部郊區的住宅建築，首先出現在 Dezeen 上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Wadhal subverts suburban architecture for home in west London 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」調整空間氣質，最後透過「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>London</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/06/08/wadhal-wade-house-london/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-best-airbnb-cabin">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/62964f1a0e7a880da40c10d7/16:9/w_2560%2Cc_limit/GraniteFalls.png" class="slide active" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/67bca808fba54dc2dff9b304/1:1/pass/travel-edit-group-lede.jpg" class="slide" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/68d54ffec294e36e82a42b8e/1:1/w_90%2Cc_limit/imgi_1_AD_SeatWeek0658_.jpg" class="slide" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69d9149802790c3bb9efe9b4/1:1/w_640%2Cc_limit/imgi_1_imgi_81_e178b0bf-7fba-4a74-ac6e-3c7dabba21a8.jpg" class="slide" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6859851e3b0faec7ad2a0ccf/1:1/w_640%2Cc_limit/8beb1cda-eba1-4441-a2e3-2230b6c9f718.jpg" class="slide" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/68f13b0099c54442b87bdd1d/1:1/w_640%2Cc_limit/imgi_1_a63e74df-010d-4cb4-b623-6c7db38dfc74.jpeg" class="slide" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/697250e9bd79adb88ad25f5b/1:1/w_640%2Cc_limit/imgi_1_f2c91998-9300-4af4-ab5f-09996122d1b2.jpeg" class="slide" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/5fdba5629542eda0bedf1080/1:1/w_640%2Cc_limit/60d85131-b43f-4edb-8051-28c0e6bd377a.jpg" class="slide" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/68fba1fb4c85f3b1e4a376a5/1:1/w_640%2Cc_limit/imgi_1_427958f5-6fae-49f3-aa6c-18300874e71b.jpeg" class="slide" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/61315f18981bebcfe3db15ed/1:1/w_640%2Cc_limit/Screen%2520Shot%25202021-09-02%2520at%25204.28.50%2520PM.png" class="slide" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/67a3df732d6c05cbd4b7d01c/1:1/w_640%2Cc_limit/3d2979a8-c1f4-4258-9b27-7d0ca72749b8.jpeg" class="slide" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) 圖片 11" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 11</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2025</span>
-                    <span>最好的愛彼迎之一</span>
-                  </div>
-                  <h3 class="card-title">13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026)</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">從小房子到貨櫃屋，再到 A 型框架度假屋，這些都是今年夏天最適合度假的 Airbnb 小屋，除此之外，別犧牲風格</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。從小房子到貨櫃屋，再到 A 型框架度假屋，這些都是今年夏天最適合度假的 Airbnb 小屋，除此之外，別犧牲風格</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>最好的愛彼迎之一</span><span>資料來源：《建築文摘 2025》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/best-airbnb-cabin" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2024-the-opus-one">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349942568101_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-18.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="the Opus One 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349945058503MASTERPLAN.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349945869304_diagram-original_size.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349953411605_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-12.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349956982206_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-10.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349957781107_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-14.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349965614508_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-15.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349968982009_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-37.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349972848310Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-25.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349976102111Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-24.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349981908212_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-26.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349984545313_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-19.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349986559014_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-21.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349991742315_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-34.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349998026216Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-20.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349942568302_existing_site_hres.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="the Opus One 圖片 16" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 16</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2024 年 A+Awards，住宅 &gt; 住宅適應性再利用項目</span>
-                    <span>2024</span>
-                    <span>China</span>
-                  </div>
-                  <h3 class="card-title">the Opus One</h3>
-                  <p class="card-by">TROP : terrains + open space</p>
-                  <p class="card-desc">Opus One 透過創造力改變了非凡的複雜性。儘管佔地面積不到 300 平方米，但它將古典優雅與現代風格融為一體，創造出各種功能，為所有遇到它的人帶來不斷發展的體驗。透過創造景觀，我們可以擺脫固定的北方景觀。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">the Opus One 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2024 年 A+Awards，住宅 &gt; 住宅適應性再利用項目</span><span>China</span><span>資料來源：Architizer A+Awards 2024</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/the-opus-one/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-105-social-dwellings-18-sohos">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007607520_MG_3811_Soho_living_space_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="105 Social Dwellings + 18 SOHOs 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007583572_MG_8067_West_view_on_urban_block_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="105 Social Dwellings + 18 SOHOs 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007593727_MG_1949Grue_Overall_view_during_construction_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="105 Social Dwellings + 18 SOHOs 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007583575Logts_Chapelle_PARIS_Photo_LBoegly.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="105 Social Dwellings + 18 SOHOs 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007600228_MG_3119_Central_semi_private_soho_space_towards_Western_tower_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="105 Social Dwellings + 18 SOHOs 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007604611_MG_3501_Central_soho_passageway_towards_Eastern_tower_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="105 Social Dwellings + 18 SOHOs 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007599884_MG_3067_Soho_base_and_Eastern_tower_from_northern_pedestrian_alley_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="105 Social Dwellings + 18 SOHOs 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007593733_MG_2347_Concrete_poured_on_site_exo-structure_LBoegly.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="105 Social Dwellings + 18 SOHOs 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007607699_MG_6912_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="105 Social Dwellings + 18 SOHOs 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007604504_MG_3335_Eastern_tower_corner_apartment_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="105 Social Dwellings + 18 SOHOs 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007610856_MG_6998_Western_tower_corner_apartment_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="105 Social Dwellings + 18 SOHOs 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007611027_MG_7087_Paris_cityscape_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="105 Social Dwellings + 18 SOHOs 圖片 12" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 12</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>2023 年 A+ 獎評審團得獎者，住宅 &gt; 經濟適用房</span>
-                    <span>2023</span>
-                    <span>法國巴黎</span>
-                  </div>
-                  <h3 class="card-title">105 Social Dwellings + 18 SOHOs</h3>
-                  <p class="card-by">Moussafir Architectes</p>
-                  <p class="card-desc">這個混合用途開發項目由 105 個社會住房單元和 18 個 SOHO（小型辦公室/家庭辦公室）組成，建在巴黎市中心邊緣的廢棄鐵路場上，是創新城市類型的一部分，該類型基於“下層統一世界”住宅商店 (SOHO) 和由公寓組成的“多元化上層世界”之間的差異。我們選擇透過區分兩個體積的表達來增強裙樓的統一性和塔樓的多樣性的城市辯證法，儘管它們共享共同的材料（混凝土、木材和鋁）和緊湊性或可逆性等共同原則。 SOHO 概念是與專業工作空間相關的住宅，我們開發了一種靠近聯排別墅的特定類型，具有雙重公共/私人通道，確保辦公室和住宅之間的連續性，同時也規劃了單獨的入口。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">105 Social Dwellings + 18 SOHOs 不是靠單一造型取勝，而是把 多單元住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」調整空間氣質，最後透過「透過壓縮、分層與多重使用提高空間記憶密度，讓小尺度住宅仍然具有完整敘事」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>2023 年 A+ 獎評審團得獎者，住宅 &gt; 經濟適用房</span><span>法國巴黎</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/105-social-dwellings-18-sohos/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adus-fashion-designer-kay-unger-soho-apartment" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2adb82829da14cea8d1aae/16:9/w_2560%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-110-Edit-copy.jpg" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2adb83f38c51706f46ca88/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-230-Edit-copy.jpg" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2adb81569dd84fe06643da/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-079-Edit-copy.jpg" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2adb81829da14cea8d1aa8/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-125-Edit-copy.jpg" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2adb81f38c51706f46ca82/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-173-Edit-copy.jpg" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a297e37817481d43a3d3acb/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(4).jpeg" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a297e37da7246eac0456487/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(5).jpeg" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2adc55c3d20d9c49b5ed67/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-187-Edit-copy.jpg" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2adb852ca7957ae00fb670/master/w_1600%2Cc_limit/JamieDrake_KayUnger_Soho_12182025-396-Edit-copy.jpg" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a297e3724ed5d661839d349/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(6).jpeg" alt="Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_01 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">Fashion Designer Kay Unger and Jamie Drake Teamed up to Turn an Apartment Disaster Into a Decorating Opportunity<small>AD editorial<br>經典蘇豪區<br>建築文摘公寓之旅</small></h2>
+        <p class="ac-lead reveal">兩位朋友大膽地重新構想了昂格爾的 SoHo 公寓，利用她現有的藝術收藏——包括勞森伯格、畢卡索和沃霍爾——以及健康的材料、重新利用的家具以及她天生的樂觀精神作為指導力量</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>兩位朋友大膽地重新構想了昂格爾的 SoHo 公寓，利用她現有的藝術收藏——包括勞森伯格、畢卡索和沃霍爾——以及健康的材料、重新利用的家具以及她天生的樂觀精神作為指導力量</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_01 · <a href="https://www.architecturaldigest.com/story/fashion-designer-kay-unger-soho-apartment" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-123576" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216437/Cambra-Buro_GF-17.jpg" alt="The Plinth House image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216441/Cambra-Buro_GF-13-R1.jpg" alt="The Plinth House image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216443/Cambra-Buro_GF-11-R1.jpg" alt="The Plinth House image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216445/Cambra-Buro_GF-01.jpg" alt="The Plinth House image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216446/Cambra-Buro_GF-05.jpg" alt="The Plinth House image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216447/Cambra-Buro_GF-03.jpg" alt="The Plinth House image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216448/Cambra-Buro_GF-02.jpg" alt="The Plinth House image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216449/Cambra-Buro_1F-07.jpg" alt="The Plinth House image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216450/Cambra-Buro_1F-14.jpg" alt="The Plinth House image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/216451/Cambra-Buro_1F-11.jpg" alt="The Plinth House image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">The Plinth House<small>Cambra Buró<br>阿布哈桑尼亞, 科威特<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">創新底座之家拒絕一切慣例。 Cambra Buró 從頭開始發明了一種完整的建築語言。重量與輕盈之間的對話：雕刻的石灰華底座支撐著結構；一個寧靜的上部體積升起在它之上。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>創新底座之家拒絕一切慣例。 Cambra Buró 從頭開始發明了一種完整的建築語言。重量與輕盈之間的對話：雕刻的石灰華底座支撐著結構；一個寧靜的上部體積升起在它之上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/the-plinth-house" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-122848" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213820/1__Tres-mini-duplex-en-un-piso_vilablanch_42.jpg" alt="Three Mini-Duplexes image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213834/15__Mini-Duplex_pavimentos_page-0001PLANOS-JUNTOS_MOD.png" alt="Three Mini-Duplexes image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213821/2b.png" alt="Three Mini-Duplexes image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213822/3b.png" alt="Three Mini-Duplexes image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213823/04.0.JPG" alt="Three Mini-Duplexes image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213824/4b.png" alt="Three Mini-Duplexes image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213825/6b.png" alt="Three Mini-Duplexes image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213826/7b.png" alt="Three Mini-Duplexes image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213827/8.JPG" alt="Three Mini-Duplexes image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213828/9b.png" alt="Three Mini-Duplexes image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Three Mini-Duplexes<small>Elina Vilá and Estudio Vilablanch<br>Carrer de Balmes, 48, 擴展區, 08007 巴塞隆納, 西班牙<br>FRAME 獎，大型公寓</small></h2>
+        <p class="ac-lead reveal">一套 220 平方米的 Eixample 公寓最初是在 20 世紀 90 年代為一對夫婦翻修的，隨著家庭的成長，需要徹底重新考慮空間。現有的鐵製夾層結構於 1996 年添加，沿著公寓的中央脊柱延伸，尺寸為 1.8 m × 11 m，僅提供視覺走廊，沒有產生可用的私人空間。該項目將這種表現不佳的元素轉變為整個住宅的組織原</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>一套 220 平方米的 Eixample 公寓最初是在 20 世紀 90 年代為一對夫婦翻修的，隨著家庭的成長，需要徹底重新考慮空間。現有的鐵製夾層結構於 1996 年添加，沿著公寓的中央脊柱延伸，尺寸為 1.8 m × 11 m，僅提供視覺走廊，沒有產生可用的私人空間。該項目將這種表現不佳的元素轉變為整個住宅的組織原則。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · <a href="https://frameweb.com/project/three-mini-duplexes" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-seagull-cottage-architectural-farm" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-cottage-extension-ireland-architectural-farm-sq_dezeen_2364_col_0-852x852.jpg" alt="Timber bird hides inform Irish cottage extension by Architectural Farm image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-ireland-architectural-farm_dezeen_2364_col_17.jpg" alt="Timber bird hides inform Irish cottage extension by Architectural Farm image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-ireland-architectural-farm_dezeen_2364_col_19-scaled.jpg" alt="Timber bird hides inform Irish cottage extension by Architectural Farm image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-ireland-architectural-farm_dezeen_2364_col_20.jpg" alt="Timber bird hides inform Irish cottage extension by Architectural Farm image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2025/12/borova-lada-cottage-studio-plys-architecture-residential-houses-czech-republic_dezeen_2364_sq-191x191.jpg" alt="Timber bird hides inform Irish cottage extension by Architectural Farm image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-ireland-architectural-farm_dezeen_2364_col_12-scaled.jpg" alt="Timber bird hides inform Irish cottage extension by Architectural Farm image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/seagull-cottage-wicklowireland-ireland-architectural-farm_dezeen_2364_col_8.jpg" alt="Timber bird hides inform Irish cottage extension by Architectural Farm image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Timber bird hides inform Irish cottage extension by Architectural Farm<small>Unknown architect<br>亮點<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">都柏林工作室 Architectural Farm 翻新了愛爾蘭一棟名為“海鷗小屋”的住宅，增加了由鐵路棚和鳥皮覆蓋的落葉松覆蓋的擴建部分。該住宅位於大海和威克洛海岸一片受保護的濕地之間的鐵軌旁，由兩座 19 世紀的鐵路小屋組成，這些小屋之前已合併在一起。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>都柏林工作室 Architectural Farm 翻新了愛爾蘭一棟名為“海鷗小屋”的住宅，增加了由鐵路棚和鳥皮覆蓋的落葉松覆蓋的擴建部分。該住宅位於大海和威克洛海岸一片受保護的濕地之間的鐵軌旁，由兩座 19 世紀的鐵路小屋組成，這些小屋之前已合併在一起。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · <a href="https://www.dezeen.com/2026/04/02/seagull-cottage-architectural-farm/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-wadhal-wade-house-london" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/05/studio-hallett-cemetery-house-extension-london-sq_dezeen_2364_col_1-191x191.jpg" alt="Wadhal subverts suburban architecture for home in west London image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/wadhal-wade-house-london-sq_dezeen_2364_col_0-852x852.jpg" alt="Wadhal subverts suburban architecture for home in west London image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/wadhal-wade-house-london_dezeen_2364_col_0.jpg" alt="Wadhal subverts suburban architecture for home in west London image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/wadhal-wade-house-london_dezeen_2364_col_3.jpg" alt="Wadhal subverts suburban architecture for home in west London image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/wadhal-wade-house-london_dezeen_2364_col_7.jpg" alt="Wadhal subverts suburban architecture for home in west London image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/wadhal-wade-house-london_dezeen_2364_col_14-scaled.jpg" alt="Wadhal subverts suburban architecture for home in west London image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/wadhal-wade-house-london_dezeen_2364_col_11-scaled.jpg" alt="Wadhal subverts suburban architecture for home in west London image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_05 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Wadhal subverts suburban architecture for home in west London<small>Unknown architect<br>London<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">建築工作室 Wadhal 完成了倫敦的韋德住宅 (Wade House)，採用紋理磚砌、精簡的開窗和隱藏式排水溝，為典型的郊區建築增添了微妙的現代氣息。為了取代 Ruislip 的一對破舊車庫，嚴格的規劃規定要求新的獨立住宅模仿其鄰居，所有這些都是在 1920 世紀 30 年代設計的。後 Wadhal 顛覆了倫敦西部郊</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>建築工作室 Wadhal 完成了倫敦的韋德住宅 (Wade House)，採用紋理磚砌、精簡的開窗和隱藏式排水溝，為典型的郊區建築增添了微妙的現代氣息。為了取代 Ruislip 的一對破舊車庫，嚴格的規劃規定要求新的獨立住宅模仿其鄰居，所有這些都是在 1920 世紀 30 年代設計的。後 Wadhal 顛覆了倫敦西部郊區的住宅建築，首先出現在 Dezeen 上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_05 · <a href="https://www.dezeen.com/2026/06/08/wadhal-wade-house-london/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-best-airbnb-cabin" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/62964f1a0e7a880da40c10d7/16:9/w_2560%2Cc_limit/GraniteFalls.png" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/67bca808fba54dc2dff9b304/1:1/pass/travel-edit-group-lede.jpg" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/68d54ffec294e36e82a42b8e/1:1/w_90%2Cc_limit/imgi_1_AD_SeatWeek0658_.jpg" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69d9149802790c3bb9efe9b4/1:1/w_640%2Cc_limit/imgi_1_imgi_81_e178b0bf-7fba-4a74-ac6e-3c7dabba21a8.jpg" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6859851e3b0faec7ad2a0ccf/1:1/w_640%2Cc_limit/8beb1cda-eba1-4441-a2e3-2230b6c9f718.jpg" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/68f13b0099c54442b87bdd1d/1:1/w_640%2Cc_limit/imgi_1_a63e74df-010d-4cb4-b623-6c7db38dfc74.jpeg" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/697250e9bd79adb88ad25f5b/1:1/w_640%2Cc_limit/imgi_1_f2c91998-9300-4af4-ab5f-09996122d1b2.jpeg" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/5fdba5629542eda0bedf1080/1:1/w_640%2Cc_limit/60d85131-b43f-4edb-8051-28c0e6bd377a.jpg" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/68fba1fb4c85f3b1e4a376a5/1:1/w_640%2Cc_limit/imgi_1_427958f5-6fae-49f3-aa6c-18300874e71b.jpeg" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/61315f18981bebcfe3db15ed/1:1/w_640%2Cc_limit/Screen%2520Shot%25202021-09-02%2520at%25204.28.50%2520PM.png" alt="13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026) image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/25_06 · AD (US) / 2025</p>
+        <h2 class="ac-title reveal">13 Best Airbnb Cabins for a Picture-Perfect Outdoor Retreat (2026)<small>AD editorial<br>最好的愛彼迎之一<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">從小房子到貨櫃屋，再到 A 型框架度假屋，這些都是今年夏天最適合度假的 Airbnb 小屋，除此之外，別犧牲風格</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>從小房子到貨櫃屋，再到 A 型框架度假屋，這些都是今年夏天最適合度假的 Airbnb 小屋，除此之外，別犧牲風格</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/25_06 · <a href="https://www.architecturaldigest.com/story/best-airbnb-cabin" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2024-the-opus-one" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349942568101_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-18.jpg?w=1680&amp;q=60&amp;auto=format" alt="the Opus One image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349945058503MASTERPLAN.jpg?w=1680&amp;q=60&amp;auto=format" alt="the Opus One image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349945869304_diagram-original_size.jpg?w=1680&amp;q=60&amp;auto=format" alt="the Opus One image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349953411605_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-12.jpg?w=1680&amp;q=60&amp;auto=format" alt="the Opus One image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349956982206_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-10.jpg?w=1680&amp;q=60&amp;auto=format" alt="the Opus One image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349957781107_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-14.jpg?w=1680&amp;q=60&amp;auto=format" alt="the Opus One image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349965614508_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-15.jpg?w=1680&amp;q=60&amp;auto=format" alt="the Opus One image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349968982009_Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-37.jpg?w=1680&amp;q=60&amp;auto=format" alt="the Opus One image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349972848310Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-25.jpg?w=1680&amp;q=60&amp;auto=format" alt="the Opus One image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/171349976102111Holi%E6%B2%B3%E7%8B%B8-%E6%99%AF%E8%A7%82%E6%91%84%E5%BD%B1-24.jpg?w=1680&amp;q=60&amp;auto=format" alt="the Opus One image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/24_07 · Architizer / 2024</p>
+        <h2 class="ac-title reveal">the Opus One<small>TROP : terrains + open space<br>China<br>大眾選擇獎得主，2024 年 A+Awards，住宅 &gt; 住宅適應性再利用項目</small></h2>
+        <p class="ac-lead reveal">Opus One 透過創造力改變了非凡的複雜性。儘管佔地面積不到 300 平方米，但它將古典優雅與現代風格融為一體，創造出各種功能，為所有遇到它的人帶來不斷發展的體驗。透過創造景觀，我們可以擺脫固定的北方景觀。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Opus One 透過創造力改變了非凡的複雜性。儘管佔地面積不到 300 平方米，但它將古典優雅與現代風格融為一體，創造出各種功能，為所有遇到它的人帶來不斷發展的體驗。透過創造景觀，我們可以擺脫固定的北方景觀。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/24_07 · <a href="https://architizer.com/projects/the-opus-one/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2024/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-105-social-dwellings-18-sohos" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007607520_MG_3811_Soho_living_space_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" alt="105 Social Dwellings + 18 SOHOs image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007583572_MG_8067_West_view_on_urban_block_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" alt="105 Social Dwellings + 18 SOHOs image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007593727_MG_1949Grue_Overall_view_during_construction_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" alt="105 Social Dwellings + 18 SOHOs image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007583575Logts_Chapelle_PARIS_Photo_LBoegly.jpg?w=1680&amp;q=60&amp;auto=format" alt="105 Social Dwellings + 18 SOHOs image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007600228_MG_3119_Central_semi_private_soho_space_towards_Western_tower_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" alt="105 Social Dwellings + 18 SOHOs image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007604611_MG_3501_Central_soho_passageway_towards_Eastern_tower_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" alt="105 Social Dwellings + 18 SOHOs image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007599884_MG_3067_Soho_base_and_Eastern_tower_from_northern_pedestrian_alley_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" alt="105 Social Dwellings + 18 SOHOs image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007593733_MG_2347_Concrete_poured_on_site_exo-structure_LBoegly.jpg?w=1680&amp;q=60&amp;auto=format" alt="105 Social Dwellings + 18 SOHOs image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007607699_MG_6912_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" alt="105 Social Dwellings + 18 SOHOs image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1682007604504_MG_3335_Eastern_tower_corner_apartment_HAbbadie.jpg?w=1680&amp;q=60&amp;auto=format" alt="105 Social Dwellings + 18 SOHOs image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_08 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">105 Social Dwellings + 18 SOHOs<small>Moussafir Architectes<br>法國巴黎<br>2023 年 A+ 獎評審團得獎者，住宅 &gt; 經濟適用房</small></h2>
+        <p class="ac-lead reveal">這個混合用途開發項目由 105 個社會住房單元和 18 個 SOHO（小型辦公室/家庭辦公室）組成，建在巴黎市中心邊緣的廢棄鐵路場上，是創新城市類型的一部分，該類型基於“下層統一世界”住宅商店 (SOHO) 和由公寓組成的“多元化上層世界”之間的差異。我們選擇透過區分兩個體積的表達來增強裙樓的統一性和塔樓的多樣性的城市</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>這個混合用途開發項目由 105 個社會住房單元和 18 個 SOHO（小型辦公室/家庭辦公室）組成，建在巴黎市中心邊緣的廢棄鐵路場上，是創新城市類型的一部分，該類型基於“下層統一世界”住宅商店 (SOHO) 和由公寓組成的“多元化上層世界”之間的差異。我們選擇透過區分兩個體積的表達來增強裙樓的統一性和塔樓的多樣性的城市辯證法，儘管它們共享共同的材料（混凝土、木材和鋁）和緊湊性或可逆性等共同原則。 SOHO 概念是與專業工作空間相關的住宅，我們開發了一種靠近聯排別墅的特定類型，具有雙重公共/私人通道，確保辦公室和住宅之間的連續性，同時也規劃了單獨的入口。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_08 · <a href="https://architizer.com/projects/105-social-dwellings-18-sohos/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

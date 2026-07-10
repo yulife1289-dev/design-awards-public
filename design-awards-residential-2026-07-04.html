@@ -3,643 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-07-04</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-07-04 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-07-04</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-07-04 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-07-04.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-07-04.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adus-a-laguna-beach-home-designed-by-studio-gutow">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/685c74428d85b6bc1c1e32ab/3:4/w_748%2Cc_limit/Main%2520Product%2520Photo%2520Crop%2520Templates-1-CP%2520Products%2520(62).jpeg" class="slide active" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/69fa58ed8d9b8f30ce7d93a6/16:9/w_2560%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_27992-copy.jpg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/69fa58ed65e252e76bdca43f/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_28041-copy.jpg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa58f18d9b8f30ce7d93b5/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_28453-copy.jpg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa58f6a61ec0a2eda47b3a/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_28531-copy.jpg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa58efbf3d1c0c7240fb78/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_28361-copy.jpg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f9129964a7408397446ca6/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(67).jpeg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f9139a593cbfad4df1d464/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(68).jpeg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa58ef8d9b8f30ce7d93af/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_28282-copy.jpg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f913ed2a4b99e3b497f601/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(69).jpeg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f914b4a876b5f49b4775da/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(71).jpeg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa58ed2a4b99e3b4981515/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_27823-2-copy.jpg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69a73d0d74142f56154b9152/3:4/w_748%2Cc_limit/AD%2520Product%2520Image%2520(100).png" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69a73d7b176c8903f296bbed/3:4/w_748%2Cc_limit/Cozy%2520Earth%2520Baja%2520pillow_PC_%2520lifeunscriptedphotography-12.jpg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69a73d81a585a96289d325a6/3:4/w_748%2Cc_limit/Cozy%2520Earth%2520Baja%2520pillows_%2520PC_lifeunscriptedphotography-8.jpg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f911e856f2d170ed6a58a7/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(66).jpeg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa58ee593cbfad4df1eee4/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_27908-copy.jpg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa58f7bf3d1c0c7240fb83/master/w_1600%2Cc_limit/250930_Studio_Gutow_Emerald_Bay_Willow_27765-copy.jpg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa58ed2a4b99e3b4981516/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_28142-copy.jpg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 19" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa58f29cd712738e3bdc30/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_28393-copy.jpg" class="slide" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>殖民</span>
-                  </div>
-                  <h3 class="card-title">A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window</h3>
-                  <p class="card-by">Melissa Rohani</p>
-                  <p class="card-desc">Studio Gutow 改造了拉古納海灘的住宅，配有落地鑲板和適合約會之夜的地下酒吧</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window 不是靠單一造型取勝，而是把 舊屋改造 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>殖民</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/a-laguna-beach-home-designed-by-studio-gutow" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-this-marthas-vineyard-home-channels-the-islands-rustic-charm">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/69f3c05529eb762427c153c0/16:9/w_2560%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_01.jpg" class="slide active" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/69f3c0589d9271ee3e31faef/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_03.jpg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/69f3c055e407f2b474848904/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_04.jpg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa1f496bddf5d1be09409b/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(3).jpeg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa1f489cb02e8eec61829f/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(8).jpeg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f3c055e3c0d3df409346f1/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_07.jpg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa1f49bca94c90d1b9e756/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(5).jpeg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa1f49ecebce3076c17490/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(2).jpeg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f3c0551ed0fe39eaa3d443/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_08.jpg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa1f4864a74083974478e5/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(4).jpeg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa1f49bf3d1c0c7240eaea/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(9).jpeg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f3c05543203ace0edf21e0/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_11.jpg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f3c0569d9271ee3e31fae2/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_12.jpg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa1f482a4b99e3b498021a/3:4/w_748%2Cc_limit/Product%2520Image%2520Template.jpeg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa1f48f00ab60b16d493bb/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(1).jpeg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fbb01d0c75af3cd9c24d50/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_14.jpg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fbb0ab6bddf5d1be09767a/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_15.jpg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f3c05729eb762427c153c7/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_16.jpg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69f3c0571ed0fe39eaa3d457/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_17.jpg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 19" loading="lazy"><img src="https://media.architecturaldigest.com/photos/69fa1f48a61ec0a2eda4755d/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(6).jpeg" class="slide" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>她的內心深處</span>
-                  </div>
-                  <h3 class="card-title">This Martha’s Vineyard Home Channels the Island’s Rustic Charm</h3>
-                  <p class="card-by">Nina Farmer</p>
-                  <p class="card-desc">設計師 Nina Farmer 專注於使用當地採購的單品，打造舒適、悠閒的度假屋</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">This Martha’s Vineyard Home Channels the Island’s Rustic Charm 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。設計師 Nina Farmer 專注於使用當地採購的單品，打造舒適、悠閒的度假屋</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>她的內心深處</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/this-marthas-vineyard-home-channels-the-islands-rustic-charm" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-119599">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200778/08.jpg" class="slide active" alt="Amami House 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200788/1F-PLAN.jpg" class="slide" alt="Amami House 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205325/Section-pers.jpg" class="slide" alt="Amami House 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200771/01.jpg" class="slide" alt="Amami House 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200772/02.jpg" class="slide" alt="Amami House 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200773/03.jpg" class="slide" alt="Amami House 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200774/04.jpg" class="slide" alt="Amami House 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200775/05.jpg" class="slide" alt="Amami House 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200776/06.jpg" class="slide" alt="Amami House 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200777/07.jpg" class="slide" alt="Amami House 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200779/09.jpg" class="slide" alt="Amami House 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200780/10.jpg" class="slide" alt="Amami House 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200781/11.jpg" class="slide" alt="Amami House 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200782/12.jpg" class="slide" alt="Amami House 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200784/14.jpg" class="slide" alt="Amami House 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200786/32.jpg" class="slide" alt="Amami House 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200787/22.jpg" class="slide" alt="Amami House 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>9-14 Nazeariyachō, 奄美, 鹿兒島 894-0062, 日本</span>
-                  </div>
-                  <h3 class="card-title">Amami House</h3>
-                  <p class="card-by">Sakai Architects</p>
-                  <p class="card-desc">奄美島的離網房屋當我開始在奄美島中心設計自己的房子時，我從未想過它最終會完全脫離電網。然而，隨著環境惡化加速和極端天氣變得司空見慣，這種選擇感覺是不可避免的。這個決定是由我三年前購買的一座山引發的——在那裡我開始為自力更生的生活建造微型基礎設施，為應對危機做好準備，同時想像在老齡化、人口稀少的地區新的恢復形式。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Amami House 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。奄美島的離網房屋當我開始在奄美島中心設計自己的房子時，我從未想過它最終會完全脫離電網。然而，隨著環境惡化加速和極端天氣變得司空見慣，這種選擇感覺是不可避免的。這個決定是由我三年前購買的一座山引發的——在那裡我開始為自力更生的生活建造微型基礎設施，為應對危機做好準備，同時想像在老齡化、人口稀少的地區新的恢復形式。</p>
-                  <div class="card-facts"><span>House</span><span>9-14 Nazeariyachō, 奄美, 鹿兒島 894-0062, 日本</span><span>發售日期：2026 年 2 月 12 日</span><span>標籤： amami / 獎 / fa26 / 二月</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/amami-house-1" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-119106">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199275/12©BIJISPACE.jpg" class="slide active" alt="Lakeside Villa 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199277/13©BIJISPACE.jpg" class="slide" alt="Lakeside Villa 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199269/5©BIJISPACE.jpg" class="slide" alt="Lakeside Villa 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199274/4©BIJISPACE.png" class="slide" alt="Lakeside Villa 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199276/11©BIJISPACE.jpg" class="slide" alt="Lakeside Villa 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199278/14©BIJISPACE.jpg" class="slide" alt="Lakeside Villa 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199279/20©Zhang-Xi.jpg" class="slide" alt="Lakeside Villa 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199280/24©BIJISPACE.jpg" class="slide" alt="Lakeside Villa 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199281/27©BIJISPACE.jpg" class="slide" alt="Lakeside Villa 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199282/31©BIJISPACE.jpg" class="slide" alt="Lakeside Villa 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199427/33©BIJISPACE.jpg" class="slide" alt="Lakeside Villa 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199428/35©BIJISPACE©Zhang-Xi.jpg" class="slide" alt="Lakeside Villa 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199429/39©BIJISPACE.jpg" class="slide" alt="Lakeside Villa 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199430/44©BIJISPACE.jpg" class="slide" alt="Lakeside Villa 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199431/45©BIJISPACE.jpg" class="slide" alt="Lakeside Villa 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200527/F1.jpg" class="slide" alt="Lakeside Villa 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200528/F2.jpg" class="slide" alt="Lakeside Villa 圖片 17" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200529/B1.jpg" class="slide" alt="Lakeside Villa 圖片 18" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 18</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>中國上海</span>
-                  </div>
-                  <h3 class="card-title">Lakeside Villa</h3>
-                  <p class="card-by">WJ Studio</p>
-                  <p class="card-desc">收藏遠不止於獲得物品；它將生活、空間和個人美學匯聚成一種獨特的節奏。這棟住宅是一個“生命的畫廊”，它的功能是一個內斂但多孔的容器，容納時間、光線和轉瞬即逝的日常碎片。當居民穿過並整理周圍環境時，他們完成了“自我收藏”，博物館的紀律與家庭的親密感融為一體。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Lakeside Villa 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>House</span><span>中國上海</span><span>發布日期：2026 年 2 月 9 日</span><span>標籤： 獎項 / 中國 / fa26 / house</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/lakeside-villa" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-meister-varma-architects-shilaya-cottage">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/06/meister-varma-architects-shilaya-cottage-india-sq_dezeen_2364_col_0-852x852.jpg" class="slide active" alt="Meister Varma Architects uses salvaged stone for home in India 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/meister-varma-architects-shilaya-cottage-india_dezeen_2364_col_0-scaled.jpg" class="slide" alt="Meister Varma Architects uses salvaged stone for home in India 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/meister-varma-architects-shilaya-cottage-india_dezeen_2364_col_16-scaled.jpg" class="slide" alt="Meister Varma Architects uses salvaged stone for home in India 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/meister-varma-architects-shilaya-cottage-india_dezeen_2364_col_5-scaled.jpg" class="slide" alt="Meister Varma Architects uses salvaged stone for home in India 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/madras-spaces-the-threshold-house-india-sq_dezeen_2364_col_2-191x191.jpg" class="slide" alt="Meister Varma Architects uses salvaged stone for home in India 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/meister-varma-architects-shilaya-cottage-india_dezeen_2364_col_9.jpg" class="slide" alt="Meister Varma Architects uses salvaged stone for home in India 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/meister-varma-architects-shilaya-cottage-india_dezeen_2364_col_1.jpg" class="slide" alt="Meister Varma Architects uses salvaged stone for home in India 圖片 7" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 7</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>亮點</span>
-                  </div>
-                  <h3 class="card-title">Meister Varma Architects uses salvaged stone for home in India</h3>
-                  <p class="card-by">Meister Varma Architects</p>
-                  <p class="card-desc">印度工作室 Meister Varma Architects 完成了 Shilaya，這是一座位於泰米爾納德邦的住宅，使用的是從原址上一座廢棄小屋中回收的石頭建造的。 Shilaya 以梵文單字 śilā 命名，意思是石頭，位於 Nigiri 山脈的一個小鎮 Kotagiri，以前是一個殖民山站，是 Meister Varma 建築師在印度使用回收的石頭建造的住宅，首先出現在 Dezeen 上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Meister Varma Architects uses salvaged stone for home in India 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>亮點</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/06/30/meister-varma-architects-shilaya-cottage/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-top-houses-june-2026">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/06/walled-courtyard-inglis-badrashi-loddo_dezeen_2364_col_0.jpg" class="slide active" alt="Dezeen&#x27;s top five houses of June 2026 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/houses-of-the-month-june-2026-sq_dezeen_2364_col_1-1-852x852.jpg" class="slide" alt="Dezeen&#x27;s top five houses of June 2026 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/houses-of-the-month-june-2026-sq_dezeen_2364_col_1.jpg" class="slide" alt="Dezeen&#x27;s top five houses of June 2026 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/houses-of-the-month-june-2026-sq2_dezeen_2364_col_0.jpg" class="slide" alt="Dezeen&#x27;s top five houses of June 2026 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/houses-of-the-month-june-2026-sq_dezeen_2364_col_2.jpg" class="slide" alt="Dezeen&#x27;s top five houses of June 2026 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/houses-of-the-month-june-2026-sq_dezeen_2364_col_0.jpg" class="slide" alt="Dezeen&#x27;s top five houses of June 2026 圖片 6" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 6</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>本月房屋</span>
-                  </div>
-                  <h3 class="card-title">Dezeen&#x27;s top five houses of June 2026</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">Dezeen 6 月排名前五的房屋中包括三座磚牆房屋，其中包括荷蘭的度假小屋和建在填充場地上的緊湊型英國住宅。第三座是模仿 1930 年代鄰居的英國住宅，而剩下的兩座是馬來西亞的竹鋼住宅，《Dezeen 郵報》2026 年 6 月排名前五的房屋首先出現在 Dezeen 上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Dezeen&#x27;s top five houses of June 2026 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」調整空間氣質，最後透過「透過壓縮、分層與多重使用提高空間記憶密度，讓小尺度住宅仍然具有完整敘事」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>本月房屋</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/06/30/top-houses-june-2026/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2022-asa-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498014235ASA_HOUSE-BY_FERNANDO_GUERRA_3.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Asa House 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498015185ASA_HOUSE-BY_FERNANDO_GUERRA_4.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498009384ASA_HOUSE-BY_FERNANDO_GUERRA_2.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498021555ASA_HOUSE-BY_FERNANDO_GUERRA_9.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498016638ASA_HOUSE-BY_FERNANDO_GUERRA_5.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165167260132412-ASA_HOUSE-PHOTO_FERNANDO_GUERRA.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498016882ASA_HOUSE-BY_FERNANDO_GUERRA_6.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165167260657715-ASA_HOUSE-PHOTO_FERNANDO_GUERRA.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498019046ASA_HOUSE-BY_FERNANDO_GUERRA_8.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165167260132006-ASA_HOUSE-PHOTO_FERNANDO_GUERRA.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498009381ASA_HOUSE-BY_FERNANDO_GUERRA_1.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498018853ASA_HOUSE-BY_FERNANDO_GUERRA_7.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498023360ASA_HOUSE-01.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498024569ASA_HOUSE-02.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498025409ASA_HOUSE-03.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651672335550305.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1651672051170306.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Asa House 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2022 年 A+ 獎，住宅 &gt; 私人住宅（XL &gt; 6000 平方英尺）</span>
-                    <span>2022</span>
-                    <span>巴西里約熱內盧</span>
-                  </div>
-                  <h3 class="card-title">Asa House</h3>
-                  <p class="card-by">Bernardes Arquitetura</p>
-                  <p class="card-desc">Asa House（「asa」是葡萄牙語「翼」的意思）坐落在一座原有房產所在的山頂上，完全重建了場地和建築之間的關係。這棟房子透過部分地下空間和新興透明體量的銜接，在景觀和建築之間創造了一種「和諧對比」的關係。該場地的地形設計是為了最大限度地利用現有的半平坦表面作為戶外生活區，同時在擋土牆之間安裝關鍵的功能、循環和土壤穩定元素。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Asa House 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2022 年 A+ 獎，住宅 &gt; 私人住宅（XL &gt; 6000 平方英尺）</span><span>巴西里約熱內盧</span><span>資料來源：Architizer A+Awards 2022</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/asa-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2022-beside-habitat">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109861361APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_034.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="BESIDE habitat 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109870319APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_036.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="BESIDE habitat 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109884258APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_006.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="BESIDE habitat 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109895206APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_024.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="BESIDE habitat 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109947970APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_003.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="BESIDE habitat 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109952068APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_001.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="BESIDE habitat 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109968105APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_025.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="BESIDE habitat 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109975138APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_039.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="BESIDE habitat 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109989050APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_007.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="BESIDE habitat 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109927662APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_029.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="BESIDE habitat 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109915559APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_026.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="BESIDE habitat 圖片 11" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 11</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2022 年 A+Awards，住宅 &gt; 住宅室內設計（&lt;3000 平方英尺）</span>
-                    <span>2022</span>
-                    <span>QC，加拿大</span>
-                  </div>
-                  <h3 class="card-title">BESIDE habitat</h3>
-                  <p class="card-by">APPAREIL Architecture</p>
-                  <p class="card-desc">BESIDE Habitat 擁有私人建築小屋，可供想要體驗與自然更緊密聯繫的人出租。設計有助於保護百年森林的空間（1,254 英畝中的 900 英畝將得到永久保護）：這是 BESIDE 給 APPAREIL Architecture 的挑戰。因此，該專案的設計分為四種不同的類型，以便在其環境中靈活實施。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">BESIDE habitat 的強度在於它沒有把 住宅室內 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2022 年 A+Awards，住宅 &gt; 住宅室內設計（&lt;3000 平方英尺）</span><span>QC，加拿大</span><span>資料來源：Architizer A+Awards 2022</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/beside/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adus-a-laguna-beach-home-designed-by-studio-gutow" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/685c74428d85b6bc1c1e32ab/3:4/w_748%2Cc_limit/Main%2520Product%2520Photo%2520Crop%2520Templates-1-CP%2520Products%2520(62).jpeg" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fa58ed8d9b8f30ce7d93a6/16:9/w_2560%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_27992-copy.jpg" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fa58ed65e252e76bdca43f/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_28041-copy.jpg" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fa58f18d9b8f30ce7d93b5/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_28453-copy.jpg" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fa58f6a61ec0a2eda47b3a/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_28531-copy.jpg" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fa58efbf3d1c0c7240fb78/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_28361-copy.jpg" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f9129964a7408397446ca6/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(67).jpeg" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f9139a593cbfad4df1d464/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(68).jpeg" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fa58ef8d9b8f30ce7d93af/master/w_1600%2Cc_limit/250930_Studio_Gustow_Emerald_Bay_Willow_28282-copy.jpg" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f913ed2a4b99e3b497f601/3:4/w_748%2Cc_limit/Untitled-1-CP%2520Products%2520(69).jpeg" alt="A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_01 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">A Laguna Beach Colonial Where Dolphins Are in Sight From the Bedroom Window<small>Melissa Rohani<br>殖民<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">Studio Gutow 改造了拉古納海灘的住宅，配有落地鑲板和適合約會之夜的地下酒吧</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Studio Gutow 改造了拉古納海灘的住宅，配有落地鑲板和適合約會之夜的地下酒吧</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_01 · <a href="https://www.architecturaldigest.com/story/a-laguna-beach-home-designed-by-studio-gutow" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-this-marthas-vineyard-home-channels-the-islands-rustic-charm" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f3c05529eb762427c153c0/16:9/w_2560%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_01.jpg" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f3c0589d9271ee3e31faef/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_03.jpg" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f3c055e407f2b474848904/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_04.jpg" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fa1f496bddf5d1be09409b/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(3).jpeg" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fa1f489cb02e8eec61829f/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(8).jpeg" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f3c055e3c0d3df409346f1/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_07.jpg" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fa1f49bca94c90d1b9e756/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(5).jpeg" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fa1f49ecebce3076c17490/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(2).jpeg" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69f3c0551ed0fe39eaa3d443/master/w_1600%2Cc_limit/DMitchell_NinaFarmer_EelPondLn_08.jpg" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/69fa1f4864a74083974478e5/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(4).jpeg" alt="This Martha’s Vineyard Home Channels the Island’s Rustic Charm image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_02 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">This Martha’s Vineyard Home Channels the Island’s Rustic Charm<small>Nina Farmer<br>她的內心深處<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">設計師 Nina Farmer 專注於使用當地採購的單品，打造舒適、悠閒的度假屋</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>設計師 Nina Farmer 專注於使用當地採購的單品，打造舒適、悠閒的度假屋</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_02 · <a href="https://www.architecturaldigest.com/story/this-marthas-vineyard-home-channels-the-islands-rustic-charm" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-119599" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200778/08.jpg" alt="Amami House image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200788/1F-PLAN.jpg" alt="Amami House image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/205325/Section-pers.jpg" alt="Amami House image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200771/01.jpg" alt="Amami House image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200772/02.jpg" alt="Amami House image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200773/03.jpg" alt="Amami House image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200774/04.jpg" alt="Amami House image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200775/05.jpg" alt="Amami House image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200776/06.jpg" alt="Amami House image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/200777/07.jpg" alt="Amami House image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Amami House<small>Sakai Architects<br>9-14 Nazeariyachō, 奄美, 鹿兒島 894-0062, 日本<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">奄美島的離網房屋當我開始在奄美島中心設計自己的房子時，我從未想過它最終會完全脫離電網。然而，隨著環境惡化加速和極端天氣變得司空見慣，這種選擇感覺是不可避免的。這個決定是由我三年前購買的一座山引發的——在那裡我開始為自力更生的生活建造微型基礎設施，為應對危機做好準備，同時想像在老齡化、人口稀少的地區新的恢復形式。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>奄美島的離網房屋當我開始在奄美島中心設計自己的房子時，我從未想過它最終會完全脫離電網。然而，隨著環境惡化加速和極端天氣變得司空見慣，這種選擇感覺是不可避免的。這個決定是由我三年前購買的一座山引發的——在那裡我開始為自力更生的生活建造微型基礎設施，為應對危機做好準備，同時想像在老齡化、人口稀少的地區新的恢復形式。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · <a href="https://frameweb.com/project/amami-house-1" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-119106" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199275/12©BIJISPACE.jpg" alt="Lakeside Villa image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199277/13©BIJISPACE.jpg" alt="Lakeside Villa image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199269/5©BIJISPACE.jpg" alt="Lakeside Villa image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199274/4©BIJISPACE.png" alt="Lakeside Villa image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199276/11©BIJISPACE.jpg" alt="Lakeside Villa image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199278/14©BIJISPACE.jpg" alt="Lakeside Villa image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199279/20©Zhang-Xi.jpg" alt="Lakeside Villa image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199280/24©BIJISPACE.jpg" alt="Lakeside Villa image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199281/27©BIJISPACE.jpg" alt="Lakeside Villa image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/199282/31©BIJISPACE.jpg" alt="Lakeside Villa image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_04 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Lakeside Villa<small>WJ Studio<br>中國上海<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">收藏遠不止於獲得物品；它將生活、空間和個人美學匯聚成一種獨特的節奏。這棟住宅是一個“生命的畫廊”，它的功能是一個內斂但多孔的容器，容納時間、光線和轉瞬即逝的日常碎片。當居民穿過並整理周圍環境時，他們完成了“自我收藏”，博物館的紀律與家庭的親密感融為一體。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>收藏遠不止於獲得物品；它將生活、空間和個人美學匯聚成一種獨特的節奏。這棟住宅是一個“生命的畫廊”，它的功能是一個內斂但多孔的容器，容納時間、光線和轉瞬即逝的日常碎片。當居民穿過並整理周圍環境時，他們完成了“自我收藏”，博物館的紀律與家庭的親密感融為一體。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_04 · <a href="https://frameweb.com/project/lakeside-villa" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-meister-varma-architects-shilaya-cottage" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/meister-varma-architects-shilaya-cottage-india-sq_dezeen_2364_col_0-852x852.jpg" alt="Meister Varma Architects uses salvaged stone for home in India image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/meister-varma-architects-shilaya-cottage-india_dezeen_2364_col_0-scaled.jpg" alt="Meister Varma Architects uses salvaged stone for home in India image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/meister-varma-architects-shilaya-cottage-india_dezeen_2364_col_16-scaled.jpg" alt="Meister Varma Architects uses salvaged stone for home in India image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/meister-varma-architects-shilaya-cottage-india_dezeen_2364_col_5-scaled.jpg" alt="Meister Varma Architects uses salvaged stone for home in India image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/madras-spaces-the-threshold-house-india-sq_dezeen_2364_col_2-191x191.jpg" alt="Meister Varma Architects uses salvaged stone for home in India image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/meister-varma-architects-shilaya-cottage-india_dezeen_2364_col_9.jpg" alt="Meister Varma Architects uses salvaged stone for home in India image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/meister-varma-architects-shilaya-cottage-india_dezeen_2364_col_1.jpg" alt="Meister Varma Architects uses salvaged stone for home in India image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_05 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Meister Varma Architects uses salvaged stone for home in India<small>Meister Varma Architects<br>亮點<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">印度工作室 Meister Varma Architects 完成了 Shilaya，這是一座位於泰米爾納德邦的住宅，使用的是從原址上一座廢棄小屋中回收的石頭建造的。 Shilaya 以梵文單字 śilā 命名，意思是石頭，位於 Nigiri 山脈的一個小鎮 Kotagiri，以前是一個殖民山站，是 Meister V</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>印度工作室 Meister Varma Architects 完成了 Shilaya，這是一座位於泰米爾納德邦的住宅，使用的是從原址上一座廢棄小屋中回收的石頭建造的。 Shilaya 以梵文單字 śilā 命名，意思是石頭，位於 Nigiri 山脈的一個小鎮 Kotagiri，以前是一個殖民山站，是 Meister Varma 建築師在印度使用回收的石頭建造的住宅，首先出現在 Dezeen 上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_05 · <a href="https://www.dezeen.com/2026/06/30/meister-varma-architects-shilaya-cottage/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-top-houses-june-2026" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/walled-courtyard-inglis-badrashi-loddo_dezeen_2364_col_0.jpg" alt="Dezeen&#x27;s top five houses of June 2026 image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/houses-of-the-month-june-2026-sq_dezeen_2364_col_1-1-852x852.jpg" alt="Dezeen&#x27;s top five houses of June 2026 image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/houses-of-the-month-june-2026-sq_dezeen_2364_col_1.jpg" alt="Dezeen&#x27;s top five houses of June 2026 image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/houses-of-the-month-june-2026-sq2_dezeen_2364_col_0.jpg" alt="Dezeen&#x27;s top five houses of June 2026 image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/houses-of-the-month-june-2026-sq_dezeen_2364_col_2.jpg" alt="Dezeen&#x27;s top five houses of June 2026 image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/houses-of-the-month-june-2026-sq_dezeen_2364_col_0.jpg" alt="Dezeen&#x27;s top five houses of June 2026 image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_06 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Dezeen&#x27;s top five houses of June 2026<small>Unknown architect<br>本月房屋<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">Dezeen 6 月排名前五的房屋中包括三座磚牆房屋，其中包括荷蘭的度假小屋和建在填充場地上的緊湊型英國住宅。第三座是模仿 1930 年代鄰居的英國住宅，而剩下的兩座是馬來西亞的竹鋼住宅，《Dezeen 郵報》2026 年 6 月排名前五的房屋首先出現在 Dezeen 上。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Dezeen 6 月排名前五的房屋中包括三座磚牆房屋，其中包括荷蘭的度假小屋和建在填充場地上的緊湊型英國住宅。第三座是模仿 1930 年代鄰居的英國住宅，而剩下的兩座是馬來西亞的竹鋼住宅，《Dezeen 郵報》2026 年 6 月排名前五的房屋首先出現在 Dezeen 上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_06 · <a href="https://www.dezeen.com/2026/06/30/top-houses-june-2026/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2022-asa-house" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498014235ASA_HOUSE-BY_FERNANDO_GUERRA_3.jpg?w=1680&amp;q=60&amp;auto=format" alt="Asa House image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498015185ASA_HOUSE-BY_FERNANDO_GUERRA_4.jpg?w=1680&amp;q=60&amp;auto=format" alt="Asa House image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498009384ASA_HOUSE-BY_FERNANDO_GUERRA_2.jpg?w=1680&amp;q=60&amp;auto=format" alt="Asa House image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498021555ASA_HOUSE-BY_FERNANDO_GUERRA_9.jpg?w=1680&amp;q=60&amp;auto=format" alt="Asa House image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498016638ASA_HOUSE-BY_FERNANDO_GUERRA_5.jpg?w=1680&amp;q=60&amp;auto=format" alt="Asa House image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165167260132412-ASA_HOUSE-PHOTO_FERNANDO_GUERRA.jpg?w=1680&amp;q=60&amp;auto=format" alt="Asa House image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498016882ASA_HOUSE-BY_FERNANDO_GUERRA_6.jpg?w=1680&amp;q=60&amp;auto=format" alt="Asa House image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165167260657715-ASA_HOUSE-PHOTO_FERNANDO_GUERRA.jpg?w=1680&amp;q=60&amp;auto=format" alt="Asa House image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1557498019046ASA_HOUSE-BY_FERNANDO_GUERRA_8.jpg?w=1680&amp;q=60&amp;auto=format" alt="Asa House image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/165167260132006-ASA_HOUSE-PHOTO_FERNANDO_GUERRA.jpg?w=1680&amp;q=60&amp;auto=format" alt="Asa House image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/22_07 · Architizer / 2022</p>
+        <h2 class="ac-title reveal">Asa House<small>Bernardes Arquitetura<br>巴西里約熱內盧<br>大眾選擇獎得主，2022 年 A+ 獎，住宅 &gt; 私人住宅（XL &gt; 6000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">Asa House（「asa」是葡萄牙語「翼」的意思）坐落在一座原有房產所在的山頂上，完全重建了場地和建築之間的關係。這棟房子透過部分地下空間和新興透明體量的銜接，在景觀和建築之間創造了一種「和諧對比」的關係。該場地的地形設計是為了最大限度地利用現有的半平坦表面作為戶外生活區，同時在擋土牆之間安裝關鍵的功能、循環和土壤</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Asa House（「asa」是葡萄牙語「翼」的意思）坐落在一座原有房產所在的山頂上，完全重建了場地和建築之間的關係。這棟房子透過部分地下空間和新興透明體量的銜接，在景觀和建築之間創造了一種「和諧對比」的關係。該場地的地形設計是為了最大限度地利用現有的半平坦表面作為戶外生活區，同時在擋土牆之間安裝關鍵的功能、循環和土壤穩定元素。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/22_07 · <a href="https://architizer.com/projects/asa-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2022-beside-habitat" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109861361APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_034.jpg?w=1680&amp;q=60&amp;auto=format" alt="BESIDE habitat image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109870319APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_036.jpg?w=1680&amp;q=60&amp;auto=format" alt="BESIDE habitat image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109884258APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_006.jpg?w=1680&amp;q=60&amp;auto=format" alt="BESIDE habitat image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109895206APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_024.jpg?w=1680&amp;q=60&amp;auto=format" alt="BESIDE habitat image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109947970APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_003.jpg?w=1680&amp;q=60&amp;auto=format" alt="BESIDE habitat image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109952068APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_001.jpg?w=1680&amp;q=60&amp;auto=format" alt="BESIDE habitat image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109968105APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_025.jpg?w=1680&amp;q=60&amp;auto=format" alt="BESIDE habitat image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109975138APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_039.jpg?w=1680&amp;q=60&amp;auto=format" alt="BESIDE habitat image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109989050APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_007.jpg?w=1680&amp;q=60&amp;auto=format" alt="BESIDE habitat image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1652109927662APPAREIL_architecture_BESIDE_2021_Felix_Michaud_BR_029.jpg?w=1680&amp;q=60&amp;auto=format" alt="BESIDE habitat image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/22_08 · Architizer / 2022</p>
+        <h2 class="ac-title reveal">BESIDE habitat<small>APPAREIL Architecture<br>QC，加拿大<br>大眾選擇獎得主，2022 年 A+Awards，住宅 &gt; 住宅室內設計（&lt;3000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">BESIDE Habitat 擁有私人建築小屋，可供想要體驗與自然更緊密聯繫的人出租。設計有助於保護百年森林的空間（1,254 英畝中的 900 英畝將得到永久保護）：這是 BESIDE 給 APPAREIL Architecture 的挑戰。因此，該專案的設計分為四種不同的類型，以便在其環境中靈活實施。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>BESIDE Habitat 擁有私人建築小屋，可供想要體驗與自然更緊密聯繫的人出租。設計有助於保護百年森林的空間（1,254 英畝中的 900 英畝將得到永久保護）：這是 BESIDE 給 APPAREIL Architecture 的挑戰。因此，該專案的設計分為四種不同的類型，以便在其環境中靈活實施。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/22_08 · <a href="https://architizer.com/projects/beside/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2022/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>

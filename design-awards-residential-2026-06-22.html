@@ -3,643 +3,178 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>住宅得獎案日報</title>
-  <style>
-    :root {
-      --bg: #0d0d0d;
-      --line: rgba(255,255,255,.1);
-      --text: #f0ebe3;
-      --muted: rgba(240,235,227,.68);
-      --gold: #e8d5a0;
-      --mint: #a0c8b0;
-      --shadow: 0 28px 80px rgba(0,0,0,.35);
-      --radius: 24px;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background:
-        radial-gradient(circle at top left, rgba(232,213,160,.12), transparent 28%),
-        radial-gradient(circle at top right, rgba(160,200,176,.08), transparent 24%),
-        linear-gradient(180deg, #080808 0%, #0d0d0d 100%);
-      color: var(--text);
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    }
-    a { color: inherit; text-decoration: none; }
-    .page { max-width: 1440px; margin: 0 auto; padding: 40px 24px 80px; }
-    .hero {
-      padding: 36px;
-      border: 1px solid var(--line);
-      border-radius: 28px;
-      background: linear-gradient(135deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
-      box-shadow: var(--shadow);
-    }
-    .eyebrow {
-      display: inline-flex;
-      gap: 10px;
-      padding: 8px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(232,213,160,.25);
-      color: var(--gold);
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      font-size: 12px;
-    }
-    h1 {
-      margin: 18px 0 14px;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(2.4rem, 5vw, 4.8rem);
-      line-height: .98;
-      max-width: 10ch;
-    }
-    .hero p {
-      margin: 0;
-      max-width: 56rem;
-      color: var(--muted);
-      font-size: 1.05rem;
-      line-height: 1.8;
-    }
-    .hero-meta {
-      margin-top: 22px;
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .92rem;
-    }
-    .grid {
-      display: flex;
-      flex-direction: column;
-      gap: 40px;
-      margin-top: 32px;
-    }
-    .card {
-      border: 1px solid var(--line);
-      background: rgba(15,15,15,.92);
-      border-radius: var(--radius);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-    }
-    .slider {
-      position: relative;
-      width: 100%;
-      height: min(70vh, 820px);
-      background: #090909;
-      overflow: hidden;
-      outline: none;
-    }
-    .slides {
-      position: relative;
-      width: 100%;
-      height: 100%;
-    }
-    .slide {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0;
-      transition: opacity .4s ease;
-      display: block;
-    }
-    .slide.active { opacity: 1; }
-    .sl-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 3;
-      border: 1px solid rgba(255,255,255,.22);
-      background: rgba(0,0,0,.48);
-      color: var(--text);
-      font-size: 2.4rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s, opacity .2s;
-    }
-    .sl-btn:hover { background: rgba(0,0,0,.75); }
-    .sl-prev { left: 20px; }
-    .sl-next { right: 20px; }
-    .sl-overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      z-index: 3;
-      padding: 20px 24px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
-      background: linear-gradient(transparent, rgba(0,0,0,.6));
-      pointer-events: none;
-    }
-    .sl-count {
-      font-size: .85rem;
-      color: rgba(255,255,255,.72);
-      letter-spacing: .06em;
-    }
-    .photo-tag {
-      padding: 7px 12px;
-      border-radius: 999px;
-      font-size: .78rem;
-      font-weight: 700;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-    }
-    .photo-tag-d { background: rgba(232,213,160,.2); color: var(--gold); }
-    .photo-tag-f { background: rgba(160,200,176,.22); color: var(--mint); }
-    .photo-tag-a { background: rgba(214,176,122,.22); color: #d6b07a; }
-    .card-body {
-      padding: 28px 32px;
-      display: grid;
-      grid-template-columns: minmax(0, 1.4fr) minmax(280px, .85fr);
-      align-items: start;
-      gap: 32px;
-    }
-    .card-main {
-      display: grid;
-      gap: 14px;
-      min-width: 0;
-    }
-    .card-side {
-      display: grid;
-      gap: 14px;
-      align-content: start;
-    }
-    .card-meta, .card-facts {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-meta span, .card-facts span {
-      padding: 7px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.08);
-      color: var(--muted);
-      font-size: .82rem;
-    }
-    .card-title {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(1.6rem, 2.2vw, 2.6rem);
-      line-height: 1.08;
-    }
-    .card-by {
-      margin: 0;
-      color: var(--gold);
-      letter-spacing: .03em;
-      font-size: .95rem;
-    }
-    .card-desc {
-      margin: 0;
-      color: var(--muted);
-      line-height: 1.8;
-      font-size: .98rem;
-    }
-    .card-note {
-      margin: 0;
-      color: rgba(232,213,160,.88);
-      line-height: 1.75;
-      font-size: .9rem;
-      padding-left: 14px;
-      border-left: 1px solid rgba(232,213,160,.25);
-    }
-    .card-links {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .card-links a {
-      padding: 11px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.1);
-      background: rgba(255,255,255,.02);
-      font-size: .86rem;
-    }
-    @media (max-width: 799px) {
-      .slider { height: min(50vh, 500px); }
-      .card-body { grid-template-columns: 1fr; padding: 20px; }
-      .sl-btn { width: 46px; height: 46px; font-size: 2rem; }
-    }
-    .slide { cursor: zoom-in; }
-    #lb-backdrop {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      background: rgba(0,0,0,.92);
-      align-items: center;
-      justify-content: center;
-    }
-    #lb-backdrop.open { display: flex; }
-    #lb-img {
-      max-width: calc(100% - 160px);
-      max-height: 100%;
-      object-fit: contain;
-      pointer-events: none;
-      border-radius: 4px;
-    }
-    #lb-close {
-      position: absolute;
-      top: 20px;
-      right: 24px;
-      background: none;
-      border: 1px solid rgba(255,255,255,.3);
-      color: #fff;
-      font-size: 1.4rem;
-      line-height: 1;
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .lb-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,.5);
-      border: 1px solid rgba(255,255,255,.25);
-      color: #fff;
-      font-size: 2.8rem;
-      line-height: 1;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background .2s;
-    }
-    .lb-nav:hover { background: rgba(0,0,0,.75); }
-    #lb-prev { left: 20px; }
-    #lb-next { right: 20px; }
-    #lb-count {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      color: rgba(255,255,255,.7);
-      font-size: .85rem;
-      letter-spacing: .06em;
-      pointer-events: none;
-    }
-  </style>
+  <title>住宅得獎案日報 2026-06-22</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
-  <main class="page">
-    <section class="hero">
-      <span class="eyebrow">Residential Awards Digest</span>
-      <h1>每天 6 點更新的住宅得獎案選輯</h1>
-      <p>本頁收錄來自 Architizer、Dezeen、FRAME、AD (US) 的住宅案例，各來源優先選取最新兩案，若已在歷史記錄中使用過，便自動往更早案例遞補。圖片以全寬顯示，可直接在頁面內左右切換瀏覽，支援觸控滑動與鍵盤方向鍵。</p>
-      <div class="hero-meta">
-        <span>生成時間 2026-06-22 06:00</span>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-06-22</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-06-22 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
         <span>共 8 件作品</span>
-        <span>Architizer 2 案、Dezeen 2 案、FRAME 2 案、AD (US) 2 案</span>
-        <span>每案最多 20 張圖片，超過時優先保留設計圖</span>
-      </div>
-      <div class="card-links" style="margin-top:18px;">
-        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-22.html" target="_blank" rel="noopener">查看今日 HTML</a>
-        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">查看 latest 版本</a>
+        <span>Architizer、Dezeen、FRAME、AD (US)</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-06-22.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
       </div>
     </section>
-    <section class="grid">
-      
-            <article class="card" id="case-adus-napa-home-designed-by-vine-projects">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6a271be2135960b805c32fa4/16:9/w_2560%2Cc_limit/DryCreek-11.jpg" class="slide active" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a271be463a3307caaa33254/master/w_1600%2Cc_limit/DryCreek-34.jpg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a271be18209b379296aa4a9/master/w_1600%2Cc_limit/DryCreek-5.jpg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a271be0017e3e73fa780487/master/w_1600%2Cc_limit/DryCreek-10.jpg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a271be0c87429053223839c/master/w_1600%2Cc_limit/DryCreek-6.jpg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 5" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2976de036e74d7c0c572b0/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(9).jpeg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 6" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2976dee8cb9ee9232d8380/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(4).jpeg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 7" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a271be2135960b805c32fa6/master/w_1600%2Cc_limit/DryCreek-13.jpg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 8" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2976df87297da385c0a05a/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(3).jpeg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 9" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2976df7e4460c2af53c7b1/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(2).jpeg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 10" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a271be18209b379296aa4ab/master/w_1600%2Cc_limit/DryCreek-8.jpg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 11" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a271be28209b379296aa4b6/master/w_1600%2Cc_limit/DryCreek-15.jpg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 12" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a271be0c87429053223839e/master/w_1600%2Cc_limit/DryCreek-9.jpg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 13" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2976dda0195ec90b805aaf/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(7).jpeg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 14" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2976dd817481d43a3d3ab8/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(8).jpeg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 15" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a271be463a3307caaa33252/master/w_1600%2Cc_limit/DryCreek-26.jpg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 16" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2976e0da7246eac04563cc/3:4/w_748%2Cc_limit/Product%2520Image%2520Template.jpeg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 17" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2976dfa0195ec90b805ab5/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(1).jpeg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 18" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a271be467dfcab598f10a3a/master/w_1600%2Cc_limit/DryCreek-27.jpg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 19" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a2976dd817481d43a3d3ab9/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(5).jpeg" class="slide" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 圖片 20" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 20</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>Napa</span>
-                  </div>
-                  <h3 class="card-title">The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside</h3>
-                  <p class="card-by">Vine Projects</p>
-                  <p class="card-desc">設計師 Rachel Vineberg Jones 與 Terremoto Landscape 和 West Coast Wild 合作，幫助打造她的家庭住宅</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside 的強度在於它沒有把 獨棟住宅 做成抽象風格，而是同步處理兩條主線：一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，另一條是「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>Napa</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/napa-home-designed-by-vine-projects" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-122835">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213732/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-1.jpg" class="slide active" alt="Le Within 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213767/LeWithin_Plans-1.png" class="slide" alt="Le Within 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213768/LeWithin_Plans-2.png" class="slide" alt="Le Within 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213769/LeWithin_Plans-3.png" class="slide" alt="Le Within 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213733/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-2.jpg" class="slide" alt="Le Within 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213734/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-3.jpg" class="slide" alt="Le Within 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213735/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-6.jpg" class="slide" alt="Le Within 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213736/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-7.jpg" class="slide" alt="Le Within 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213737/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-15.jpg" class="slide" alt="Le Within 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213739/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-17.jpg" class="slide" alt="Le Within 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213740/Le-Within-(phase-02)-by-SLA-—-Photo-©-Alex-Lesage_1.jpg" class="slide" alt="Le Within 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213741/Le-Within-(phase-02)-by-SLA-—-Photo-©-Alex-Lesage_2.jpg" class="slide" alt="Le Within 圖片 12" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213742/Le-Within-(phase-02)-by-SLA-—-Photo-©-Alex-Lesage_5.jpg" class="slide" alt="Le Within 圖片 13" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213743/Le-Within-(phase-02)-by-SLA-—-Photo-©-Alex-Lesage_6.jpg" class="slide" alt="Le Within 圖片 14" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213744/Le-Within-(phase-02)-by-SLA-—-Photo-©-Alex-Lesage_7.jpg" class="slide" alt="Le Within 圖片 15" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213745/Le-Within-(phase-02)-by-SLA-—-Photo-©-Alex-Lesage_18.jpg" class="slide" alt="Le Within 圖片 16" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213747/Le-Within-(phase-02)-by-SLA-—-Photo-©-Alex-Lesage_23.jpg" class="slide" alt="Le Within 圖片 17" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 17</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>FRAME 獎，共享居住綜合體</span>
-                    <span>2026</span>
-                    <span>1830 大道林肯, 蒙特婁, QC H3H 1H4, 加拿大</span>
-                  </div>
-                  <h3 class="card-title">Le Within</h3>
-                  <p class="card-by">Sid Lee Architecture</p>
-                  <p class="card-desc">Le Within 為蒙特利爾肖內西村的一座歷史建築注入了新的生命，將其改造成重新定義當代城市生活的學生宿舍。該項目由 Sid Lee Architecture 與 CANORA Private Property Management 共同設計，將此遺產物業改造成學生閣樓和共享空間，以適應學生生活的節奏，同時振興市中心。建築、室內設計和品牌體驗形成了從城市規模到室內細節的統一系統。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Le Within 的強度在於它沒有把 舊屋改造 做成抽象風格，而是同步處理兩條主線：一條是「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」，另一條是「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」，因此空間既有辨識度，也有可被複製到其他提案的操作邏輯。</p>
-                  <div class="card-facts"><span>共享居住綜合體</span><span>1830 大道林肯, 蒙特婁, QC H3H 1H4, 加拿大</span><span>發售日期：2026 年 6 月 21 日</span><span>標籤： 獎項 / 加拿大 / 卡諾拉 / 共享居住綜合體</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/le-within" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-frame-api-123121">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215193/COVER.jpg" class="slide active" alt="Designer Wu Bin‘s Anji Retreat 圖片 1" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215204/Floorplan.jpg" class="slide" alt="Designer Wu Bin‘s Anji Retreat 圖片 2" loading="eager"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215194/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_25.jpg" class="slide" alt="Designer Wu Bin‘s Anji Retreat 圖片 3" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215195/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_01.jpg" class="slide" alt="Designer Wu Bin‘s Anji Retreat 圖片 4" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215196/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_1.jpg" class="slide" alt="Designer Wu Bin‘s Anji Retreat 圖片 5" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215197/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_13.jpg" class="slide" alt="Designer Wu Bin‘s Anji Retreat 圖片 6" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215198/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_18.jpg" class="slide" alt="Designer Wu Bin‘s Anji Retreat 圖片 7" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215199/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_21.jpg" class="slide" alt="Designer Wu Bin‘s Anji Retreat 圖片 8" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215200/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_15.jpg" class="slide" alt="Designer Wu Bin‘s Anji Retreat 圖片 9" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215201/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_17.jpg" class="slide" alt="Designer Wu Bin‘s Anji Retreat 圖片 10" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215202/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_2.jpg" class="slide" alt="Designer Wu Bin‘s Anji Retreat 圖片 11" loading="lazy"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215203/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_11.jpg" class="slide" alt="Designer Wu Bin‘s Anji Retreat 圖片 12" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 12</span>
-                  <span class="photo-tag photo-tag-f">FRAME</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>框架獎，眾議院</span>
-                    <span>2026</span>
-                    <span>中國浙江省湖州市安吉郡天荒坪鎮, 313302</span>
-                  </div>
-                  <h3 class="card-title">Designer Wu Bin‘s Anji Retreat</h3>
-                  <p class="card-by">W.Design</p>
-                  <p class="card-desc">在安吉遠山的寂靜韻律中，吳斌借鑒了中國隱居的文人傳統——家不是對自然的所有權，而是像一棵樹一樣屬於它，紮根於大地，伸向天空。小木屋隱藏在山谷中，退後一步，屈服於山間的寂靜、風的路徑和穿過樹林的光線——成為風景的一部分。透過“無形”和“微妙”，住宅順從土地，恢復空間作為精神的容器。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Designer Wu Bin‘s Anji Retreat 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>House</span><span>中國浙江省湖州市安吉郡天荒坪鎮, 313302</span><span>發佈日期: 2026 年 6 月 12 日</span><span>標籤： 獎項 / 吳斌 / 中國 / fa26</span></div>
-                  <div class="card-links"><a href="https://frameweb.com/project/designer-wu-bins-anji-retreat" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-corner-shop-kister-architects-melbourne-renovation-courtyard">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2023/10/austin-maynard-architects-melbourne-australia-renovation-roof-garden-architecture_SQUARE-191x191.jpg" class="slide active" alt="Century-old Melbourne corner shop transformed into family home 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_33-SQ-852x852.jpg" class="slide" alt="Century-old Melbourne corner shop transformed into family home 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_33-scaled.jpg" class="slide" alt="Century-old Melbourne corner shop transformed into family home 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_6.jpg" class="slide" alt="Century-old Melbourne corner shop transformed into family home 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_30-scaled.jpg" class="slide" alt="Century-old Melbourne corner shop transformed into family home 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_0.jpg" class="slide" alt="Century-old Melbourne corner shop transformed into family home 圖片 6" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_27-scaled.jpg" class="slide" alt="Century-old Melbourne corner shop transformed into family home 圖片 7" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_12-scaled.jpg" class="slide" alt="Century-old Melbourne corner shop transformed into family home 圖片 8" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_13.jpg" class="slide" alt="Century-old Melbourne corner shop transformed into family home 圖片 9" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_2.jpg" class="slide" alt="Century-old Melbourne corner shop transformed into family home 圖片 10" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 10</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>澳洲</span>
-                  </div>
-                  <h3 class="card-title">Century-old Melbourne corner shop transformed into family home</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">當地工作室 Kister Architects 將墨爾本一家 1910 年街角商店改造成一座家庭住宅，擁有鬱鬱蔥蔥的內部庭院入口，旨在為城市場地帶來綠化。 Kister Architects 恰當地命名為 The Corner Shop，改造了一家為當地社區服務了一個多世紀的“牛奶吧”，並於 2016 年關閉。這家具有百年歷史的墨爾本街角商店被改造成家庭住宅，首先出現在 Dezeen 上。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Century-old Melbourne corner shop transformed into family home 不是靠單一造型取勝，而是把 舊屋改造 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>澳洲</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/06/21/corner-shop-kister-architects-melbourne-renovation-courtyard-entrance/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-dezeen-rss-2026-adkins-treehouse-benjamin-hall-design-phoenix">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://static.dezeen.com/uploads/2026/04/adkins-treehouse-benjamin-hall-design-phoenix_dezeen_2364_sq_0-852x852.jpg" class="slide active" alt="Benjamin Hall expands Phoenix home with treehouse-like addition 圖片 1" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/adkins-treehouse-benjamin-hall-design-phoenix_dezeen_2364_col_0.jpg" class="slide" alt="Benjamin Hall expands Phoenix home with treehouse-like addition 圖片 2" loading="eager"><img src="https://static.dezeen.com/uploads/2026/04/adkins-treehouse-benjamin-hall-design-phoenix_dezeen_2364_col_1-scaled.jpg" class="slide" alt="Benjamin Hall expands Phoenix home with treehouse-like addition 圖片 3" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/03/moon-valley-residence-phoenix-arizona-benjamin-hall-design_dezeen_2364_sq-1-191x191.jpg" class="slide" alt="Benjamin Hall expands Phoenix home with treehouse-like addition 圖片 4" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/adkins-treehouse-benjamin-hall-design-phoenix_dezeen_2364_col_6.jpg" class="slide" alt="Benjamin Hall expands Phoenix home with treehouse-like addition 圖片 5" loading="lazy"><img src="https://static.dezeen.com/uploads/2026/04/adkins-treehouse-benjamin-hall-design-phoenix_dezeen_2364_col_3-scaled.jpg" class="slide" alt="Benjamin Hall expands Phoenix home with treehouse-like addition 圖片 6" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 6</span>
-                  <span class="photo-tag photo-tag-d">Dezeen</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>德澤恩之家</span>
-                    <span>2026</span>
-                    <span>USA</span>
-                  </div>
-                  <h3 class="card-title">Benjamin Hall expands Phoenix home with treehouse-like addition</h3>
-                  <p class="card-by">Unknown architect</p>
-                  <p class="card-desc">位於亞利桑那州的工作室本傑明·霍爾設計公司完成了對鳳凰城房屋的擴建，該房屋隱藏在景觀中，營造出樹屋般的效果。阿德金斯樹屋於 2024 年竣工，在 1959 年牧場式房屋的基礎上增加了 952 平方英尺（88 平方米），取代了 1980 年代未經許可的擴建，但保留了之前在 0.3 英畝的土地上的足跡。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Benjamin Hall expands Phoenix home with treehouse-like addition 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「以既有建築記憶作為生成條件，不掩飾時間層，而是透過新舊對位建立秩序」建立基本秩序，再用「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」調整空間氣質，最後透過「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>德澤恩住宅 2026</span><span>USA</span><span>來源：Dezeen</span></div>
-                  <div class="card-links"><a href="https://www.dezeen.com/2026/04/29/adkins-treehouse-benjamin-hall-design-phoenix/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-adus-dr-seusss-longtime-socal-home-sells">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="https://media.architecturaldigest.com/photos/6a27083c3f625c2ff1f6aad9/16:9/w_2560%2Cc_limit/GettyImages-3205020.jpg" class="slide active" alt="Dr. Seuss’s Longtime SoCal Home Sells for $9 Million 圖片 1" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a270638c8742905322381ea/master/w_1600%2Cc_limit/GettyImages-3204971.jpg" class="slide" alt="Dr. Seuss’s Longtime SoCal Home Sells for $9 Million 圖片 2" loading="eager"><img src="https://media.architecturaldigest.com/photos/6a27059963a3307caaa331de/master/w_1600%2Cc_limit/GettyImages-2259153385.jpg" class="slide" alt="Dr. Seuss’s Longtime SoCal Home Sells for $9 Million 圖片 3" loading="lazy"><img src="https://media.architecturaldigest.com/photos/6a270a4467dfcab598f108f4/master/w_1600%2Cc_limit/GettyImages-3240313%2520(1).jpg" class="slide" alt="Dr. Seuss’s Longtime SoCal Home Sells for $9 Million 圖片 4" loading="lazy"><img src="https://media.architecturaldigest.com/photos/5d8919b4a8aab30008abac21/1:1/pass/ad-pro.jpg" class="slide" alt="Dr. Seuss’s Longtime SoCal Home Sells for $9 Million 圖片 5" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 5</span>
-                  <span class="photo-tag photo-tag-d">AD (US)</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>建築文摘家居之旅</span>
-                    <span>2026</span>
-                    <span>Main</span>
-                  </div>
-                  <h3 class="card-title">Dr. Seuss’s Longtime SoCal Home Sells for $9 Million</h3>
-                  <p class="card-by">AD editorial</p>
-                  <p class="card-desc">作家兼插畫家蘇斯博士聘請托馬斯·L·謝潑德圍繞一座廢棄的觀測塔設計他的定制夢想之家</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Dr. Seuss’s Longtime SoCal Home Sells for $9 Million 把 獨棟住宅 的使用條件轉成可閱讀的空間秩序。作家兼插畫家蘇斯博士聘請托馬斯·L·謝潑德圍繞一座廢棄的觀測塔設計他的定制夢想之家</p>
-                  <div class="card-facts"><span>建築文摘家居之旅</span><span>Main</span><span>資料來源：《建築文摘 2026》</span></div>
-                  <div class="card-links"><a href="https://www.architecturaldigest.com/story/dr-seusss-longtime-socal-home-sells" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-a-ucena-house">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050130191066-PHOTO-10.jpg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Açucena House 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050127421066-PHOTO-01.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050127429066-PHOTO-02.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050129270066-PHOTO-04.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050129300066-PHOTO-06.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050129650066-PHOTO-07.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050129926066-PHOTO-08.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050130053066-PHOTO-09.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050130805066-PHOTO-11.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050130842066-PHOTO-12.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050131120066-PHOTO-14.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050131276066-PHOTO-16.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 12" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050131557066-PHOTO-17.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 13" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050131638066-PHOTO-18.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 14" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050131907066-PHOTO-20.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 15" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050131954066-PHOTO-21.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 16" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050132178066-PHOTO-23.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 17" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050132383066-PHOTO-26.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 18" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050132454066-PHOTO-28.jpg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Açucena House 圖片 19" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 19</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2023 年 A+ 獎，住宅 &gt; 私人住宅（M 2000 - 4000 平方英尺）</span>
-                    <span>2023</span>
-                    <span>巴西新利馬</span>
-                  </div>
-                  <h3 class="card-title">Açucena House</h3>
-                  <p class="card-by">TETRO ARQUITETURA</p>
-                  <p class="card-desc">一個沉浸在鬱鬱蔥蔥的大西洋雨林自然之中的地方。這片土地長滿了茂密的大樹、樹葉、灌木叢、鳥類和野生動物。具有挑戰性的陡坡地形，是米納斯吉拉斯州新利馬地區的特徵。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Açucena House 不是靠單一造型取勝，而是把 獨棟住宅 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「主材不是裝飾，而是透過比例、接縫與觸感建立空間重量感與居住語氣」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2023 年 A+ 獎，住宅 &gt; 私人住宅（M 2000 - 4000 平方英尺）</span><span>巴西新利馬</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/acucena-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-            <article class="card" id="case-architizer-2023-casa-sexta">
-              <div class="slider" tabindex="0">
-                <div class="slides"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252682094201_CasaSexta_AllArquitectura.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide active" alt="Casa Sexta 圖片 1" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252682094401_CasaSexta_AllArquitectura_02.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Sexta 圖片 2" loading="eager"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252682767506_CasaSexta_AllArquitectura_19.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Sexta 圖片 3" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252682778707_CasaSexta_AllArquitectura_30.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Sexta 圖片 4" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252682990205_CasaSexta_AllArquitectura.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Sexta 圖片 5" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252683009404_CasaSexta_AllArquitectura.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Sexta 圖片 6" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252683176203_CasaSexta_AllArquitectura.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Sexta 圖片 7" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252683183302_CasaSexta_AllArquitectura_.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Sexta 圖片 8" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252683344909_CasaSexta_AllArquitectura_39.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Sexta 圖片 9" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252683419210_CasaSexta_AllArquitectura_42.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Sexta 圖片 10" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252683504402_Casa_Sexta_-_Interceramic.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Sexta 圖片 11" loading="lazy"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252683616108_CasaSexta_AllArquitectura_36.jpeg?w=1680&amp;q=60&amp;auto=format" class="slide" alt="Casa Sexta 圖片 12" loading="lazy"></div>
-                <button class="sl-btn sl-prev" aria-label="上一張">&#8249;</button>
-                <button class="sl-btn sl-next" aria-label="下一張">&#8250;</button>
-                <div class="sl-overlay">
-                  <span class="sl-count">1 / 12</span>
-                  <span class="photo-tag photo-tag-d">Architizer</span>
-                </div>
-              </div>
-              <div class="card-body">
-                <div class="card-main">
-                  <div class="card-meta">
-                    <span>大眾選擇獎得主，2023 年 A+Awards，住宅 &gt; 住宅室內設計（&gt;3000 平方英尺）</span>
-                    <span>2023</span>
-                    <span>墨西哥 CDMX</span>
-                  </div>
-                  <h3 class="card-title">Casa Sexta</h3>
-                  <p class="card-by">All Arquitectura</p>
-                  <p class="card-desc">位於墨西哥州的一個住宅小區內，我們了解多風的景觀，以充分利用氣候條件並以永續的方式實現舒適度。住宅區內的房產決定了設計的重點是住宅內部發生的事情。 Casa Sexta 的幾何形狀向內演變，在尋求自然光的同時賦予其空間隱私。</p>
-                </div>
-                <div class="card-side">
-                  <p class="card-note">Casa Sexta 不是靠單一造型取勝，而是把 住宅室內 的居住問題拆成三個層次處理：先以「把住宅視為共享生活系統，而非單一戶型容器，公共與私密空間彼此定義價值」建立基本秩序，再用「把景觀與氣候回應嵌進居住組織，讓自然不是背景，而是空間分配與情緒控制的核心工具」調整空間氣質，最後透過「光被當成塑形工具，不只是照明，而是用來決定深度、節奏與私密性」讓整體經驗從形式走向可居住性。</p>
-                  <div class="card-facts"><span>大眾選擇獎得主，2023 年 A+Awards，住宅 &gt; 住宅室內設計（&gt;3000 平方英尺）</span><span>墨西哥 CDMX</span><span>資料來源：Architizer A+Awards 2023</span></div>
-                  <div class="card-links"><a href="https://architizer.com/projects/casa-sexta/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></div>
-                </div>
-              </div>
-            </article>
-            
-    </section>
+    
+    <article id="case-adus-napa-home-designed-by-vine-projects" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a271be2135960b805c32fa4/16:9/w_2560%2Cc_limit/DryCreek-11.jpg" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside image 1" loading="eager"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a271be463a3307caaa33254/master/w_1600%2Cc_limit/DryCreek-34.jpg" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a271be18209b379296aa4a9/master/w_1600%2Cc_limit/DryCreek-5.jpg" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a271be0017e3e73fa780487/master/w_1600%2Cc_limit/DryCreek-10.jpg" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a271be0c87429053223839c/master/w_1600%2Cc_limit/DryCreek-6.jpg" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2976de036e74d7c0c572b0/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(9).jpeg" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2976dee8cb9ee9232d8380/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(4).jpeg" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a271be2135960b805c32fa6/master/w_1600%2Cc_limit/DryCreek-13.jpg" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2976df87297da385c0a05a/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(3).jpeg" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a2976df7e4460c2af53c7b1/3:4/w_748%2Cc_limit/Product%2520Image%2520Template%2520(2).jpeg" alt="The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_01 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">The Homeowners&#x27; Favorite Room in This Napa House Is Actually Outside<small>Vine Projects<br>Napa<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">設計師 Rachel Vineberg Jones 與 Terremoto Landscape 和 West Coast Wild 合作，幫助打造她的家庭住宅</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>設計師 Rachel Vineberg Jones 與 Terremoto Landscape 和 West Coast Wild 合作，幫助打造她的家庭住宅</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_01 · <a href="https://www.architecturaldigest.com/story/napa-home-designed-by-vine-projects" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-122835" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213732/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-1.jpg" alt="Le Within image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213767/LeWithin_Plans-1.png" alt="Le Within image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213768/LeWithin_Plans-2.png" alt="Le Within image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213769/LeWithin_Plans-3.png" alt="Le Within image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213733/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-2.jpg" alt="Le Within image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213734/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-3.jpg" alt="Le Within image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213735/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-6.jpg" alt="Le Within image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213736/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-7.jpg" alt="Le Within image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213737/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-15.jpg" alt="Le Within image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/213739/Le-Within-by-Sid-Lee-Architecture-—-Photo-©-Alex-Lesage-17.jpg" alt="Le Within image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Le Within<small>Sid Lee Architecture<br>1830 大道林肯, 蒙特婁, QC H3H 1H4, 加拿大<br>FRAME 獎，共享居住綜合體</small></h2>
+        <p class="ac-lead reveal">Le Within 為蒙特利爾肖內西村的一座歷史建築注入了新的生命，將其改造成重新定義當代城市生活的學生宿舍。該項目由 Sid Lee Architecture 與 CANORA Private Property Management 共同設計，將此遺產物業改造成學生閣樓和共享空間，以適應學生生活的節奏，同時振興市中心</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>Le Within 為蒙特利爾肖內西村的一座歷史建築注入了新的生命，將其改造成重新定義當代城市生活的學生宿舍。該項目由 Sid Lee Architecture 與 CANORA Private Property Management 共同設計，將此遺產物業改造成學生閣樓和共享空間，以適應學生生活的節奏，同時振興市中心。建築、室內設計和品牌體驗形成了從城市規模到室內細節的統一系統。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://frameweb.com/project/le-within" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-frame-api-123121" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215193/COVER.jpg" alt="Designer Wu Bin‘s Anji Retreat image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215204/Floorplan.jpg" alt="Designer Wu Bin‘s Anji Retreat image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215194/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_25.jpg" alt="Designer Wu Bin‘s Anji Retreat image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215195/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_01.jpg" alt="Designer Wu Bin‘s Anji Retreat image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215196/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_1.jpg" alt="Designer Wu Bin‘s Anji Retreat image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215197/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_13.jpg" alt="Designer Wu Bin‘s Anji Retreat image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215198/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_18.jpg" alt="Designer Wu Bin‘s Anji Retreat image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215199/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_21.jpg" alt="Designer Wu Bin‘s Anji Retreat image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215200/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_15.jpg" alt="Designer Wu Bin‘s Anji Retreat image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://d1tm14lrsghf7q.cloudfront.net/public/media/215201/W.DESIGN无间设计_吴滨安吉自宅-Designer-Wu-Bin‘s-Anji-Retreat_17.jpg" alt="Designer Wu Bin‘s Anji Retreat image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_03 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Designer Wu Bin‘s Anji Retreat<small>W.Design<br>中國浙江省湖州市安吉郡天荒坪鎮, 313302<br>框架獎，眾議院</small></h2>
+        <p class="ac-lead reveal">在安吉遠山的寂靜韻律中，吳斌借鑒了中國隱居的文人傳統——家不是對自然的所有權，而是像一棵樹一樣屬於它，紮根於大地，伸向天空。小木屋隱藏在山谷中，退後一步，屈服於山間的寂靜、風的路徑和穿過樹林的光線——成為風景的一部分。透過“無形”和“微妙”，住宅順從土地，恢復空間作為精神的容器。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>在安吉遠山的寂靜韻律中，吳斌借鑒了中國隱居的文人傳統——家不是對自然的所有權，而是像一棵樹一樣屬於它，紮根於大地，伸向天空。小木屋隱藏在山谷中，退後一步，屈服於山間的寂靜、風的路徑和穿過樹林的光線——成為風景的一部分。透過“無形”和“微妙”，住宅順從土地，恢復空間作為精神的容器。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_03 · <a href="https://frameweb.com/project/designer-wu-bins-anji-retreat" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-corner-shop-kister-architects-melbourne-renovation-courtyard" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2023/10/austin-maynard-architects-melbourne-australia-renovation-roof-garden-architecture_SQUARE-191x191.jpg" alt="Century-old Melbourne corner shop transformed into family home image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_33-SQ-852x852.jpg" alt="Century-old Melbourne corner shop transformed into family home image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_33-scaled.jpg" alt="Century-old Melbourne corner shop transformed into family home image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_6.jpg" alt="Century-old Melbourne corner shop transformed into family home image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_30-scaled.jpg" alt="Century-old Melbourne corner shop transformed into family home image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_0.jpg" alt="Century-old Melbourne corner shop transformed into family home image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_27-scaled.jpg" alt="Century-old Melbourne corner shop transformed into family home image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_12-scaled.jpg" alt="Century-old Melbourne corner shop transformed into family home image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_13.jpg" alt="Century-old Melbourne corner shop transformed into family home image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/06/corner-shop-kister-architects-melbourne_dezeen_2364_col_2.jpg" alt="Century-old Melbourne corner shop transformed into family home image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_04 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Century-old Melbourne corner shop transformed into family home<small>Unknown architect<br>澳洲<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">當地工作室 Kister Architects 將墨爾本一家 1910 年街角商店改造成一座家庭住宅，擁有鬱鬱蔥蔥的內部庭院入口，旨在為城市場地帶來綠化。 Kister Architects 恰當地命名為 The Corner Shop，改造了一家為當地社區服務了一個多世紀的“牛奶吧”，並於 2016 年關閉。這家具有</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>當地工作室 Kister Architects 將墨爾本一家 1910 年街角商店改造成一座家庭住宅，擁有鬱鬱蔥蔥的內部庭院入口，旨在為城市場地帶來綠化。 Kister Architects 恰當地命名為 The Corner Shop，改造了一家為當地社區服務了一個多世紀的“牛奶吧”，並於 2016 年關閉。這家具有百年歷史的墨爾本街角商店被改造成家庭住宅，首先出現在 Dezeen 上。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_04 · <a href="https://www.dezeen.com/2026/06/21/corner-shop-kister-architects-melbourne-renovation-courtyard-entrance/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-dezeen-rss-2026-adkins-treehouse-benjamin-hall-design-phoenix" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/adkins-treehouse-benjamin-hall-design-phoenix_dezeen_2364_sq_0-852x852.jpg" alt="Benjamin Hall expands Phoenix home with treehouse-like addition image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/adkins-treehouse-benjamin-hall-design-phoenix_dezeen_2364_col_0.jpg" alt="Benjamin Hall expands Phoenix home with treehouse-like addition image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/adkins-treehouse-benjamin-hall-design-phoenix_dezeen_2364_col_1-scaled.jpg" alt="Benjamin Hall expands Phoenix home with treehouse-like addition image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/moon-valley-residence-phoenix-arizona-benjamin-hall-design_dezeen_2364_sq-1-191x191.jpg" alt="Benjamin Hall expands Phoenix home with treehouse-like addition image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/adkins-treehouse-benjamin-hall-design-phoenix_dezeen_2364_col_6.jpg" alt="Benjamin Hall expands Phoenix home with treehouse-like addition image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/04/adkins-treehouse-benjamin-hall-design-phoenix_dezeen_2364_col_3-scaled.jpg" alt="Benjamin Hall expands Phoenix home with treehouse-like addition image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_05 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Benjamin Hall expands Phoenix home with treehouse-like addition<small>Unknown architect<br>USA<br>德澤恩之家</small></h2>
+        <p class="ac-lead reveal">位於亞利桑那州的工作室本傑明·霍爾設計公司完成了對鳳凰城房屋的擴建，該房屋隱藏在景觀中，營造出樹屋般的效果。阿德金斯樹屋於 2024 年竣工，在 1959 年牧場式房屋的基礎上增加了 952 平方英尺（88 平方米），取代了 1980 年代未經許可的擴建，但保留了之前在 0.3 英畝的土地上的足跡。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>位於亞利桑那州的工作室本傑明·霍爾設計公司完成了對鳳凰城房屋的擴建，該房屋隱藏在景觀中，營造出樹屋般的效果。阿德金斯樹屋於 2024 年竣工，在 1959 年牧場式房屋的基礎上增加了 952 平方英尺（88 平方米），取代了 1980 年代未經許可的擴建，但保留了之前在 0.3 英畝的土地上的足跡。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_05 · <a href="https://www.dezeen.com/2026/04/29/adkins-treehouse-benjamin-hall-design-phoenix/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/tag/houses/" target="_blank" rel="noopener">德澤恩之家</a></p>
+      </div>
+    </article>
+    
+    <article id="case-adus-dr-seusss-longtime-socal-home-sells" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a27083c3f625c2ff1f6aad9/16:9/w_2560%2Cc_limit/GettyImages-3205020.jpg" alt="Dr. Seuss’s Longtime SoCal Home Sells for $9 Million image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a270638c8742905322381ea/master/w_1600%2Cc_limit/GettyImages-3204971.jpg" alt="Dr. Seuss’s Longtime SoCal Home Sells for $9 Million image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a27059963a3307caaa331de/master/w_1600%2Cc_limit/GettyImages-2259153385.jpg" alt="Dr. Seuss’s Longtime SoCal Home Sells for $9 Million image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/6a270a4467dfcab598f108f4/master/w_1600%2Cc_limit/GettyImages-3240313%2520(1).jpg" alt="Dr. Seuss’s Longtime SoCal Home Sells for $9 Million image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="https://media.architecturaldigest.com/photos/5d8919b4a8aab30008abac21/1:1/pass/ad-pro.jpg" alt="Dr. Seuss’s Longtime SoCal Home Sells for $9 Million image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AD/26_06 · AD (US) / 2026</p>
+        <h2 class="ac-title reveal">Dr. Seuss’s Longtime SoCal Home Sells for $9 Million<small>AD editorial<br>Main<br>建築文摘家居之旅</small></h2>
+        <p class="ac-lead reveal">作家兼插畫家蘇斯博士聘請托馬斯·L·謝潑德圍繞一座廢棄的觀測塔設計他的定制夢想之家</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>作家兼插畫家蘇斯博士聘請托馬斯·L·謝潑德圍繞一座廢棄的觀測塔設計他的定制夢想之家</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AD/26_06 · <a href="https://www.architecturaldigest.com/story/dr-seusss-longtime-socal-home-sells" target="_blank" rel="noopener">文章頁面</a> <a href="https://www.architecturaldigest.com/topic/house-tours" target="_blank" rel="noopener">建築文摘</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-a-ucena-house" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050130191066-PHOTO-10.jpg?w=1680&amp;q=60&amp;auto=format" alt="Açucena House image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050127421066-PHOTO-01.jpg?w=1680&amp;q=60&amp;auto=format" alt="Açucena House image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050127429066-PHOTO-02.jpg?w=1680&amp;q=60&amp;auto=format" alt="Açucena House image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050129270066-PHOTO-04.jpg?w=1680&amp;q=60&amp;auto=format" alt="Açucena House image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050129300066-PHOTO-06.jpg?w=1680&amp;q=60&amp;auto=format" alt="Açucena House image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050129650066-PHOTO-07.jpg?w=1680&amp;q=60&amp;auto=format" alt="Açucena House image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050129926066-PHOTO-08.jpg?w=1680&amp;q=60&amp;auto=format" alt="Açucena House image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050130053066-PHOTO-09.jpg?w=1680&amp;q=60&amp;auto=format" alt="Açucena House image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050130805066-PHOTO-11.jpg?w=1680&amp;q=60&amp;auto=format" alt="Açucena House image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/1657050130842066-PHOTO-12.jpg?w=1680&amp;q=60&amp;auto=format" alt="Açucena House image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_07 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">Açucena House<small>TETRO ARQUITETURA<br>巴西新利馬<br>大眾選擇獎得主，2023 年 A+ 獎，住宅 &gt; 私人住宅（M 2000 - 4000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">一個沉浸在鬱鬱蔥蔥的大西洋雨林自然之中的地方。這片土地長滿了茂密的大樹、樹葉、灌木叢、鳥類和野生動物。具有挑戰性的陡坡地形，是米納斯吉拉斯州新利馬地區的特徵。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>一個沉浸在鬱鬱蔥蔥的大西洋雨林自然之中的地方。這片土地長滿了茂密的大樹、樹葉、灌木叢、鳥類和野生動物。具有挑戰性的陡坡地形，是米納斯吉拉斯州新利馬地區的特徵。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_07 · <a href="https://architizer.com/projects/acucena-house/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
+    <article id="case-architizer-2023-casa-sexta" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252682094201_CasaSexta_AllArquitectura.jpeg?w=1680&amp;q=60&amp;auto=format" alt="Casa Sexta image 1" loading="lazy"><figcaption>圖1｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252682094401_CasaSexta_AllArquitectura_02.jpeg?w=1680&amp;q=60&amp;auto=format" alt="Casa Sexta image 2" loading="lazy"><figcaption>圖2｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252682767506_CasaSexta_AllArquitectura_19.jpeg?w=1680&amp;q=60&amp;auto=format" alt="Casa Sexta image 3" loading="lazy"><figcaption>圖3｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252682778707_CasaSexta_AllArquitectura_30.jpeg?w=1680&amp;q=60&amp;auto=format" alt="Casa Sexta image 4" loading="lazy"><figcaption>圖4｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252682990205_CasaSexta_AllArquitectura.jpeg?w=1680&amp;q=60&amp;auto=format" alt="Casa Sexta image 5" loading="lazy"><figcaption>圖5｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252683009404_CasaSexta_AllArquitectura.jpeg?w=1680&amp;q=60&amp;auto=format" alt="Casa Sexta image 6" loading="lazy"><figcaption>圖6｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252683176203_CasaSexta_AllArquitectura.jpeg?w=1680&amp;q=60&amp;auto=format" alt="Casa Sexta image 7" loading="lazy"><figcaption>圖7｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252683183302_CasaSexta_AllArquitectura_.jpeg?w=1680&amp;q=60&amp;auto=format" alt="Casa Sexta image 8" loading="lazy"><figcaption>圖8｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252683344909_CasaSexta_AllArquitectura_39.jpeg?w=1680&amp;q=60&amp;auto=format" alt="Casa Sexta image 9" loading="lazy"><figcaption>圖9｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure><figure class="ac-shot"><img src="http://architizer-prod.imgix.net/media/mediadata/uploads/168252683419210_CasaSexta_AllArquitectura_42.jpeg?w=1680&amp;q=60&amp;auto=format" alt="Casa Sexta image 10" loading="lazy"><figcaption>圖10｜待補 LLM 圖像觀察；先保留圖片供人工檢視。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · AR/23_08 · Architizer / 2023</p>
+        <h2 class="ac-title reveal">Casa Sexta<small>All Arquitectura<br>墨西哥 CDMX<br>大眾選擇獎得主，2023 年 A+Awards，住宅 &gt; 住宅室內設計（&gt;3000 平方英尺）</small></h2>
+        <p class="ac-lead reveal">位於墨西哥州的一個住宅小區內，我們了解多風的景觀，以充分利用氣候條件並以永續的方式實現舒適度。住宅區內的房產決定了設計的重點是住宅內部發生的事情。 Casa Sexta 的幾何形狀向內演變，在尋求自然光的同時賦予其空間隱私。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>位於墨西哥州的一個住宅小區內，我們了解多風的景觀，以充分利用氣候條件並以永續的方式實現舒適度。住宅區內的房產決定了設計的重點是住宅內部發生的事情。 Casa Sexta 的幾何形狀向內演變，在尋求自然光的同時賦予其空間隱私。</p></div>
+        <div class="ac-sec"><h3>空間策略</h3><p>本案的空間策略需以原始平面、動線與基地條件交叉判讀；目前保留原始說明，等待 LLM 深度分析補齊。</p></div>
+        <div class="ac-sec"><h3>材料與光線</h3><p>材料與光線判讀尚未完成；請優先檢視主圖、剖面或細部照片中反覆出現的界面、採光與反射控制。</p></div>
+        <div class="ac-sec"><h3>生活場景</h3><p>生活場景判讀尚未完成；可先從入口、公共區、私密區與戶外銜接四個節點觀察居住節奏。</p></div>
+        <div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>以原始案例資訊作為暫存判讀</strong><span>效果：不中斷日報出版，並保留後續重跑分析的空間</span><span>可應用於：LLM 暫時不可用、來源文字不足或格式異常的案例</span><span>注意事項：此為 fallback，不應視為最終深度評論</span></div></div></div>
+        <div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>先拆解尺度、採光、收納與濕熱氣候，再判斷哪些手法能轉譯到台灣住宅。</li></ul></div>
+        <div class="ac-sec"><h3>風險或限制</h3><ul><li>目前為分析失敗 fallback，需在 Claude 可用後重跑快取。</li></ul></div>
+        <p class="ac-meta">CODE AR/23_08 · <a href="https://architizer.com/projects/casa-sexta/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2023/Typology/" target="_blank" rel="noopener">獎項頁面</a></p>
+      </div>
+    </article>
+    
   </main>
-  <div id="lb-backdrop" role="dialog" aria-modal="true" aria-label="原圖預覽">
-    <img id="lb-img" src="" alt="">
-    <button id="lb-close" aria-label="關閉">✕</button>
-    <button id="lb-prev" class="lb-nav" aria-label="上一張">&#8249;</button>
-    <button id="lb-next" class="lb-nav" aria-label="下一張">&#8250;</button>
-    <span id="lb-count"></span>
-  </div>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
   <script>
-    document.querySelectorAll('.slider').forEach(slider => {
-      const slides = [...slider.querySelectorAll('.slide')];
-      if (slides.length <= 1) {
-        slider.querySelector('.sl-prev')?.remove();
-        slider.querySelector('.sl-next')?.remove();
-        return;
-      }
-      const countEl = slider.querySelector('.sl-count');
-      let idx = 0;
-
-      function show(n) {
-        slides[idx].classList.remove('active');
-        idx = ((n % slides.length) + slides.length) % slides.length;
-        slides[idx].classList.add('active');
-        slides[idx].loading = 'eager';
-        if (countEl) countEl.textContent = (idx + 1) + ' / ' + slides.length;
-      }
-
-      slider.querySelector('.sl-prev').addEventListener('click', e => { e.stopPropagation(); show(idx - 1); });
-      slider.querySelector('.sl-next').addEventListener('click', e => { e.stopPropagation(); show(idx + 1); });
-
-      let tx = 0;
-      slider.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      slider.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) show(idx + (dx < 0 ? 1 : -1));
-      });
-
-      slider.addEventListener('keydown', e => {
-        if (e.key === 'ArrowLeft') show(idx - 1);
-        if (e.key === 'ArrowRight') show(idx + 1);
-      });
-    });
-
-    (function() {
-      const backdrop = document.getElementById('lb-backdrop');
-      const lbImg = document.getElementById('lb-img');
-      const lbPrev = document.getElementById('lb-prev');
-      const lbNext = document.getElementById('lb-next');
-      const lbCount = document.getElementById('lb-count');
-      let lbSlides = [], lbIdx = 0;
-      function showAt(n) {
-        lbIdx = ((n % lbSlides.length) + lbSlides.length) % lbSlides.length;
-        lbImg.src = lbSlides[lbIdx].src;
-        lbImg.alt = lbSlides[lbIdx].alt;
-        lbCount.textContent = (lbIdx + 1) + ' / ' + lbSlides.length;
-        lbPrev.style.display = lbSlides.length <= 1 ? 'none' : '';
-        lbNext.style.display = lbSlides.length <= 1 ? 'none' : '';
-      }
-      function openLb(slides, startIdx) {
-        lbSlides = slides;
-        backdrop.classList.add('open');
-        document.body.style.overflow = 'hidden';
-        showAt(startIdx);
-      }
-      function closeLb() {
-        backdrop.classList.remove('open');
-        document.body.style.overflow = '';
-        lbImg.src = '';
-        lbSlides = [];
-      }
-      document.querySelectorAll('.slider').forEach(slider => {
-        const slides = [...slider.querySelectorAll('.slide')];
-        slides.forEach((img, i) => {
-          img.addEventListener('click', () => openLb(slides, i));
-        });
-      });
-      lbPrev.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx - 1); });
-      lbNext.addEventListener('click', e => { e.stopPropagation(); showAt(lbIdx + 1); });
-      backdrop.addEventListener('click', e => { if (e.target !== lbImg) closeLb(); });
-      document.getElementById('lb-close').addEventListener('click', closeLb);
-      let tx = 0;
-      backdrop.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, {passive: true});
-      backdrop.addEventListener('touchend', e => {
-        const dx = e.changedTouches[0].clientX - tx;
-        if (Math.abs(dx) > 40) showAt(lbIdx + (dx < 0 ? 1 : -1));
-      });
-      document.addEventListener('keydown', e => {
-        if (!backdrop.classList.contains('open')) return;
-        if (e.key === 'Escape') closeLb();
-        if (e.key === 'ArrowLeft') showAt(lbIdx - 1);
-        if (e.key === 'ArrowRight') showAt(lbIdx + 1);
-      });
-    })();
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
   </script>
 </body>
 </html>
