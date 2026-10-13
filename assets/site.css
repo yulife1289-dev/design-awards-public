@@ -250,6 +250,13 @@ a:focus-visible,button:focus-visible{outline:2px solid #000;outline-offset:4px}
 .ca-media .ca-lead img{aspect-ratio:16/9}
 .ca-gallery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:12px}
 .ca-gap{color:#888}
+.commercial-index .ca-card{gap:0;min-height:0;padding:0;overflow:hidden;border:1px solid var(--line);background:var(--paper)}
+.commercial-index .ca-card-media{display:block;aspect-ratio:4/3;overflow:hidden;background:#e5e5e5}
+.commercial-index .ca-card-media img{display:block;width:100%;height:100%;object-fit:cover}
+.commercial-index .ca-card-media--gap{display:grid;place-items:center;padding:18px;color:#777;font-size:10px;letter-spacing:.08em;text-align:center}
+.commercial-index .ca-card-body{display:grid;gap:9px;padding:14px 16px 16px}
+.commercial-index .ca-card-body strong{font-size:13px;letter-spacing:.08em;line-height:1.45}
+.commercial-index .ca-card-tag{justify-self:start}
 .ca-card-date{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#888}
 .ca-card-tag{justify-self:start;padding:2px 8px;border:1px solid var(--line);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#666}
 @media(max-width:900px){
