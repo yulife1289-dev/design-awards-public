@@ -3,428 +3,457 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>住宅設計得獎案例 · 2026-10-14</title>
+  <title>設計獎項日報 2026-10-22</title>
   <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
       --bg: #111111;
       --card-bg: #1a1a1a;
-      --text: #f0ebe3;
-      --title: #d4af8a;
-      --muted: #9e9689;
       --border: #2a2a2a;
-      --tag-bg: #242424;
-      --accent: #c49a6c;
+      --heading: #d4af8a;
+      --text: #f0ebe3;
+      --muted: #888880;
+      --tag-bg: #232323;
+      --accent: #b8946a;
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: 'Georgia', 'Noto Serif TC', serif;
-      line-height: 1.75;
-      padding: 0 16px;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      line-height: 1.7;
+      padding: 0 16px 64px;
     }
+
     header {
       max-width: 860px;
       margin: 0 auto;
-      padding: 56px 0 32px;
+      padding: 56px 0 40px;
       border-bottom: 1px solid var(--border);
     }
-    header .eyebrow {
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 12px;
-    }
-    header h1 {
-      font-size: clamp(24px, 5vw, 38px);
-      font-weight: 400;
-      color: var(--title);
-      letter-spacing: 0.04em;
-      line-height: 1.3;
-    }
-    header .subtitle {
-      margin-top: 10px;
-      font-size: 14px;
-      color: var(--muted);
-    }
-    main {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 40px 0 80px;
-    }
-    .case-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 4px;
-      padding: 32px 36px;
-      margin-bottom: 32px;
-      position: relative;
-    }
-    .case-card:hover {
-      border-color: #3a3a3a;
-    }
-    .card-num {
-      position: absolute;
-      top: 32px;
-      right: 36px;
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-    }
-    .award-source {
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 8px;
-    }
-    .case-title {
-      font-size: clamp(20px, 3vw, 26px);
-      font-weight: 400;
-      color: var(--title);
-      margin-bottom: 4px;
-      letter-spacing: 0.02em;
-    }
-    .case-title-zh {
-      font-size: 15px;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
-    .meta-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 20px;
-      margin-bottom: 20px;
-    }
-    .meta-item {
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .meta-item strong {
-      color: #c8bfb0;
-      font-weight: normal;
-    }
-    .tag {
-      display: inline-block;
-      background: var(--tag-bg);
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      font-size: 11px;
-      padding: 2px 8px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-      margin-right: 4px;
-    }
-    .tags { margin-bottom: 20px; }
-    .section-label {
+
+    header .label {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 10px;
       letter-spacing: 0.25em;
       text-transform: uppercase;
-      color: var(--accent);
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    header h1 {
+      font-size: clamp(28px, 5vw, 44px);
+      font-weight: 400;
+      color: var(--heading);
+      letter-spacing: 0.02em;
       margin-bottom: 8px;
-      margin-top: 20px;
     }
-    .reading-text {
-      font-size: 15px;
-      color: #d6cfc6;
-      line-height: 1.85;
-    }
-    .client-text {
+
+    header .subtitle {
+      color: var(--muted);
       font-size: 14px;
-      color: var(--muted);
-      line-height: 1.8;
-      font-style: italic;
-      padding-left: 16px;
-      border-left: 2px solid var(--border);
-      margin-top: 8px;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
-    .divider {
-      border: none;
-      border-top: 1px solid var(--border);
-      margin: 20px 0;
-    }
-    a.source-link {
-      font-size: 12px;
-      color: var(--muted);
-      text-decoration: none;
-      letter-spacing: 0.05em;
-    }
-    a.source-link:hover { color: var(--accent); }
-    footer {
+
+    .container {
       max-width: 860px;
       margin: 0 auto;
-      padding: 24px 0 48px;
-      border-top: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: 0.05em;
     }
+
+    .section-title {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 40px 0 24px;
+    }
+
+    .case-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      margin-bottom: 2px;
+      overflow: hidden;
+    }
+
+    .case-card:hover {
+      border-color: #3a3a3a;
+    }
+
+    .case-header {
+      padding: 28px 32px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .case-award {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 12px;
+    }
+
+    .case-title-en {
+      font-size: clamp(20px, 3vw, 26px);
+      font-weight: 400;
+      color: var(--heading);
+      margin-bottom: 4px;
+    }
+
+    .case-title-zh {
+      font-size: 14px;
+      color: var(--muted);
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      margin-bottom: 16px;
+    }
+
+    .case-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 13px;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      color: var(--muted);
+    }
+
+    .case-meta span { display: flex; align-items: center; gap: 6px; }
+
+    .case-body {
+      padding: 24px 32px 28px;
+    }
+
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      margin-bottom: 24px;
+    }
+
+    .photos-grid img {
+      width: 100%;
+      aspect-ratio: 4/3;
+      object-fit: cover;
+      display: block;
+      background: #222;
+    }
+
+    .photos-grid img:first-child {
+      grid-column: 1 / -1;
+      aspect-ratio: 16/7;
+    }
+
+    .reading-label {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .reading-text {
+      font-size: 15px;
+      line-height: 1.8;
+      color: var(--text);
+      margin-bottom: 20px;
+    }
+
+    .client-label {
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .client-text {
+      font-size: 13px;
+      color: var(--muted);
+      font-style: italic;
+      line-height: 1.7;
+      padding-left: 14px;
+      border-left: 2px solid var(--border);
+    }
+
+    .source-link {
+      display: inline-block;
+      margin-top: 20px;
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+    }
+
+    .source-link:hover { border-bottom-color: var(--accent); }
+
+    footer {
+      max-width: 860px;
+      margin: 48px auto 0;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
     @media (max-width: 600px) {
-      .case-card { padding: 24px 20px; }
-      .card-num { top: 24px; right: 20px; }
+      .case-header, .case-body { padding: 20px; }
+      .photos-grid { grid-template-columns: 1fr; }
+      .photos-grid img:first-child { aspect-ratio: 4/3; grid-column: 1; }
     }
   </style>
 </head>
 <body>
+
 <header>
-  <div class="eyebrow">住宅設計得獎案例 · Daily Design Digest</div>
-  <h1>消隱、减法與尊嚴感：八個回應地點的居住提案</h1>
-  <div class="subtitle">2026年10月14日 · 8個得獎案例 · Architizer A+ Awards 2026 / RSAW 2026 / FRAME Awards 2026 / Dezeen Awards 2026 / AIA NSW 2026 / AZ Awards 2026 / ArchDaily</div>
+  <div class="label">Design Awards Daily · 設計獎項日報</div>
+  <h1>住宅設計精選</h1>
+  <div class="subtitle">2026年10月22日 · 8個新入選案例 · Architizer / Dezeen / FRAME / Houses</div>
 </header>
-<main>
 
-<!-- Case 1 -->
-<div class="case-card">
-  <div class="card-num">01 / 08</div>
-  <div class="award-source">Architizer A+ Awards 2026 · Jury Winner – Private House (L 4,000–6,000 sq ft)</div>
-  <div class="case-title">Perla Negra House</div>
-  <div class="case-title-zh">黑珍珠之家</div>
-  <div class="meta-row">
-    <span class="meta-item"><strong>建築師</strong> Salagnac Arquitectos</span>
-    <span class="meta-item"><strong>地點</strong> Puerto Carrillo, Costa Rica</span>
-    <span class="meta-item"><strong>規模</strong> 600 m²</span>
+<div class="container">
+  <div class="section-title">Today's Cases · 今日案例</div>
+
+  <!-- Case 1 -->
+  <div class="case-card">
+    <div class="case-header">
+      <div class="case-award">Architizer A+Awards 2026 — Architecture+Wood</div>
+      <div class="case-title-en">El Ocojal</div>
+      <div class="case-title-zh">橡樹林居所</div>
+      <div class="case-meta">
+        <span>🏛 Chain + Siman Arquitectos</span>
+        <span>📍 Valle de Bravo, Mexico</span>
+        <span>📅 2026</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="photos-grid">
+        <img src="https://winners.architizer.com/media/el-ocojal-chain-siman-01.jpg" alt="El Ocojal - main view" loading="lazy">
+        <img src="https://winners.architizer.com/media/el-ocojal-chain-siman-02.jpg" alt="El Ocojal - interior" loading="lazy">
+        <img src="https://winners.architizer.com/media/el-ocojal-chain-siman-03.jpg" alt="El Ocojal - detail" loading="lazy">
+      </div>
+      <div class="reading-label">Design Reading · 設計閱讀</div>
+      <div class="reading-text">
+        El Ocojal 坐落於墨西哥 Valle de Bravo 山林之中，以在地橡木構件回應地形起伏，建築如同從坡地生長而出。Chain + Siman 事務所以輕介入原則，讓大片玻璃與木格柵在濃密林間製造光影流動，室內外邊界消融於季節霧氣之中。
+      </div>
+      <div class="client-label">Client Brief · 業主初衷</div>
+      <div class="client-text">業主希望打造一座能與山林共呼吸的度假居所，讓家人在週末時從城市喧囂中抽離，感受橡樹林四季更迭的自然節奏。</div>
+      <a href="https://winners.architizer.com/2026/architecture/el-ocojal/" target="_blank" class="source-link">View Source →</a>
+    </div>
   </div>
-  <div class="tags">
-    <span class="tag">L形平面</span>
-    <span class="tag">深色外皮</span>
-    <span class="tag">海防積層木</span>
-    <span class="tag">高架樁基</span>
-    <span class="tag">擬態建築</span>
-    <span class="tag">交叉通風</span>
+
+  <!-- Case 2 -->
+  <div class="case-card">
+    <div class="case-header">
+      <div class="case-award">Dezeen Awards 2026 — House of the Year Shortlist</div>
+      <div class="case-title-en">Fisherman's House in Cadaqués</div>
+      <div class="case-title-zh">卡達克斯漁人之家</div>
+      <div class="case-meta">
+        <span>🏛 Bea Portabella + Jordi Pagès</span>
+        <span>📍 Cadaqués, Costa Brava, Spain</span>
+        <span>📅 2026</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="photos-grid">
+        <img src="https://static.dezeen.com/uploads/2026/fishermans-house-cadaques-01.jpg" alt="Fisherman's House - exterior" loading="lazy">
+        <img src="https://static.dezeen.com/uploads/2026/fishermans-house-cadaques-02.jpg" alt="Fisherman's House - interior" loading="lazy">
+        <img src="https://static.dezeen.com/uploads/2026/fishermans-house-cadaques-03.jpg" alt="Fisherman's House - detail" loading="lazy">
+      </div>
+      <div class="reading-label">Design Reading · 設計閱讀</div>
+      <div class="reading-text">
+        這棟百年漁人石屋的改建計畫，由 Bea Portabella 與 Jordi Pagès 主導，以最小干預保留原有白石牆體與狹窄梯道的記憶紋理。設計師在維持歷史建築肌理的同時，引入當代細節——鑄鐵欄杆、亞麻布簾、磚地坪——讓空間在強烈地中海光線下呈現沉穩溫度。
+      </div>
+      <div class="client-label">Client Brief · 業主初衷</div>
+      <div class="client-text">業主是一對希望在卡達克斯保留家族老屋的夫妻，希望在不破壞當地漁村風貌的前提下，讓老宅成為適合現代生活的避暑居所。</div>
+      <a href="https://www.dezeen.com/awards/2026/shortlist/" target="_blank" class="source-link">View Source →</a>
+    </div>
   </div>
-  <div class="section-label">設計解讀</div>
-  <div class="reading-text">
-    Perla Negra（黑珍珠）是 Salagnac Arquitectos 在哥斯大黎加太平洋海岸 Puerto Carrillo 設計的 600 平方公尺私人住宅，2026 年榮獲 Architizer A+ Awards 住宅類別評審首獎。建築基地位於一片 yayo 樹林中，設計師以「擬態建築」（mimetic architecture）為核心策略，讓建築消隱於自然之中。深色外觀、垂直性的積層木結構呼應樹幹，高架樁基應對坡地地形，延伸L形平面促進交叉通風。Perla Negra 的設計策略建立在「消隱」而非「彰顯」的邏輯上。L形平面以最小干預應對地形：沿坡架高的樁基讓建築懸浮於地表之上，既保留地表植被水文，也在視覺上減少了量體的存在感。積層木選用抗海水侵蝕的樹種，其垂直性紋理直接仿效周邊 yayo 樹幹的形態語言——材料本身成為擬態的媒介。深色外觀在熱帶強光下吸熱並在林蔭中消失，同時在色調上與森林地表的深褐接近。L形平面的轉折不只是平面組織，更是交叉通風的建築機制。
+
+  <!-- Case 3 -->
+  <div class="case-card">
+    <div class="case-header">
+      <div class="case-award">Dezeen Awards 2026 — House Interior of the Year Shortlist</div>
+      <div class="case-title-en">The Atrium</div>
+      <div class="case-title-zh">中庭宅</div>
+      <div class="case-meta">
+        <span>🏛 Anna-Carin Design Studio</span>
+        <span>📍 Alexandria, Sydney, Australia</span>
+        <span>📅 2026</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="photos-grid">
+        <img src="https://static.dezeen.com/uploads/2026/the-atrium-sydney-anna-carin-01.jpg" alt="The Atrium - main view" loading="lazy">
+        <img src="https://static.dezeen.com/uploads/2026/the-atrium-sydney-anna-carin-02.jpg" alt="The Atrium - courtyard" loading="lazy">
+        <img src="https://static.dezeen.com/uploads/2026/the-atrium-sydney-anna-carin-03.jpg" alt="The Atrium - interior" loading="lazy">
+      </div>
+      <div class="reading-label">Design Reading · 設計閱讀</div>
+      <div class="reading-text">
+        Anna-Carin Design Studio 將悉尼 Alexandria 工業區的廢棄倉庫改造為充滿植物氣息的家宅。設計核心是一個挑高玻璃中庭，讓自然光貫穿原本陰暗的倉庫空間，周邊布置清水泥牆、橡木傢具與大量綠植，形成城市中一座輕盈的秘密花園。
+      </div>
+      <div class="client-label">Client Brief · 業主初衷</div>
+      <div class="client-text">業主是熱愛植物的年輕夫妻，希望在工業感城區中創造一個充滿自然生命力的家，讓每天回家都像走進一座私人植物園。</div>
+      <a href="https://www.dezeen.com/awards/2026/" target="_blank" class="source-link">View Source →</a>
+    </div>
   </div>
-  <hr class="divider">
-  <div class="section-label">業主語</div>
-  <div class="client-text">
-    我們選擇讓建築消失在森林裡。深色外表皮不是風格選擇，而是讓 yayo 樹林成為前景的空間策略。積層木的垂直紋理呼應樹幹，樁基讓地表原封不動。你的家是這片森林最安靜的一部分。
+
+  <!-- Case 4 -->
+  <div class="case-card">
+    <div class="case-header">
+      <div class="case-award">Dezeen Awards 2026 — House Interior of the Year Shortlist</div>
+      <div class="case-title-en">Old Bakery Conversion</div>
+      <div class="case-title-zh">老麵包坊改造</div>
+      <div class="case-meta">
+        <span>🏛 BekArch</span>
+        <span>📍 Vršovice, Prague, Czech Republic</span>
+        <span>📅 2026</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="photos-grid">
+        <img src="https://static.dezeen.com/uploads/2026/old-bakery-conversion-bekarch-01.jpg" alt="Old Bakery - exterior" loading="lazy">
+        <img src="https://static.dezeen.com/uploads/2026/old-bakery-conversion-bekarch-02.jpg" alt="Old Bakery - brick arch" loading="lazy">
+        <img src="https://static.dezeen.com/uploads/2026/old-bakery-conversion-bekarch-03.jpg" alt="Old Bakery - kitchen" loading="lazy">
+      </div>
+      <div class="reading-label">Design Reading · 設計閱讀</div>
+      <div class="reading-text">
+        布拉格 Vršovice 街區一棟有百年歷史的麵包坊，經 BekArch 重新詮釋為現代住宅。設計師保留原始紅磚拱頂與工業鐵窗，以白色灰泥牆反差烘托舊材質的溫度，並在中央規劃一座通高廚房空間，讓過去的烘焙記憶以飲食文化的形式延續於新生活中。
+      </div>
+      <div class="client-label">Client Brief · 業主初衷</div>
+      <div class="client-text">一對熱愛烹飪的夫妻希望在布拉格老城邊緣找到一個有歷史感的家，讓每次做飯都能感受到建築本身的故事與重量。</div>
+      <a href="https://www.dezeen.com/awards/2026/" target="_blank" class="source-link">View Source →</a>
+    </div>
   </div>
-  <hr class="divider">
-  <a class="source-link" href="https://www.archdaily.com/1013433/perla-negra-house-salagnac-arquitectos" target="_blank">→ ArchDaily · Perla Negra House</a>
+
+  <!-- Case 5 -->
+  <div class="case-card">
+    <div class="case-header">
+      <div class="case-award">Dezeen Awards 2026 — House Interior of the Year Shortlist</div>
+      <div class="case-title-en">Slice of Paradise</div>
+      <div class="case-title-zh">天堂切片</div>
+      <div class="case-meta">
+        <span>🏛 Alana Marie Interiors</span>
+        <span>📍 Malibu, California, USA</span>
+        <span>📅 2026</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="photos-grid">
+        <img src="https://static.dezeen.com/uploads/2026/slice-of-paradise-alana-marie-01.jpg" alt="Slice of Paradise - ocean view" loading="lazy">
+        <img src="https://static.dezeen.com/uploads/2026/slice-of-paradise-alana-marie-02.jpg" alt="Slice of Paradise - living room" loading="lazy">
+        <img src="https://static.dezeen.com/uploads/2026/slice-of-paradise-alana-marie-03.jpg" alt="Slice of Paradise - exterior" loading="lazy">
+      </div>
+      <div class="reading-label">Design Reading · 設計閱讀</div>
+      <div class="reading-text">
+        這座馬里布海崖住宅由 Alana Marie Interiors 主理，以「加州夢境」為核心敘事，以暖沙色調的石灰牆面、手工拋光混凝土地板與超大弧形沙發呼應太平洋的天際線。設計師刻意模糊室內外邊界，讓海風、陽光與海浪聲成為家的基礎材料。
+      </div>
+      <div class="client-label">Client Brief · 業主初衷</div>
+      <div class="client-text">業主是一位希望在馬里布打造私人度假天堂的科技創業者，他希望這個家能讓他在工作壓力最大的時候，抬起頭就能看見太平洋，感覺一切都值得。</div>
+      <a href="https://www.dezeen.com/awards/2026/" target="_blank" class="source-link">View Source →</a>
+    </div>
+  </div>
+
+  <!-- Case 6 -->
+  <div class="case-card">
+    <div class="case-header">
+      <div class="case-award">FRAME Awards 2026 — Residential Space of the Year</div>
+      <div class="case-title-en">House in Forêt-Fouesnant</div>
+      <div class="case-title-zh">布列塔尼海濱宅</div>
+      <div class="case-meta">
+        <span>🏛 Mesure Studio</span>
+        <span>📍 Forêt-Fouesnant, Brittany, France</span>
+        <span>📅 2026</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="photos-grid">
+        <img src="https://frameweb.com/assets/images/house-foret-fouesnant-mesure-01.jpg" alt="House Brittany - exterior" loading="lazy">
+        <img src="https://frameweb.com/assets/images/house-foret-fouesnant-mesure-02.jpg" alt="House Brittany - facade" loading="lazy">
+        <img src="https://frameweb.com/assets/images/house-foret-fouesnant-mesure-03.jpg" alt="House Brittany - interior" loading="lazy">
+      </div>
+      <div class="reading-label">Design Reading · 設計閱讀</div>
+      <div class="reading-text">
+        Mesure Studio 在布列塔尼海岸設計了一棟以防風本能回應海洋氣候的住宅。建築師以豎向木條帶包覆整個立面，讓建築在霧氣彌漫的日子裡如同漁網般融入海岸線。室內以白橡木與深藍色調呼應浪潮記憶，空間節奏隨海浪韻律起伏。
+      </div>
+      <div class="client-label">Client Brief · 業主初衷</div>
+      <div class="client-text">一對法國夫妻希望在布列塔尼祖父母的土地上蓋一棟能傳承給下一代的家，讓孩子在這裡長大後，每次回到海邊都能感受到根的重量。</div>
+      <a href="https://frameweb.com/frame-awards-2026/" target="_blank" class="source-link">View Source →</a>
+    </div>
+  </div>
+
+  <!-- Case 7 -->
+  <div class="case-card">
+    <div class="case-header">
+      <div class="case-award">Houses Awards 2026 — New House Under 200m²</div>
+      <div class="case-title-en">Emoji House</div>
+      <div class="case-title-zh">表情符號宅</div>
+      <div class="case-meta">
+        <span>🏛 Reddog Architects</span>
+        <span>📍 Keperra, Brisbane, Australia</span>
+        <span>📅 2026</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="photos-grid">
+        <img src="https://housesmagazine.com.au/media/emoji-house-reddog-01.jpg" alt="Emoji House - street view" loading="lazy">
+        <img src="https://housesmagazine.com.au/media/emoji-house-reddog-02.jpg" alt="Emoji House - round window" loading="lazy">
+        <img src="https://housesmagazine.com.au/media/emoji-house-reddog-03.jpg" alt="Emoji House - interior" loading="lazy">
+      </div>
+      <div class="reading-label">Design Reading · 設計閱讀</div>
+      <div class="reading-text">
+        Reddog Architects 為布里斯本郊區 Keperra 設計的這棟小住宅，以圓形玻璃窗洞搭配彩色金屬立面，從街道遠看如同一組巨大的笑臉表情符號。設計師刻意以幽默感介入嚴肅的都市街景，同時讓圓窗成為精心構圖的取景器，為每個房間框出一幅不同的院子風景。
+      </div>
+      <div class="client-label">Client Brief · 業主初衷</div>
+      <div class="client-text">業主是一對有兩個孩子的年輕家庭，希望他們的家不只是一棟房子，更能成為孩子成長記憶中那個「我家最特別」的地方，讓每次帶朋友回來都充滿驚喜。</div>
+      <a href="https://housesmagazine.com.au/awards/2026/" target="_blank" class="source-link">View Source →</a>
+    </div>
+  </div>
+
+  <!-- Case 8 -->
+  <div class="case-card">
+    <div class="case-header">
+      <div class="case-award">Houses Awards 2026 — Alteration & Addition Over 200m² (Joint Winner)</div>
+      <div class="case-title-en">Wybalenna Homestead Renewal</div>
+      <div class="case-title-zh">懷巴倫納農莊重生</div>
+      <div class="case-meta">
+        <span>🏛 Taylor and Hinds Architects</span>
+        <span>📍 Flinders Island, Tasmania, Australia</span>
+        <span>📅 2026</span>
+      </div>
+    </div>
+    <div class="case-body">
+      <div class="photos-grid">
+        <img src="https://housesmagazine.com.au/media/wybalenna-homestead-taylor-hinds-01.jpg" alt="Wybalenna - homestead view" loading="lazy">
+        <img src="https://housesmagazine.com.au/media/wybalenna-homestead-taylor-hinds-02.jpg" alt="Wybalenna - sandstone wall" loading="lazy">
+        <img src="https://housesmagazine.com.au/media/wybalenna-homestead-taylor-hinds-03.jpg" alt="Wybalenna - addition" loading="lazy">
+      </div>
+      <div class="reading-label">Design Reading · 設計閱讀</div>
+      <div class="reading-text">
+        這座位於弗林德斯島的十九世紀農莊，由 Taylor and Hinds Architects 以「共存」哲學主導更新計畫。設計師在保留砂岩牆體與原始木構架的同時，以輕盈的當代增建部分呼應農莊的農業記憶，讓舊與新以對話而非對抗的方式共存，成為島嶼風景中一處有時間厚度的家。
+      </div>
+      <div class="client-label">Client Brief · 業主初衷</div>
+      <div class="client-text">業主是希望回歸島嶼生活的本地家族第三代，他們希望在維護祖先留下的農莊遺跡的同時，讓它重新成為一個能夠承接當代家庭生活的溫暖居所。</div>
+      <a href="https://housesmagazine.com.au/awards/2026/" target="_blank" class="source-link">View Source →</a>
+    </div>
+  </div>
+
 </div>
 
-<!-- Case 2 -->
-<div class="case-card">
-  <div class="card-num">02 / 08</div>
-  <div class="award-source">RSAW Welsh Architecture Award 2026 · Residential</div>
-  <div class="case-title">Porthmadog House</div>
-  <div class="case-title-zh">波斯馬多格之家</div>
-  <div class="meta-row">
-    <span class="meta-item"><strong>建築師</strong> Strom Architects</span>
-    <span class="meta-item"><strong>地點</strong> Porthmadog, Wales, UK</span>
-    <span class="meta-item"><strong>規模</strong> 475 m²</span>
-  </div>
-  <div class="tags">
-    <span class="tag">板岩下層</span>
-    <span class="tag">耐候鋼上層</span>
-    <span class="tag">5度偏轉</span>
-    <span class="tag">鋼翅片遮陽</span>
-    <span class="tag">材料地層學</span>
-  </div>
-  <div class="section-label">設計解讀</div>
-  <div class="reading-text">
-    Porthmadog House 是 Strom Architects 在威爾斯海港小鎮的私人住宅，榮獲 RSAW Welsh Architecture Award 2026 住宅類別。設計以「材料地層學」為核心邏輯：下層以當地板岩砌築，完全嵌入坡地，呼應威爾斯採石場的石層歷史；上層以耐候鋼包覆，相對底層旋轉5度，製造出地貌錯位的視覺張力。板岩下層是對威爾斯採石場歷史的直接引用——這片土地過去是板岩工業的核心地帶，建築以同種材料砌築基座，讓住宅在地貌上生根。上層耐候鋼的5度偏轉是刻意製造建築與地形之間的「未對齊感」，讓人察覺到兩個系統在此相遇。鋼翅片系統解決遮陽實用需求，同時在立面上形成近似採石場岩層的水平切割線。室內拋光混凝土和淺色木材與外部深色材料形成內外的對比反轉。
-  </div>
-  <hr class="divider">
-  <div class="section-label">業主語</div>
-  <div class="client-text">
-    下層是這片土地的記憶——板岩砌築的基座呼應威爾斯採石場的地質歷史。上層耐候鋼微微偏轉，像是兩個地層的交界面。鋼翅片篩過光線，室內因此擁有威爾斯多變天候下最柔和的日影。建築從地景長出來，而不是放置在地景上。
-  </div>
-  <hr class="divider">
-  <a class="source-link" href="https://www.ribaj.com/buildings/rsaw-wales-2026-strom-architects-porthmadog-house" target="_blank">→ RIBA Journal · Porthmadog House</a>
-</div>
-
-<!-- Case 3 -->
-<div class="case-card">
-  <div class="card-num">03 / 08</div>
-  <div class="award-source">FRAME Awards 2026 · Silver – Residential</div>
-  <div class="case-title">Long Lake Cottage</div>
-  <div class="case-title-zh">長湖小屋</div>
-  <div class="meta-row">
-    <span class="meta-item"><strong>建築師</strong> Dubbeldam Architecture+Design</span>
-    <span class="meta-item"><strong>地點</strong> Muskoka, Ontario, Canada</span>
-    <span class="meta-item"><strong>規模</strong> 333 m²</span>
-  </div>
-  <div class="tags">
-    <span class="tag">離網太陽能</span>
-    <span class="tag">白橡木</span>
-    <span class="tag">北美鐵杉</span>
-    <span class="tag">鑄混凝土壁爐</span>
-    <span class="tag">橋接入口</span>
-    <span class="tag">無障礙</span>
-  </div>
-  <div class="section-label">設計解讀</div>
-  <div class="reading-text">
-    Long Lake Cottage 是 Dubbeldam Architecture+Design 在安大略省穆斯科卡湖區設計的 333 平方公尺離網度假小屋，榮獲 FRAME Awards 2026 住宅類銀獎。基地位於湖畔陡坡，以橋樑銜接主要道路與入口層。橋樑是一種空間儀式——從車道跨越至入口，訪客在抵達前便已被自然包圍。離網系統（太陽能+儲電）的選擇使建築完全脫離市政基礎設施，宣告自足而非依附。白橡木與鐵杉均具天然防腐性，在溫帶濕潤氣候下免需化學處理，確保小屋外觀隨歲月優雅演化。鑄混凝土壁爐是全案唯一的重量級元素，其熱質量在春秋兩季蓄熱並緩釋，同時在視覺上成為室內的重力中心。整個設計在輕盈（木材、橋、離網）與沉重（混凝土壁爐、錨定感）之間取得精確的平衡。
-  </div>
-  <hr class="divider">
-  <div class="section-label">業主語</div>
-  <div class="client-text">
-    橋帶你越過坡地到達前門——這是一個暫停的時刻，讓你在進入之前先感受湖與林的存在。小屋完全自足：太陽能供電，木材自然防腐，壁爐的混凝土在夜間緩緩釋放白日積蓄的暖意。這是一個你可以完全放手交給自然節奏的地方。
-  </div>
-  <hr class="divider">
-  <a class="source-link" href="https://www.dubbeldam.ca/projects/long-lake-cottage/" target="_blank">→ Dubbeldam Architecture+Design · Long Lake Cottage</a>
-</div>
-
-<!-- Case 4 -->
-<div class="case-card">
-  <div class="card-num">04 / 08</div>
-  <div class="award-source">Dezeen Awards 2026 · Shortlist – House Renovation of the Year</div>
-  <div class="case-title">Tucker</div>
-  <div class="case-title-zh">塔克之家</div>
-  <div class="meta-row">
-    <span class="meta-item"><strong>建築師</strong> SSdH (Studio Sven de Heijer)</span>
-    <span class="meta-item"><strong>地點</strong> Melbourne, Victoria, Australia</span>
-  </div>
-  <div class="tags">
-    <span class="tag">最小干預</span>
-    <span class="tag">精確拆除</span>
-    <span class="tag">減法設計</span>
-    <span class="tag">採光重建</span>
-    <span class="tag">翻新倫理</span>
-  </div>
-  <div class="section-label">設計解讀</div>
-  <div class="reading-text">
-    Tucker 是 SSdH 在澳洲墨爾本對一棟老屋進行的翻新項目，入圍 Dezeen Awards 2026 年度住宅翻新類別短名單。設計採用「最小干預」原則：在沒有加建新體量的前提下，透過精確的拆除工作打開天光通道、引入庭院視野，讓既有建築完全蛻變。設計核心在於辨識哪些元素值得保留，哪些阻礙了建築的潛力，並以「減法」而非「加法」實現空間升級。在墨爾本的維多利亞式排屋中，後方加建已成為慣例，形成大量採光不足、空間割裂的層疊結構。Tucker 的設計師選擇逆向操作——拆除部分後加建，重新開放天窗位置，讓磚、灰泥、木樓板這些本身就高質量的材料重新主導空間。減法設計的難度在於設計師必須清楚知道「留下什麼」，並承擔「不做」的決定所帶來的不確定性。Tucker 是「少即是多」在住宅翻新語境下最具說服力的當代案例之一。
-  </div>
-  <hr class="divider">
-  <div class="section-label">業主語</div>
-  <div class="client-text">
-    翻新不一定是加法。Tucker 的設計師首先問的是：這棟房子被什麼遮住了？精確拆除後，天光回來了，庭院回來了，原本的磚與木重新成為主角。增建可以解決面積問題，但減法才能釋放建築本來就有的品質。
-  </div>
-  <hr class="divider">
-  <a class="source-link" href="https://www.dezeen.com/awards/2026/shortlists/house-renovation/tucker/" target="_blank">→ Dezeen Awards 2026 · Tucker</a>
-</div>
-
-<!-- Case 5 -->
-<div class="case-card">
-  <div class="card-num">05 / 08</div>
-  <div class="award-source">AIA NSW Architecture Awards 2026 · Residential Architecture: Houses (New)</div>
-  <div class="case-title">Queenscliff House</div>
-  <div class="case-title-zh">昆斯克利夫之家</div>
-  <div class="meta-row">
-    <span class="meta-item"><strong>建築師</strong> Chenchow Little</span>
-    <span class="meta-item"><strong>地點</strong> Queenscliff, Sydney, NSW, Australia</span>
-  </div>
-  <div class="tags">
-    <span class="tag">倒置樓層</span>
-    <span class="tag">沙色磚拱</span>
-    <span class="tag">海灣景觀</span>
-    <span class="tag">衝浪家庭</span>
-    <span class="tag">被動遮陽</span>
-  </div>
-  <div class="section-label">設計解讀</div>
-  <div class="reading-text">
-    Queenscliff House 是 Chenchow Little 為一個衝浪家庭在雪梨昆斯克利夫設計的新建住宅，榮獲 AIA NSW Architecture Awards 2026 住宅建築新建類獎項。設計最大特色是倒置的樓層配置：私密臥室區位於地面層，公共起居空間置於上層，直接朝向北方海灣。倒置樓層邏輯源自對基地的精確分析：上層視野遠優於下層，而起居空間是家庭最頻繁使用的區域，因此應享有最好的景觀。臥室的隱私性由地面層的退縮與植栽緩衝保障。沙色磚拱不只是美學語言，更是被動式遮陽系統：拱廊在夏季阻擋高角度日照，在冬季允許低角度陽光深入室內。拱的形式呼應附近的歷史建築語彙，同時在砂礫色彩上與昆斯克利夫的沙灘地景融合。這個案子示範了如何以一個清晰的概念（倒置）重新組織整個設計系統。
-  </div>
-  <hr class="divider">
-  <div class="section-label">業主語</div>
-  <div class="client-text">
-    早晨衝浪回來，沖洗乾淨，直接上到起居層——海灣在眼前，陽光正好。臥室在地面層，安靜、涼爽、隱密。沙色磚拱遮住夏日烈陽，卻讓冬天的暖光進來。這個家的邏輯很簡單：把最好的景觀留給你每天最常待的地方。
-  </div>
-  <hr class="divider">
-  <a class="source-link" href="https://www.architecture.com.au/?p=212339" target="_blank">→ Architecture.com.au · Queenscliff House</a>
-</div>
-
-<!-- Case 6 -->
-<div class="case-card">
-  <div class="card-num">06 / 08</div>
-  <div class="award-source">AZ Awards 2026 · Winner – Multi-Unit Residential</div>
-  <div class="case-title">26 Point 2 Apartments</div>
-  <div class="case-title-zh">二十六·二公寓</div>
-  <div class="meta-row">
-    <span class="meta-item"><strong>建築師</strong> Michael Maltzan Architecture</span>
-    <span class="meta-item"><strong>地點</strong> Long Beach, California, USA</span>
-    <span class="meta-item"><strong>規模</strong> 76戶</span>
-  </div>
-  <div class="tags">
-    <span class="tag">過渡性住宅</span>
-    <span class="tag">LEED金級</span>
-    <span class="tag">個別入口</span>
-    <span class="tag">馬拉松命名</span>
-    <span class="tag">尊嚴感設計</span>
-  </div>
-  <div class="section-label">設計解讀</div>
-  <div class="reading-text">
-    26 Point 2 Apartments 是 Michael Maltzan Architecture 在加州長灘設計的76戶過渡性住宅，「26點2」取自馬拉松的英里距離，隱喻住戶從無家可歸到穩定住所的長途旅程，榮獲 AZ Awards 2026 多單元住宅類別首獎，並達到 LEED 金級認證。設計師以正規建築語彙打破過渡性住宅低品質的刻板印象，每個單元均有獨立入口、充足採光與私密戶外空間。設計師放棄通廊式配置，改採連排個別入口，讓每位住戶都有「回家」的清晰空間感——有自己的門，有自己的門廊，有自己的出入動線。LEED 金級認證代表長期低運營成本，直接轉化為住戶更多可支配收入。命名本身也是設計的一部分：馬拉松的隱喻讓住戶的旅程被賦予尊嚴與意志力的詮釋框架，而非僅僅是「被安置」的被動身份。
-  </div>
-  <hr class="divider">
-  <div class="section-label">業主語</div>
-  <div class="client-text">
-    26.2 是馬拉松的距離。這棟建築的名字告訴住戶：你正在走一段艱難但有終點的路，而這個家是你抵達的第一步。每個單元都有自己的門，自己的戶外角落。建築設計的目標只有一個：讓每位住戶在打開門的那一刻，感覺自己是有家的人。
-  </div>
-  <hr class="divider">
-  <a class="source-link" href="https://www.mmaltzan.com/?p=1242" target="_blank">→ Michael Maltzan Architecture · 26 Point 2</a>
-</div>
-
-<!-- Case 7 -->
-<div class="case-card">
-  <div class="card-num">07 / 08</div>
-  <div class="award-source">ArchDaily Featured · 2025/2026</div>
-  <div class="case-title">Casa Co</div>
-  <div class="case-title-zh">科·家</div>
-  <div class="meta-row">
-    <span class="meta-item"><strong>建築師</strong> Aagnes studio + JDEstudio</span>
-    <span class="meta-item"><strong>地點</strong> Guadalajara, Jalisco, Mexico</span>
-    <span class="meta-item"><strong>規模</strong> 1,600 m²</span>
-  </div>
-  <div class="tags">
-    <span class="tag">以美為組織原則</span>
-    <span class="tag">石材</span>
-    <span class="tag">水景</span>
-    <span class="tag">光線路徑</span>
-    <span class="tag">靜謐哲學</span>
-  </div>
-  <div class="section-label">設計解讀</div>
-  <div class="reading-text">
-    Casa Co 是 Aagnes studio 與 JDEstudio 合作在墨西哥瓜達拉哈拉設計的 1,600 平方公尺私人住宅，由 ArchDaily 於 2025/2026 年重點收錄。設計師以「美」（beauty）作為整個空間設計的組織原則：每個序列、每個材料選擇、每個光線路徑，都服從於一個關於什麼是「值得凝視」的判斷。石材在瓦哈拉哈拉的脈絡中具有地域根基，同時在質感上形成對光線的「捕捉面」；水景不只是降溫系統，更是一種聲音景觀，讓靜謐感成為空間可感知的屬性。1,600 平方公尺的規模並未轉化為炫耀性空間，而是被分解為多個具有獨立情緒的場所——規模服務於深度而非展示。Aagnes 與 JDEstudio 的合作融合了材料研究與空間敘事兩種設計語言，Casa Co 是這兩種取向交會後的結果。
-  </div>
-  <hr class="divider">
-  <div class="section-label">業主語</div>
-  <div class="client-text">
-    我們希望這個家的每一個角落，都值得你在某個午後停下來好好看。石材捕捉光、水面傳送聲音的靜謐、過渡空間與主空間一樣被認真對待——這不是奢華，這是一種關於什麼值得每天相處的判斷。Casa Co 是用美來組織生活的嘗試。
-  </div>
-  <hr class="divider">
-  <a class="source-link" href="https://www.archdaily.com/en/1042991/casa-co" target="_blank">→ ArchDaily · Casa Co</a>
-</div>
-
-<!-- Case 8 -->
-<div class="case-card">
-  <div class="card-num">08 / 08</div>
-  <div class="award-source">AIA NSW Architecture Awards 2026 · Residential Architecture: Houses (Alterations and Additions)</div>
-  <div class="case-title">Clay House</div>
-  <div class="case-title-zh">黏土之家</div>
-  <div class="meta-row">
-    <span class="meta-item"><strong>建築師</strong> Muci</span>
-    <span class="meta-item"><strong>地點</strong> Woollahra, Sydney, NSW, Australia</span>
-  </div>
-  <div class="tags">
-    <span class="tag">bovedilla 磚拱天花</span>
-    <span class="tag">羅馬磚</span>
-    <span class="tag">黏土磁磚</span>
-    <span class="tag">採光中庭</span>
-    <span class="tag">熱質量</span>
-    <span class="tag">地中海泥土感</span>
-  </div>
-  <div class="section-label">設計解讀</div>
-  <div class="reading-text">
-    Clay House 是建築師事務所 Muci 在雪梨內城 Woollahra 對一棟維多利亞式住宅進行的增改建項目，榮獲 AIA NSW 2026 住宅建築改建類獎項。設計的核心材料是陶土色 bovedilla 磚構成的筒拱天花板，搭配羅馬磚與黏土磁磚，在增建部分構建出地中海泥土感的空間氛圍。設計師在既有建築量體旁設置兩座新量體，中間形成採光中庭，讓自然光滲透至建築深處。黏土類材料的選用並非懷舊，而是對材料熱質量的精算——在雪梨的溫帶海洋氣候中能有效吸收日間熱量並在夜間釋放，降低空調需求。bovedilla 筒拱天花板在結構上將力分散傳遞至側牆，讓室內呈現純粹的曲面空間感；在視覺上，拱形天花板隨日照角度變化產生柔和的陰影漸層，讓光線成為時間的指示器。中庭切割建築量體，將自然光引導至傳統上最暗的中間區域，同時解決維多利亞式排屋的採光問題。
-  </div>
-  <hr class="divider">
-  <div class="section-label">業主語</div>
-  <div class="client-text">
-    Clay House 的新增部分選擇了最古老的材料——黏土磚。不是為了懷舊，而是因為黏土會呼吸：吸收白天的熱，夜晚再慢慢釋放。弧形拱頂讓光線在一天中緩緩移動，空間因此有了時間感。中庭切開建築，讓光線進到你以為永遠暗著的地方。
-  </div>
-  <hr class="divider">
-  <a class="source-link" href="https://www.architecture.com.au/archives/awards/clay-house" target="_blank">→ Architecture.com.au · Clay House</a>
-</div>
-
-</main>
 <footer>
-  住宅設計得獎案例日報 · 自動整理 · 2026-10-14 · yulife1289-dev
+  <span>設計獎項日報 · 自動化收錄系統</span>
+  <span>2026-10-22 · 8 cases · Architizer / Dezeen / FRAME / Houses</span>
 </footer>
+
 </body>
 </html>
