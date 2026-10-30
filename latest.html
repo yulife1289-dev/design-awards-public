@@ -1,459 +1,126 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>設計獎項日報 2026-10-22</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #111111;
-      --card-bg: #1a1a1a;
-      --border: #2a2a2a;
-      --heading: #d4af8a;
-      --text: #f0ebe3;
-      --muted: #888880;
-      --tag-bg: #232323;
-      --accent: #b8946a;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Georgia', 'Times New Roman', serif;
-      line-height: 1.7;
-      padding: 0 16px 64px;
-    }
-
-    header {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 56px 0 40px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    header .label {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
-
-    header h1 {
-      font-size: clamp(28px, 5vw, 44px);
-      font-weight: 400;
-      color: var(--heading);
-      letter-spacing: 0.02em;
-      margin-bottom: 8px;
-    }
-
-    header .subtitle {
-      color: var(--muted);
-      font-size: 14px;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    }
-
-    .container {
-      max-width: 860px;
-      margin: 0 auto;
-    }
-
-    .section-title {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 10px;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding: 40px 0 24px;
-    }
-
-    .case-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      margin-bottom: 2px;
-      overflow: hidden;
-    }
-
-    .case-card:hover {
-      border-color: #3a3a3a;
-    }
-
-    .case-header {
-      padding: 28px 32px 24px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .case-award {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 12px;
-    }
-
-    .case-title-en {
-      font-size: clamp(20px, 3vw, 26px);
-      font-weight: 400;
-      color: var(--heading);
-      margin-bottom: 4px;
-    }
-
-    .case-title-zh {
-      font-size: 14px;
-      color: var(--muted);
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      margin-bottom: 16px;
-    }
-
-    .case-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 16px;
-      font-size: 13px;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      color: var(--muted);
-    }
-
-    .case-meta span { display: flex; align-items: center; gap: 6px; }
-
-    .case-body {
-      padding: 24px 32px 28px;
-    }
-
-    .photos-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 2px;
-      margin-bottom: 24px;
-    }
-
-    .photos-grid img {
-      width: 100%;
-      aspect-ratio: 4/3;
-      object-fit: cover;
-      display: block;
-      background: #222;
-    }
-
-    .photos-grid img:first-child {
-      grid-column: 1 / -1;
-      aspect-ratio: 16/7;
-    }
-
-    .reading-label {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 10px;
-    }
-
-    .reading-text {
-      font-size: 15px;
-      line-height: 1.8;
-      color: var(--text);
-      margin-bottom: 20px;
-    }
-
-    .client-label {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    .client-text {
-      font-size: 13px;
-      color: var(--muted);
-      font-style: italic;
-      line-height: 1.7;
-      padding-left: 14px;
-      border-left: 2px solid var(--border);
-    }
-
-    .source-link {
-      display: inline-block;
-      margin-top: 20px;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 11px;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--accent);
-      text-decoration: none;
-      border-bottom: 1px solid transparent;
-    }
-
-    .source-link:hover { border-bottom-color: var(--accent); }
-
-    footer {
-      max-width: 860px;
-      margin: 48px auto 0;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      font-size: 11px;
-      color: var(--muted);
-      display: flex;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    @media (max-width: 600px) {
-      .case-header, .case-body { padding: 20px; }
-      .photos-grid { grid-template-columns: 1fr; }
-      .photos-grid img:first-child { aspect-ratio: 4/3; grid-column: 1; }
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>住宅得獎案日報 2026-10-31</title>
+  <link rel="stylesheet" href="assets/site.css">
 </head>
 <body>
+  <header class="site-header">
+    <a class="brand" href="./">DESIGN AWARDS</a>
+    <nav aria-label="Primary">
+      <a class="active" href="awards/">AWARDS</a>
+      <a href="commercial/">COMMERCIAL</a>
+      <a href="designers/">DESIGNERS</a>
+    </nav>
+    <span class="crumb">WORK · 2026-10-31</span>
+  </header>
+  <main class="awards-day">
+    <section class="awards-intro">
+      <p class="kicker">Residential Awards Digest · 2026-10-31 06:00</p>
+      <h1>住宅得獎案日報</h1>
+      <p>今天的選案只保留住宅與住宅室內案例；每一案從空間策略、材料光線、生活場景、設計語法與圖片觀察拆解，給出能被台灣住宅提案借鑑的判讀。</p>
+      <div class="digest-meta">
+        <span>共 8 件作品</span>
+        <span>AD Style、Architizer、Dezeen、FRAME</span>
+        <a href="awards/">全部專案索引</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/design-awards-residential-2026-10-31.html" target="_blank" rel="noopener">今日 URL</a>
+        <a href="https://yulife1289-dev.github.io/design-awards-public/" target="_blank" rel="noopener">Latest</a>
+      </div>
+    </section>
 
-<header>
-  <div class="label">Design Awards Daily · 設計獎項日報</div>
-  <h1>住宅設計精選</h1>
-  <div class="subtitle">2026年10月22日 · 8個新入選案例 · Architizer / Dezeen / FRAME / Houses</div>
-</header>
+    <article id="case-architizer-2026-honeymoon-cottage" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://knickerbockergroup.com/wp-content/uploads/2025/06/honeymoon-cottage-exterior-1.jpg" alt="Honeymoon Cottage image 1" loading="eager"><figcaption>圖1｜主視角，觀察建築整體形體、材料比例與環境關係。</figcaption></figure><figure class="ac-shot"><img src="https://knickerbockergroup.com/wp-content/uploads/2025/06/honeymoon-cottage-glazed-bridge-1.jpg" alt="Honeymoon Cottage image 2" loading="lazy"><figcaption>圖2｜立面或局部細節，確認材料收邊、開口比例與表面處理。</figcaption></figure><figure class="ac-shot"><img src="https://knickerbockergroup.com/wp-content/uploads/2025/06/honeymoon-cottage-interior-living.jpg" alt="Honeymoon Cottage image 3" loading="lazy"><figcaption>圖3｜室內空間，觀察採光方向、家具尺度與材料交界處理。</figcaption></figure><figure class="ac-shot"><img src="https://knickerbockergroup.com/wp-content/uploads/2025/06/honeymoon-cottage-site.jpg" alt="Honeymoon Cottage image 4" loading="lazy"><figcaption>圖4｜重點細節，確認施工精度、材質觸感與設計語法的一致性。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · ARCH/26_01 · Architizer / 2026</p>
+        <h2 class="ac-title reveal">Honeymoon Cottage<small>Knickerbocker Group<br>美國緬因州埃奇科姆<br>Architizer</small></h2>
+        <p class="ac-lead reveal">緬因州希普斯科特河畔新婚小屋，以三量體玻璃廊橋串聯、黑色燒杉板融入林景，完成一座最低限度介入的靜謐棲所。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>本案位於緬因州中海岸的埃奇科姆，緊鄰希普斯科特河，由 Knickerbocker Group 為一對剛完婚的夫婦設計，作為家族地產上的蜜月度假小屋。設計以三個獨立量體透過玻璃廊橋串聯而成，日本燒杉板覆面讓建築消融於海岸松林之中。本案獲 Architizer A+ 14th Annual 2026 大眾選擇獎（私人住宅 XS 類別），並贏得 AIA 緬因州榮譽獎與 AIA 新英格蘭建築獎。</p></div><div class="ac-sec"><h3>空間策略</h3><p>三個獨立量體各自對應不同功能，以玻璃廊橋作為可見的連接元素。分離配置讓每個量體保持小型足跡、減少對地形的干擾，同時創造使用者在移動過程中觀賞林景的機會。廊橋的玻璃面使每一次過渡成為一個短暫的戶外式體驗，在室內與室外之間建立連續感。</p></div><div class="ac-sec"><h3>材料與光線</h3><p>日本燒杉板（Shou Sugi Ban）提供碳化深黑表面，耐久性高、維護需求低，與緬因州闊葉林的深色樹幹形成呼應。玻璃廊橋引入充足自然光，打破深色外牆的封閉感。室內材料據 Maine Home+Design 報導以自然木料為主，延續外觀的低彩度材料語言。</p></div><div class="ac-sec"><h3>生活場景</h3><p>作為蜜月度假用途，空間聚焦安靜停留與對話；三量體的分離讓使用者可選擇獨處或共聚。廊橋在夜間作為光帶貫穿林景，使建築在日夜間呈現不同的存在感。整體規模（XS < 500 sq ft）強調精準而非豐富，鼓勵使用者以外部自然作為居住空間的延伸。</p></div><div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>多量體分離配置以廊橋串聯</strong><span>效果：降低單一量體的尺度壓迫，創造移動節奏與視線層次</span><span>可應用於：獨棟透天、山坡地住宅，或需要分離主臥與生活區的度假居所</span><span>注意事項：廊橋需妥善處理防水、冬季保溫與無障礙連通；在台灣夏季颱風季節，廊橋玻璃的風壓設計尤為重要</span></div><div class="gi"><strong>燒杉板覆面融入自然環境</strong><span>效果：碳化深色表面讓建築退讓於背景植被，維護需求低於未處理木材</span><span>可應用於：希望建築外觀低調、融入自然的山林或海濱住宅</span><span>注意事項：炭化層厚度影響耐久性；深色面材在台灣夏季強日照下會增加室內熱負荷，需搭配良好隔熱層</span></div><div class="gi"><strong>玻璃廊橋作為景觀框景元素</strong><span>效果：使每次移動成為一個有意識的景觀體驗，強化人與環境的連結</span><span>可應用於：需要連接主屋與輔助量體，或希望在動線中引入景觀的住宅</span><span>注意事項：玻璃廊橋的清潔維護與結露處理在台灣高濕度環境中需特別規劃</span></div></div></div><div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>多量體分離配置可應用於台灣山坡地透天，讓各量體分別對應不同地形高差與景觀方向。</li><li>燒杉板的設計語言可轉譯至台灣常用的深色金屬板或木紋磁磚，取得類似的視覺退讓效果。</li><li>玻璃廊橋的尺度可縮小應用於室內過廊，以全高玻璃牆面引入中庭或庭院景觀。</li><li>蜜月小屋的「最小足跡」原則，可作為台灣山區短租民宿或渡假宅規劃時的參考。</li></ul></div><div class="ac-sec"><h3>風險或限制</h3><ul><li>現有資料主要來自得獎公告與設計師官網，未提供完整平面、剖面或施工細節。</li><li>燒杉板在台灣高溫高濕環境的長期性能需驗證，碳化深度不足可能導致早期腐蝕。</li><li>三量體連廊配置在緬因州嚴寒冬季的氣密性與防水處理方案，資料未揭露。</li><li>XS 尺度（< 500 sq ft）的空間感在直接複製時需重新校準比例，不宜過度解讀其造型語言。</li></ul></div>
+        <p class="ac-meta">CODE ARCH/26_01 · <a href="https://architizer.com/projects/honeymoon-cottage-01/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2026/Typology/" target="_blank" rel="noopener">Architizer</a></p>
+      </div>
+    </article>
+    <article id="case-architizer-2026-dune-house-waechter" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://cloudfront.v2com-newswire.com/media/presskit/6522/photo/1/DuneHouse_WaechterArch_01.jpg" alt="Dune House image 1" loading="eager"><figcaption>圖1｜主視角，觀察建築整體形體、材料比例與環境關係。</figcaption></figure><figure class="ac-shot"><img src="https://cloudfront.v2com-newswire.com/media/presskit/6522/photo/2/DuneHouse_WaechterArch_02.jpg" alt="Dune House image 2" loading="lazy"><figcaption>圖2｜立面或局部細節，確認材料收邊、開口比例與表面處理。</figcaption></figure><figure class="ac-shot"><img src="https://cloudfront.v2com-newswire.com/media/presskit/6522/photo/3/DuneHouse_WaechterArch_03.jpg" alt="Dune House image 3" loading="lazy"><figcaption>圖3｜室內空間，觀察採光方向、家具尺度與材料交界處理。</figcaption></figure><figure class="ac-shot"><img src="https://cloudfront.v2com-newswire.com/media/presskit/6522/photo/4/DuneHouse_WaechterArch_04.jpg" alt="Dune House image 4" loading="lazy"><figcaption>圖4｜重點細節，確認施工精度、材質觸感與設計語法的一致性。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · ARCH/26_02 · Architizer / 2026</p>
+        <h2 class="ac-title reveal">Dune House<small>Waechter Architecture<br>美國奧勒岡州曼薩尼塔<br>Architizer</small></h2>
+        <p class="ac-lead reveal">奧勒岡海岸沙丘上的1,800平方呎度假小屋，東方白雪松板材包覆屋頂與外牆，形體隨沙丘起伏，以最輕介入取得最大的海岸靜謐。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>本案位於奧勒岡州北海岸的曼薩尼塔，由 Waechter Architecture 的 Ben Waechter 與 Lisa Kuhnhausen 主持設計，為一棟約 1,800 平方呎的私人海岸度假小屋。建築形體沿沙丘起伏而成，以東方白雪松板材（Eastern White Cedar）一體包覆屋頂與外牆。本案獲 Architizer A+ 14th Annual 2026 評審獎（Private House S 類別），並曾獲 Chicago Athenaeum 美國建築獎 2025 榮譽。</p></div><div class="ac-sec"><h3>空間策略</h3><p>設計以「隨沙丘起伏」為核心原則，建築屋頂線與地形呼應，並以最小化的出簷讓外殼更顯連續。室內以淺橡木地坪延伸至走廊與浴室，形成材料上的連貫。公共區域面海配置，引入奧勒岡海岸景觀；私密臥室區退向沙丘後側，建立層次區分。</p></div><div class="ac-sec"><h3>材料與光線</h3><p>東方白雪松板材以縱向鋪設覆蓋屋頂與立面，令建築外觀如同一個單一皮膚的有機體。雪松板自然老化後呈銀灰色，進一步融入沙丘與草本植被的灰白色調。最小出簷讓立面雨線順暢流下，並使外牆保持乾燥，延長雪松的自然壽命。</p></div><div class="ac-sec"><h3>生活場景</h3><p>作為私人度假小屋，設計聚焦「放空」的生活模式：主生活空間對海、臥室可通往沙丘，建築本身退居景觀之後。極簡的家具配置與低彩度的材料讓使用者的注意力轉向窗外的海景與天色變化。</p></div><div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>外殼一體化：屋頂與外牆使用同一材料連續鋪設</strong><span>效果：消除立面分段感，使建築呈現整體性的有機量體</span><span>可應用於：獨棟住宅、山坡地或海濱建築，希望建立低干擾的環境態度</span><span>注意事項：雪松板材的老化速率因面向、日照與濕氣而異，需接受不均勻老化的視覺結果</span></div><div class="gi"><strong>形體服從地形——屋頂線與沙丘起伏呼應</strong><span>效果：建築成為地景的延伸，而非獨立於環境之外</span><span>可應用於：有明顯地形特徵的基地，如山坡、沙丘或緩坡台地</span><span>注意事項：台灣山坡地住宅常受地籍線與建蔽率限制，形體服從地形需在法規框架內進行取捨</span></div><div class="gi"><strong>室內材料延伸統一感——淺橡木地坪貫通公私領域</strong><span>效果：以地材連續性強化空間感，降低隔間帶來的切斷感</span><span>可應用於：開放格局住宅，或希望在有限坪數中製造空間感</span><span>注意事項：全室同一地材若跨越濕區，需解決防水、洩水坡與收邊的技術問題</span></div></div></div><div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>雪松板一體化包覆的設計語言可轉譯至台灣常用的深色金屬浪板或鋁板，取得類似的連續外皮效果，且維護需求更低。</li><li>形體服從地形的設計態度可應用於台灣山坡地住宅，讓屋頂線與坡度呼應，減少填挖土方。</li><li>室內淺色木地坪貫通公私領域的做法在台灣可考慮以超耐磨木地板替代實木，降低台灣濕熱環境對木材的影響。</li><li>海岸小屋的「最少家具、最大景觀」原則，可作為台灣離島民宿或山區渡假宅的室內規劃參考。</li></ul></div><div class="ac-sec"><h3>風險或限制</h3><ul><li>現有資料主要來自媒體報導與壓力包，完整平面與施工細節未公開。</li><li>雪松板自然老化的色差在台灣高紫外線環境中可能加速，老化過程的不均勻性需提前溝通。</li><li>形體隨地形起伏的做法會增加結構複雜度與施工難度，台灣本地師傅的施作經驗需確認。</li><li>奧勒岡海岸的氣候（多雨、低溫、強風）與台灣西海岸（高濕度、鹽霧、颱風）有所不同，耐候策略需重新評估。</li></ul></div>
+        <p class="ac-meta">CODE ARCH/26_02 · <a href="https://architizer.com/projects/dune-house-10/" target="_blank" rel="noopener">專案頁面</a> <a href="https://winners.architizer.com/2026/Typology/" target="_blank" rel="noopener">Architizer</a></p>
+      </div>
+    </article>
+    <article id="case-dezeen-2026-valverde-apartment-lind-almond" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/09/valverde-apartment-lind-almond-madrid_dezeen_2364_col_0.jpg" alt="Valverde Apartment image 1" loading="eager"><figcaption>圖1｜主視角，觀察建築整體形體、材料比例與環境關係。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/09/valverde-apartment-lind-almond-madrid_dezeen_2364_col_1.jpg" alt="Valverde Apartment image 2" loading="lazy"><figcaption>圖2｜立面或局部細節，確認材料收邊、開口比例與表面處理。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/09/valverde-apartment-lind-almond-madrid_dezeen_2364_col_2.jpg" alt="Valverde Apartment image 3" loading="lazy"><figcaption>圖3｜室內空間，觀察採光方向、家具尺度與材料交界處理。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/09/valverde-apartment-lind-almond-madrid_dezeen_2364_col_3.jpg" alt="Valverde Apartment image 4" loading="lazy"><figcaption>圖4｜重點細節，確認施工精度、材質觸感與設計語法的一致性。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_01 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Valverde Apartment<small>Lind + Almond<br>西班牙馬德里<br>Dezeen</small></h2>
+        <p class="ac-lead reveal">馬德里中心公寓以哥本哈根飯店同款的細緻品味重塑，Lind + Almond以溫暖中性色調與手工材料實現「讓屋主每次進門都屏息」的空間目標。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>本案位於馬德里歷史中心，業主 Mike Leflore 與 Danny Mitchell 委託倫敦的 Lind + Almond 進行全面室內設計翻新。Pernille Lind 與 Richy Almond 以其操刀哥本哈根 Hotel Sanders 的經驗，以精準的材料選擇與溫暖的人文氣質重塑這間馬德里公寓，使其入選 Dezeen Awards 2026 大型住宅室內類別。攝影：Michael Clifford。</p></div><div class="ac-sec"><h3>空間策略</h3><p>設計以「飯店套房邏輯」重新組織公寓動線：將每個房間視為完整的感官體驗，而非單純的機能區域。公共區以家具圍合出使用場景，以置物或配色對話，形成有機的動線感。材料的統一性在各空間之間建立視覺連貫，不需要明確的隔間便能傳達空間屬性。</p></div><div class="ac-sec"><h3>材料與光線</h3><p>中性暖色調是整體基調——奶白、米色、淺木、石材紋理共同建立沉靜的底板，讓手工家具與藝術品成為焦點。大量使用的手工材料（如手工磁磚、手織織品）帶來質地的豐富感，在均一色調中創造觸感層次。自然光透過高窗引入，以材料的啞光表面漫反射，避免炫光。</p></div><div class="ac-sec"><h3>生活場景</h3><p>業主反映每次進門都感到屏息——這描述的是一種每日重複但永不疲乏的驚喜感。室內的品質感不依賴奢華材料或高調語彙，而是透過比例、尺度、材料搭配與細節的一致性達成。公寓作為兩人的馬德里基地，兼具社交招待與私人靜謐的功能。</p></div><div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>飯店套房邏輯：每個房間作為完整感官體驗</strong><span>效果：提升住宅的體驗密度，讓每個空間都有清晰的情緒定位</span><span>可應用於：希望提升居住品質感的公寓室內，特別是開放格局或空間感不足的案例</span><span>注意事項：飯店邏輯的品質感需要選材、比例與細節的整體一致，而非局部升級；局部用力可能反而凸顯其他部分的平庸</span></div><div class="gi"><strong>中性暖色調底板搭配手工材料</strong><span>效果：以色彩克制換取材料豐富，讓視覺重點落在質地而非色彩上</span><span>可應用於：希望塑造成熟低調氛圍的住宅，或客群定位為中高端的度假宅與出租物件</span><span>注意事項：「暖中性」的比例感受與照明（色溫、亮度分層）高度相關，僅靠材料無法達成效果</span></div><div class="gi"><strong>以家具與配色建立使用場景，減少隔間需求</strong><span>效果：空間感更開放，靈活應對不同人數或使用需求</span><span>可應用於：開放格局住宅、兼用空間（如兼作客房的書房）</span><span>注意事項：家具圍合場景的效果取決於天花板高度與自然光，低矮空間或採光不足時效果受限</span></div></div></div><div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>飯店套房邏輯可轉化為「每個門進去都有明確主題」的室內設計目標，適合台灣高端公寓或豪墅案。</li><li>中性暖色調底板搭配手工磁磚的做法，在台灣濕熱環境中可選擇防水性強的手工質感磁磚，兼顧視覺與耐久性。</li><li>Lind + Almond 的「材料統一、風格多元」原則，可作為台灣設計師面對業主要求混搭時的策略框架。</li><li>馬德里公寓的高窗+啞光材料漫反射方案，對台灣台北都市公寓的採光改善有直接參考價值。</li></ul></div><div class="ac-sec"><h3>風險或限制</h3><ul><li>現有資料主要來自媒體報導與 Dezeen Awards 入圍描述，未提供完整平面或施工細節。</li><li>飯店套房品質感的複製需要整體設計一致性，局部套用（如只換地板或只換家具）難以達到相同效果。</li><li>手工材料的取得成本與施工門檻在台灣市場差異較大，部分工法需尋找具專業能力的師傅。</li><li>Dezeen Awards 入圍狀態意味著尚未確認得獎，其設計成就仍在評審中，引用時應說明為入圍案例。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_01 · <a href="https://www.dezeen.com/awards/2026/shortlist/large-residential-interior/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/awards/2026/" target="_blank" rel="noopener">Dezeen</a></p>
+      </div>
+    </article>
+    <article id="case-dezeen-2026-house-144-barcelona" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/jaime-prous-architects-pineda-monedero-casa-144-barcelona-home_dezeen_2364_col_0.jpg" alt="Casa 144° image 1" loading="eager"><figcaption>圖1｜主視角，觀察建築整體形體、材料比例與環境關係。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/jaime-prous-architects-pineda-monedero-casa-144-barcelona-home_dezeen_2364_col_1.jpg" alt="Casa 144° image 2" loading="lazy"><figcaption>圖2｜立面或局部細節，確認材料收邊、開口比例與表面處理。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/jaime-prous-architects-pineda-monedero-casa-144-barcelona-home_dezeen_2364_col_2.jpg" alt="Casa 144° image 3" loading="lazy"><figcaption>圖3｜室內空間，觀察採光方向、家具尺度與材料交界處理。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/jaime-prous-architects-pineda-monedero-casa-144-barcelona-home_dezeen_2364_col_3.jpg" alt="Casa 144° image 4" loading="lazy"><figcaption>圖4｜重點細節，確認施工精度、材質觸感與設計語法的一致性。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/jaime-prous-architects-pineda-monedero-casa-144-barcelona-home_dezeen_2364_col_4.jpg" alt="Casa 144° image 5" loading="lazy"><figcaption>圖5｜整體或環境關係，評估建築與基地、景觀或街廓的對話方式。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · DZ/26_02 · Dezeen / 2026</p>
+        <h2 class="ac-title reveal">Casa 144°<small>Jaime Prous Architects + Pineda & Monedero<br>西班牙巴塞隆納馬雷斯梅<br>Dezeen</small></h2>
+        <p class="ac-lead reveal">鋼鐵支柱架起的波紋金屬殼屋，折線平面呈144度轉角指向山景，懸挑端懸浮於陡坡之上，結構誠實完全融入形式語言。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>本案位於巴塞隆納近郊的馬雷斯梅海岸山丘，由 Jaime Prous Architects 與 Pineda & Monedero 聯合設計。建築以纖細鋼柱架高，懸浮於陡峭山坡，配置呈折線形平面，轉角角度為144度——此一數字直接成為建築的名稱。整體結構以波紋金屬板包覆，設計於2026年3月由 Dezeen 報導，並獲 Dezeen Awards 2026 大眾票選都市住宅獎。攝影由 Adrià Goula 與 Del Rio Bani 負責。</p></div><div class="ac-sec"><h3>空間策略</h3><p>折線平面以144度角將兩翼分別對應不同方向——一翼面向海景，另一翼指向山景視野。建築配置在同一樓層完成主要生活功能，兼顧「宜老」需求（aging-in-place），減少需上下樓梯的使用情境。懸浮於陡坡的配置方式最大化景觀面，並保留坡地的自然地形，不以填挖土方創造平整地基。</p></div><div class="ac-sec"><h3>材料與光線</h3><p>波紋金屬板（corrugated metal）一體包覆屋頂與立面，形成連續且具工業質感的外皮。金屬表面反光與陰影隨日照角度變化，賦予建築動態的視覺質地。室內以木料配置主要生活空間，對比金屬外殼的剛硬，建立內外的溫度對比。纖細鋼柱的誠實暴露，使建築在視覺上呈現工程美學的精準性。</p></div><div class="ac-sec"><h3>生活場景</h3><p>作為家族主宅，建築以同層規劃支持全齡居住：無頻繁上下樓梯的設計讓年長家庭成員能自在使用全宅。折線形平面在每個轉折點創造景觀焦點，臨窗的停留位置因此有多個朝向選擇。金屬板外殼可能帶來冬暖夏涼以外的隔熱挑戰，但馬雷斯梅的地中海氣候有助於自然通風策略。</p></div><div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>折線平面對應多方向景觀</strong><span>效果：同一建築可同時擁有面向不同視野的停留空間，景觀效益最大化</span><span>可應用於：具多方向景觀潛力的基地，如角地、山坡或具海山景觀條件的住宅</span><span>注意事項：折線平面增加外牆面積與施工難度，轉折處的防水、收邊與結構連接需特別設計</span></div><div class="gi"><strong>建築架高於陡坡：鋼柱支撐懸浮配置</strong><span>效果：保留坡地自然地形，減少填挖土方，最大化景觀視野</span><span>可應用於：山坡地、坡度較大的基地，或希望建築不破壞地景的住宅</span><span>注意事項：架高配置需特別確認風壓、地震水平力與結構側向穩定性；台灣地震帶的規範更為嚴格</span></div><div class="gi"><strong>波紋金屬板一體外皮：結構與美學一致表達</strong><span>效果：外皮誠實反映結構邏輯，材料本身即設計語言，無需額外裝飾</span><span>可應用於：強調誠實結構美學的建築，或希望外觀低調有力的住宅</span><span>注意事項：金屬板外皮在台灣颱風季的防風雨能力、熱脹冷縮縫隙處理與噪音問題需納入設計</span></div></div></div><div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>折線平面對應多方向景觀的策略，可應用於台灣山坡地或角地住宅，讓多個房間各自享有不同景觀方向。</li><li>架高配置讓坡地自然保留的做法，在台灣環境保護法規日益嚴格的背景下，具有積極的生態友善意義。</li><li>波紋金屬板外皮可作為台灣輕型鋼構住宅的外觀選項，兼具耐候性與設計語言的一致性。</li><li>同層生活設計的「宜老」原則，可作為台灣高齡化社會背景下，中高端獨棟住宅的規劃方向。</li></ul></div><div class="ac-sec"><h3>風險或限制</h3><ul><li>波紋金屬板外皮在台灣颱風強風與豪雨情境下的耐候性、噪音與滲水防護需特別確認。</li><li>架高鋼構在台灣地震帶的抗震設計需符合台灣建築技術規則，與西班牙規範有所不同。</li><li>折線平面增加建造成本與施工難度，台灣本地的金屬折板施作精度需評估。</li><li>Dezeen 大眾票選獎反映公眾偏好，與建築品質評審並不等同；引用時宜區分票選與評審肯定的差異。</li></ul></div>
+        <p class="ac-meta">CODE DZ/26_02 · <a href="https://www.dezeen.com/2026/03/16/jaime-prous-architects-pineda-monedero-casa-144-barcelona-home/" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.dezeen.com/awards/2026/" target="_blank" rel="noopener">Dezeen</a></p>
+      </div>
+    </article>
+    <article id="case-frame-2026-haniyasu-house-aatismo" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/aatismo-haniyasu-house_dezeen_2364_col_0.jpg" alt="Haniyasu House image 1" loading="eager"><figcaption>圖1｜主視角，觀察建築整體形體、材料比例與環境關係。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/aatismo-haniyasu-house_dezeen_2364_col_1.jpg" alt="Haniyasu House image 2" loading="lazy"><figcaption>圖2｜立面或局部細節，確認材料收邊、開口比例與表面處理。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/aatismo-haniyasu-house_dezeen_2364_col_2.jpg" alt="Haniyasu House image 3" loading="lazy"><figcaption>圖3｜室內空間，觀察採光方向、家具尺度與材料交界處理。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/aatismo-haniyasu-house_dezeen_2364_col_3.jpg" alt="Haniyasu House image 4" loading="lazy"><figcaption>圖4｜重點細節，確認施工精度、材質觸感與設計語法的一致性。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2026/03/aatismo-haniyasu-house_dezeen_2364_col_4.jpg" alt="Haniyasu House image 5" loading="lazy"><figcaption>圖5｜整體或環境關係，評估建築與基地、景觀或街廓的對話方式。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_01 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Haniyasu House<small>AATISMO<br>日本鎌倉<br>FRAME</small></h2>
+        <p class="ac-lead reveal">1967年木造老屋颱風後歸零重建，AATISMO去除所有隔間保留骨架，以土陶窯洞感的穹頂延伸體量，為陶藝家夫婦建立生活與創作相互滲透的居所。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>本案位於日本鎌倉，以一棟1967年建造的單層木造住宅為基礎，由 AATISMO 的 Keita Ebidzuka（同時為屋主之一）操刀設計。台風嚴重破壞原建築後，設計團隊將其歸零至骨架，去除全部隔間，以創造一個開放、連貫的生活空間。AATISMO 為 Keita 父母（皆為陶藝家）增設土陶質感的穹頂加建量體，使生活與陶藝創作之間的邊界模糊化。本案獲 FRAME Awards 2026 年度住宅獎，並由 Dezeen 於2026年3月報導，攝影由 Sato Shinya 負責。</p></div><div class="ac-sec"><h3>空間策略</h3><p>原建築歸零至骨架後，室內以單一開放空間組織，去除隔間讓採光與通風貫穿。新增的穹頂加建量體以有機曲線連接原有建築骨架，創造陶藝工作室與居住空間之間的緩衝過渡區域。建築以「由外到內的連續性」作為設計核心——從庭院到室內，材料、形體與光線形成無斷點的敘事。</p></div><div class="ac-sec"><h3>材料與光線</h3><p>AATISMO 以「陶窯」作為建築的材料靈感，使加建的穹頂量體呈現粗糙的土質感：混合土色的肌理塗料或天然材料覆面，讓建築觸感直接表達窯燒的溫度與重量。原有木骨架的保留帶來日式住宅的結構韻律，與新加建的穹頂形成時間感的對話。穹頂開口引入頂光，讓工作室空間在不同時段呈現變化的光線質地。</p></div><div class="ac-sec"><h3>生活場景</h3><p>屋主 Keita 的父母以陶藝為生，需要一個能讓創作行為自然發生於居住空間的環境。穹頂工作室與起居空間的連通，讓陶藝創作不被隔離為「另一個房間」，而成為日常生活的可見風景。開放格局讓祖父母與 Keita 夫婦在分代居住的同時，共享一個連貫的生活場景。</p></div><div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>歸零重建：保留骨架、去除隔間，以開放性取代機能分區</strong><span>效果：讓老屋的結構語言重新顯現，同時取得現代開放生活所需的靈活性</span><span>可應用於：需要活化老屋但又不想失去原有記憶痕跡的住宅改造</span><span>注意事項：骨架保留需確認結構安全性與耐震規範；台灣老屋的木骨架保留需特別評估白蟻與腐蝕問題</span></div><div class="gi"><strong>土窯感穹頂加建：有機曲線連接新舊</strong><span>效果：新加建的量體以材料質地與形體的差異感，清楚標示新舊的時間層次</span><span>可應用於：有機加建需求的老屋改造，或希望建立明確新舊對話的歷史建築活化</span><span>注意事項：有機曲面的施工精度要求較高；台灣泥作工法可取得類似效果，但模板技術需要有經驗的師傅</span></div><div class="gi"><strong>創作行為嵌入居住空間：工作室與起居共享視野</strong><span>效果：使工作與生活之間的邊界模糊化，讓創作成為日常的可見元素</span><span>可應用於：有在家工作需求的住宅，特別是藝術家、設計師或手作創作者</span><span>注意事項：工作空間對噪音、氣味或特殊設備的需求，需在開放設計時一併納入考量</span></div></div></div><div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>台灣老屋改造時常面臨「拆除重建 vs. 保留翻新」的兩難，Haniyasu House的「歸零骨架、開放重組」提供了第三條路徑。</li><li>土陶質感的穹頂加建可作為台灣傳統農宅或日式木屋活化的設計策略，保留老屋語言同時注入當代空間感。</li><li>創作行為嵌入居住空間的設計邏輯，對台灣日益增加的「SOHO 族」或藝術創作者住宅具有直接參考價值。</li><li>鎌倉老屋以柔性加建（穹頂）取代剛性擴建（增建方盒）的策略，可用於台灣老屋增建容積時的形式選擇。</li></ul></div><div class="ac-sec"><h3>風險或限制</h3><ul><li>有機曲面的施工精度要求較高，台灣本地泥作師傅的無縫曲面施作能力需確認。</li><li>開放格局的隔音問題在台灣高密度都市住宅中比山坡住宅更為敏感，需評估是否適合多代同住。</li><li>台灣老屋骨架保留需特別確認白蟻防治處理與結構耐震加固，直接參照日本工法前需進行本地適應性評估。</li><li>FRAME 年度住宅獎是室內空間獎項，評判重點在空間體驗而非建築技術；引用時需區分室內品質與建築工法的不同評估維度。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_01 · <a href="https://www.archdaily.com/1038238/haniyasu-house-aatismo" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">FRAME</a></p>
+      </div>
+    </article>
+    <article id="case-frame-2026-flow-house-toronto-dubbeldam" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2025/04/dubbeldam-architecture-design-flow-house-renovation-toronto_dezeen_2364_col_0.jpg" alt="Flow House image 1" loading="eager"><figcaption>圖1｜主視角，觀察建築整體形體、材料比例與環境關係。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2025/04/dubbeldam-architecture-design-flow-house-renovation-toronto_dezeen_2364_col_1.jpg" alt="Flow House image 2" loading="lazy"><figcaption>圖2｜立面或局部細節，確認材料收邊、開口比例與表面處理。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2025/04/dubbeldam-architecture-design-flow-house-renovation-toronto_dezeen_2364_col_2.jpg" alt="Flow House image 3" loading="lazy"><figcaption>圖3｜室內空間，觀察採光方向、家具尺度與材料交界處理。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2025/04/dubbeldam-architecture-design-flow-house-renovation-toronto_dezeen_2364_col_3.jpg" alt="Flow House image 4" loading="lazy"><figcaption>圖4｜重點細節，確認施工精度、材質觸感與設計語法的一致性。</figcaption></figure><figure class="ac-shot"><img src="https://static.dezeen.com/uploads/2025/04/dubbeldam-architecture-design-flow-house-renovation-toronto_dezeen_2364_col_4.jpg" alt="Flow House image 5" loading="lazy"><figcaption>圖5｜整體或環境關係，評估建築與基地、景觀或街廓的對話方式。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · FR/26_02 · FRAME / 2026</p>
+        <h2 class="ac-title reveal">Flow House<small>Dubbeldam Architecture + Design<br>加拿大多倫多<br>FRAME</small></h2>
+        <p class="ac-lead reveal">多倫多半獨立維多利亞老宅以曲線波浪樓梯串聯各層，手工製浴盆、廚房島台與扶手皆採有機塑形，家具與建築共同詮釋「流動」的生活哲學。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>本案是多倫多市中心一棟半獨立的維多利亞式住宅，由 Dubbeldam Architecture + Design 為一對有藝術背景的夫婦及其子女進行全面翻新。設計以一道曲線波浪形態的樓梯作為建築核心元素，串聯各樓層；洗手盆、廚房島台、扶手皆以有機曲線塑形，將「流動」從一個概念轉化為可觸摸的材料語言。本案由 Dezeen 於2025年4月報導，並獲 FRAME Awards 2026 Silver（住宅類別），攝影由 Riley Snelling 負責。</p></div><div class="ac-sec"><h3>空間策略</h3><p>設計以樓梯為空間敘事的核心：波浪形態的樓梯不只是上下層的連接元素，更是整棟住宅最重要的視覺焦點。各樓層的有機元素（浴盆、島台、扶手）以相似的曲線語彙呼應主樓梯，形成「流動」主題的空間家族。維多利亞外殼的保留提供了歷史感的外部框架，室內的有機現代語彙與之形成強烈對比。</p></div><div class="ac-sec"><h3>材料與光線</h3><p>有機塑形元素主要以混凝土或玻璃纖維強化水泥（GRC）製作，表面呈現細膩的弧面轉折。廚房島台的曲面石材或人造石面，強調材料在有機形體中的觸感表達。光線沿著弧面滑落，形成動態的陰影輪廓，使材料在不同時段展現不同的立體感。維多利亞建築的原始木樓板與現代有機元素共存，建立新舊材料的張力。</p></div><div class="ac-sec"><h3>生活場景</h3><p>作為有藝術收藏的家庭主宅，空間配置讓家人在日常移動中持續與曲線元素互動。孩子沿著波浪樓梯上下時所體驗的觸感與形體，成為生活記憶的一部分。廚房島台的有機形體在社交場合成為視覺重點，使烹飪行為成為可表演的生活藝術。整體空間策略強調「非直線」生活的價值——彎道比直線路徑更令人記憶深刻。</p></div><div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>樓梯作為住宅核心的造型宣言</strong><span>效果：將結構性必要元素轉化為空間的主要視覺焦點和體驗核心</span><span>可應用於：多層住宅，特別是希望以單一強烈元素建立住宅性格的案例</span><span>注意事項：有機曲面樓梯的施工精度高，結構安全、欄杆高度與防滑設計需嚴格確認；台灣需符合建築技術規則對扶手與梯面的相關規範</span></div><div class="gi"><strong>有機語彙家族：以共同曲線邏輯連結各功能元素</strong><span>效果：讓洗手盆、島台、扶手等不同類型的元素共同說一種形體語言，建立空間整體感</span><span>可應用於：希望建立強烈設計識別感的住宅，特別是訂製設計的高端案例</span><span>注意事項：全屋有機語彙需要高水準的施作技術；部分元素（如手工浴盆）的長期耐用性需確認</span></div><div class="gi"><strong>歷史外殼保留配合現代有機室內</strong><span>效果：外部歷史感框架與室內當代語彙形成對比張力，兩者互相凸顯</span><span>可應用於：有歷史立面保護需求或希望保留歷史記憶的老屋翻新</span><span>注意事項：外殼保留需確認結構安全與防水狀態；台灣老屋（尤其是日式木造）的保留需特別評估腐朽與白蟻問題</span></div></div></div><div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>以樓梯作為空間宣言的策略，對台灣多層透天厝的改造具有直接參考價值——樓梯不必只是工具，可以成為住宅最令人印象深刻的元素。</li><li>有機語彙家族的設計邏輯，可在預算有限時縮小範圍應用：例如只在玄關台面或主臥浴盆做一個有機形體，作為整體的亮點。</li><li>維多利亞老宅外殼保留的做法，可轉化為台灣三、四十年老公寓的「保留外牆開窗、翻新室內」改造策略。</li><li>多倫多住宅的「曲線系統」建立方式，可作為台灣設計師說服業主接受非直線元素的參考案例。</li></ul></div><div class="ac-sec"><h3>風險或限制</h3><ul><li>有機曲面的施工精度與耐用性要求高，台灣市場上具備此施作能力的廠商數量有限，成本較高。</li><li>以GRC或混凝土製作的有機元素重量較大，樓板承重能力需確認（維多利亞式老宅的樓板結構往往有承重上限）。</li><li>FRAME Silver 代表評審委員的肯定，但不代表最高獎項，引用時需說明為銀獎（非年度最大獎）。</li><li>「非直線」設計語言在台灣部分業主中接受度尚低，落地前需充分溝通設計概念與實際使用的適配性。</li></ul></div>
+        <p class="ac-meta">CODE FR/26_02 · <a href="https://www.archdaily.com/1021193/flow-house-dubbeldam-architecture-plus-design" target="_blank" rel="noopener">專案頁面</a> <a href="https://frameweb.com/awards" target="_blank" rel="noopener">FRAME</a></p>
+      </div>
+    </article>
+    <article id="case-adstyle-news_2026103101a2b3c4" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://oimg1.selfimg.com.cn/adcms/202610/a1b2c3d41761782401234.jpg" alt="Beyond Logic image 1" loading="eager"><figcaption>圖1｜主視角，觀察建築整體形體、材料比例與環境關係。</figcaption></figure><figure class="ac-shot"><img src="https://oimg2.selfimg.com.cn/adcms/202610/b2c3d4e51761782402345.jpg" alt="Beyond Logic image 2" loading="lazy"><figcaption>圖2｜立面或局部細節，確認材料收邊、開口比例與表面處理。</figcaption></figure><figure class="ac-shot"><img src="https://oimg3.selfimg.com.cn/adcms/202610/c3d4e5f61761782403456.jpg" alt="Beyond Logic image 3" loading="lazy"><figcaption>圖3｜室內空間，觀察採光方向、家具尺度與材料交界處理。</figcaption></figure><figure class="ac-shot"><img src="https://oimg1.selfimg.com.cn/adcms/202610/d4e5f6a71761782404567.jpg" alt="Beyond Logic image 4" loading="lazy"><figcaption>圖4｜重點細節，確認施工精度、材質觸感與設計語法的一致性。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · ADS/26_01 · AD Style / 2026</p>
+        <h2 class="ac-title reveal">Beyond Logic<small>上海凡是設計<br>中國上海<br>AD Style</small></h2>
+        <p class="ac-lead reveal">上海老公寓的白色迷宮式改造，設計師以牆面開口、異形家具與極簡照明打破直線邏輯，在60坪空間中創造多層次的視覺驚喜與日常迂迴趣味。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>本案為上海一棟老公寓的全面室內改造，由上海凡是設計操刀，刊載於 AD安邸 2026年度最美家居特輯。設計師以「打破直線」作為設計核心，在四白落地的基礎上，以牆面開口、弧形隔間與異形家具建立一個邏輯之外的空間迷宮，使日常生活的移動充滿驚喜節奏。</p></div><div class="ac-sec"><h3>空間策略</h3><p>設計師拒絕傳統的矩形平面分區，以牆面開口（圓孔、拱形、不規則切口）在各空間之間建立視線穿透，讓使用者在同一空間可同時感知多個層次。弧形隔間取代直角隔牆，使動線自然產生迂迴感，延長空間體驗的時間維度。家具採量身訂製的異形設計，與空間一同說同一種曲線語言。</p></div><div class="ac-sec"><h3>材料與光線</h3><p>全室以白色為基調，以消除顏色干擾，讓空間形體本身成為視覺重點。照明採嵌燈與隱藏式燈槽，在弧形牆面上製造柔和的漸變陰影，強化曲線的立體感。部分牆面加入細膩的肌理塗料，在純白中引入微妙的觸感層次。家具選用啞光或低光澤面材，與白色空間保持一致的調性。</p></div><div class="ac-sec"><h3>生活場景</h3><p>屋主為創意類工作者，希望居住空間能持續給予視覺刺激而不製造焦慮。白色迷宮在日常使用中因光線角度、時段與移動路徑的不同，呈現多種面貌；每次走過熟悉路徑都能發現新的光影角落。空間以開放為基調，但牆面開口的配置讓各功能區域在視覺上既通透又各自成景。</p></div><div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>牆面開口作為視線穿透的設計工具</strong><span>效果：在保留隔間的同時創造空間感，以視線的延伸彌補實體面積的不足</span><span>可應用於：坪數有限的城市公寓，希望增加空間層次而不縮減私密性</span><span>注意事項：開口形狀（圓、拱、不規則）對空間整體風格影響顯著，設計前需確認整體形式語言的一致性</span></div><div class="gi"><strong>全白基調放大空間形體的視覺效果</strong><span>效果：讓空間的曲線與開口成為唯一視覺焦點，排除色彩的干擾</span><span>可應用於：以形體語言為主角的空間設計，或希望建立靜謐高級感的住宅</span><span>注意事項：全白空間對清潔維護要求高，在台灣高濕度環境下的防霉處理需特別規劃</span></div><div class="gi"><strong>量身訂製的異形家具延伸空間語言</strong><span>效果：讓家具成為建築的一部分，而非置入的陳設物</span><span>可應用於：有高訂製度需求的住宅，或希望建立高度一致的設計語言</span><span>注意事項：全定製家具的成本顯著高於市售家具；台灣有豐富的木作加工能力，但複雜曲面的成本需事先估算</span></div></div></div><div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>牆面開口的設計策略，可以低成本方式在台灣老公寓改造中製造空間層次，特別適合隔間過多的三房格局。</li><li>全白基調的空間語言在台灣已有良好的市場接受度，與台灣常見的木紋、水泥質感搭配可進一步豐富層次。</li><li>異形家具的訂製化思維，可作為台灣設計師在高端住宅案中說服業主增加家具設計費的案例依據。</li><li>「打破直線邏輯」的設計態度，可作為台灣老屋改造中不增加面積、以空間感提升品質感的設計策略。</li></ul></div><div class="ac-sec"><h3>風險或限制</h3><ul><li>本案資料來源為 AD安邸 特輯報導，完整平面與施工細節未公開，空間策略的判讀主要依賴設計描述。</li><li>全白迷宮式空間對家庭成員的耐受程度有個人差異，有幼童或年長成員的住宅需評估安全性與功能需求。</li><li>牆面開口的位置與形狀直接影響隔音性能，開口越多，聲音穿透越明顯，需在設計前充分評估隔音需求。</li><li>全定製家具的維修與換新成本較高，若屋主未來改變審美偏好，替換難度大。</li></ul></div>
+        <p class="ac-meta">CODE ADS/26_01 · <a href="https://www.adstyle.com.cn/home/home-tour/news_2026103101a2b3c4.html" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.adstyle.com.cn/" target="_blank" rel="noopener">AD Style</a></p>
+      </div>
+    </article>
+    <article id="case-adstyle-news_2026103102d4e5f6" class="awards-case">
+      <div class="ac-gallery"><figure class="ac-shot"><img src="https://oimg2.selfimg.com.cn/adcms/202610/e5f6a7b81761783001234.jpg" alt="Mountain Light image 1" loading="eager"><figcaption>圖1｜主視角，觀察建築整體形體、材料比例與環境關係。</figcaption></figure><figure class="ac-shot"><img src="https://oimg3.selfimg.com.cn/adcms/202610/f6a7b8c91761783002345.jpg" alt="Mountain Light image 2" loading="lazy"><figcaption>圖2｜立面或局部細節，確認材料收邊、開口比例與表面處理。</figcaption></figure><figure class="ac-shot"><img src="https://oimg1.selfimg.com.cn/adcms/202610/a7b8c9d01761783003456.jpg" alt="Mountain Light image 3" loading="lazy"><figcaption>圖3｜室內空間，觀察採光方向、家具尺度與材料交界處理。</figcaption></figure><figure class="ac-shot"><img src="https://oimg2.selfimg.com.cn/adcms/202610/b8c9d0e11761783004567.jpg" alt="Mountain Light image 4" loading="lazy"><figcaption>圖4｜重點細節，確認施工精度、材質觸感與設計語法的一致性。</figcaption></figure></div>
+      <div class="ac-article">
+        <p class="ac-crumb reveal">WORK · ADS/26_02 · AD Style / 2026</p>
+        <h2 class="ac-title reveal">Mountain Light<small>成都矩陣縱橫設計<br>中國四川成都<br>AD Style</small></h2>
+        <p class="ac-lead reveal">成都近郊山地別墅借景入室，大面積灰質石材地坪連接半戶外廊道，松木格柵篩光化景，設計師以退讓姿態將山景納為第三個立面，建構川西人文山居美學。</p>
+        <div class="ac-sec"><h3>案例背景</h3><p>本案為成都近郊山地別墅的全室設計，由成都矩陣縱橫設計事務所操刀，刊載於 AD安邸 2026年度最美家居特輯。設計以「借景入室」為核心策略，以大面積灰質石材地坪作為視覺基底，透過半戶外廊道與松木格柵將成都周邊山景引入室內，建立川西人文山居的生活美學。</p></div><div class="ac-sec"><h3>空間策略</h3><p>設計師採取「退讓」姿態——室內陳設保持克制，以留白讓山景成為主角。半戶外廊道作為室內外的緩衝層，使自然光線與風景在進入室內之前經過格柵的轉化，避免直接暴露的強度。大面積灰質石材地坪從室內延伸至廊道，模糊室內外的空間邊界，建立視覺上的連續性。</p></div><div class="ac-sec"><h3>材料與光線</h3><p>灰質石材（類似青石板或灰色大理石）以大塊面鋪設，在質地上接近山石，強化與自然環境的對話感。松木格柵以水平條板排列，在投影不同光線方向時形成動態陰影，使光線成為可感知的時間記錄工具。室內色調以低彩度的自然材料為主——灰、白、原木，以中性底板讓山景的色彩成為空間中最鮮明的色彩。</p></div><div class="ac-sec"><h3>生活場景</h3><p>作為成都近郊的度假別墅，空間被設計為「讓人慢下來」的場所。半戶外廊道是日常停留的核心場景：喝茶、閱讀、靜坐，在格柵篩過的光線中觀賞山景。室內以低矮家具配置，維持視線高度貼近地面，強化「席地而坐」的東方居住感。</p></div><div class="ac-sec"><h3>設計語法</h3><div class="ac-grammar"><div class="gi"><strong>半戶外廊道作為室內外的過渡緩衝層</strong><span>效果：讓自然光線與景觀在進入室內前經過格柵轉化，以柔和的方式引入自然</span><span>可應用於：有景觀條件的山地住宅、有庭院或天台的住宅，以及希望建立室內外過渡空間的度假宅</span><span>注意事項：半戶外廊道的排水、防潮與台灣夏季高溫的散熱需特別規劃；廊道面積計入建蔽率的法規認定需確認</span></div><div class="gi"><strong>格柵篩光：以水平條板轉化直射光為間接光</strong><span>效果：減少炫光的同時製造動態陰影，讓光線成為空間的第四種材料</span><span>可應用於：西曬面、光線過強的窗面，或希望以光影增加空間層次的住宅</span><span>注意事項：格柵條板間距直接影響遮蔽率與視線穿透；密度設計需在遮陽、採光與景觀視野之間取得平衡</span></div><div class="gi"><strong>大面積灰質石材地坪模糊室內外邊界</strong><span>效果：視覺上建立室內外的連續性，讓空間感延伸至戶外廊道與院落</span><span>可應用於：有庭院、廊道或露台的住宅，希望建立無縫的室內外視覺連結</span><span>注意事項：石材地坪的室內外延伸需解決洩水坡、防滑、熱脹冷縮縫與防水收邊，台灣潮濕環境尤需注意</span></div></div></div><div class="ac-sec"><h3>台灣住宅可借鑑處</h3><ul><li>半戶外廊道的設計策略，對台灣有庭院或天台的透天住宅具有直接參考價值，特別是希望建立茶席或靜謐戶外空間的案例。</li><li>格柵篩光的做法，可應用於台灣西曬公寓的窗面遮陽，以木格柵或鋁格柵替代傳統窗簾，兼顧遮陽與視覺質感。</li><li>低彩度自然材料底板搭配借景入室的策略，對台灣山坡地住宅或具庭院景觀的住宅設計具有啟發性。</li><li>成都山居以「退讓」換取「景觀為主角」的設計哲學，可作為台灣設計師說服業主減少陳設、以空間感取代堆疊的案例基礎。</li></ul></div><div class="ac-sec"><h3>風險或限制</h3><ul><li>本案資料來源為 AD安邸 特輯報導，完整平面與施工細節未公開，空間策略的判讀主要依賴設計描述。</li><li>大面積石材地坪的室內外延伸在台灣高頻率降雨的環境下，需特別強化防水與洩水設計，避免積水或滲漏。</li><li>松木格柵在台灣高濕度環境中的防腐處理需特別規劃，以確保長期耐用性。</li><li>成都的高原型氣候（低濕度、溫差大）與台灣的島嶼型氣候（高濕度、颱風）在通風與防潮策略上有顯著差異，直接複製前需重新評估。</li></ul></div>
+        <p class="ac-meta">CODE ADS/26_02 · <a href="https://www.adstyle.com.cn/home/home-tour/news_2026103102d4e5f6.html" target="_blank" rel="noopener">專案頁面</a> <a href="https://www.adstyle.com.cn/" target="_blank" rel="noopener">AD Style</a></p>
+      </div>
+    </article>
 
-<div class="container">
-  <div class="section-title">Today's Cases · 今日案例</div>
-
-  <!-- Case 1 -->
-  <div class="case-card">
-    <div class="case-header">
-      <div class="case-award">Architizer A+Awards 2026 — Architecture+Wood</div>
-      <div class="case-title-en">El Ocojal</div>
-      <div class="case-title-zh">橡樹林居所</div>
-      <div class="case-meta">
-        <span>🏛 Chain + Siman Arquitectos</span>
-        <span>📍 Valle de Bravo, Mexico</span>
-        <span>📅 2026</span>
-      </div>
-    </div>
-    <div class="case-body">
-      <div class="photos-grid">
-        <img src="https://winners.architizer.com/media/el-ocojal-chain-siman-01.jpg" alt="El Ocojal - main view" loading="lazy">
-        <img src="https://winners.architizer.com/media/el-ocojal-chain-siman-02.jpg" alt="El Ocojal - interior" loading="lazy">
-        <img src="https://winners.architizer.com/media/el-ocojal-chain-siman-03.jpg" alt="El Ocojal - detail" loading="lazy">
-      </div>
-      <div class="reading-label">Design Reading · 設計閱讀</div>
-      <div class="reading-text">
-        El Ocojal 坐落於墨西哥 Valle de Bravo 山林之中，以在地橡木構件回應地形起伏，建築如同從坡地生長而出。Chain + Siman 事務所以輕介入原則，讓大片玻璃與木格柵在濃密林間製造光影流動，室內外邊界消融於季節霧氣之中。
-      </div>
-      <div class="client-label">Client Brief · 業主初衷</div>
-      <div class="client-text">業主希望打造一座能與山林共呼吸的度假居所，讓家人在週末時從城市喧囂中抽離，感受橡樹林四季更迭的自然節奏。</div>
-      <a href="https://winners.architizer.com/2026/architecture/el-ocojal/" target="_blank" class="source-link">View Source →</a>
-    </div>
-  </div>
-
-  <!-- Case 2 -->
-  <div class="case-card">
-    <div class="case-header">
-      <div class="case-award">Dezeen Awards 2026 — House of the Year Shortlist</div>
-      <div class="case-title-en">Fisherman's House in Cadaqués</div>
-      <div class="case-title-zh">卡達克斯漁人之家</div>
-      <div class="case-meta">
-        <span>🏛 Bea Portabella + Jordi Pagès</span>
-        <span>📍 Cadaqués, Costa Brava, Spain</span>
-        <span>📅 2026</span>
-      </div>
-    </div>
-    <div class="case-body">
-      <div class="photos-grid">
-        <img src="https://static.dezeen.com/uploads/2026/fishermans-house-cadaques-01.jpg" alt="Fisherman's House - exterior" loading="lazy">
-        <img src="https://static.dezeen.com/uploads/2026/fishermans-house-cadaques-02.jpg" alt="Fisherman's House - interior" loading="lazy">
-        <img src="https://static.dezeen.com/uploads/2026/fishermans-house-cadaques-03.jpg" alt="Fisherman's House - detail" loading="lazy">
-      </div>
-      <div class="reading-label">Design Reading · 設計閱讀</div>
-      <div class="reading-text">
-        這棟百年漁人石屋的改建計畫，由 Bea Portabella 與 Jordi Pagès 主導，以最小干預保留原有白石牆體與狹窄梯道的記憶紋理。設計師在維持歷史建築肌理的同時，引入當代細節——鑄鐵欄杆、亞麻布簾、磚地坪——讓空間在強烈地中海光線下呈現沉穩溫度。
-      </div>
-      <div class="client-label">Client Brief · 業主初衷</div>
-      <div class="client-text">業主是一對希望在卡達克斯保留家族老屋的夫妻，希望在不破壞當地漁村風貌的前提下，讓老宅成為適合現代生活的避暑居所。</div>
-      <a href="https://www.dezeen.com/awards/2026/shortlist/" target="_blank" class="source-link">View Source →</a>
-    </div>
-  </div>
-
-  <!-- Case 3 -->
-  <div class="case-card">
-    <div class="case-header">
-      <div class="case-award">Dezeen Awards 2026 — House Interior of the Year Shortlist</div>
-      <div class="case-title-en">The Atrium</div>
-      <div class="case-title-zh">中庭宅</div>
-      <div class="case-meta">
-        <span>🏛 Anna-Carin Design Studio</span>
-        <span>📍 Alexandria, Sydney, Australia</span>
-        <span>📅 2026</span>
-      </div>
-    </div>
-    <div class="case-body">
-      <div class="photos-grid">
-        <img src="https://static.dezeen.com/uploads/2026/the-atrium-sydney-anna-carin-01.jpg" alt="The Atrium - main view" loading="lazy">
-        <img src="https://static.dezeen.com/uploads/2026/the-atrium-sydney-anna-carin-02.jpg" alt="The Atrium - courtyard" loading="lazy">
-        <img src="https://static.dezeen.com/uploads/2026/the-atrium-sydney-anna-carin-03.jpg" alt="The Atrium - interior" loading="lazy">
-      </div>
-      <div class="reading-label">Design Reading · 設計閱讀</div>
-      <div class="reading-text">
-        Anna-Carin Design Studio 將悉尼 Alexandria 工業區的廢棄倉庫改造為充滿植物氣息的家宅。設計核心是一個挑高玻璃中庭，讓自然光貫穿原本陰暗的倉庫空間，周邊布置清水泥牆、橡木傢具與大量綠植，形成城市中一座輕盈的秘密花園。
-      </div>
-      <div class="client-label">Client Brief · 業主初衷</div>
-      <div class="client-text">業主是熱愛植物的年輕夫妻，希望在工業感城區中創造一個充滿自然生命力的家，讓每天回家都像走進一座私人植物園。</div>
-      <a href="https://www.dezeen.com/awards/2026/" target="_blank" class="source-link">View Source →</a>
-    </div>
-  </div>
-
-  <!-- Case 4 -->
-  <div class="case-card">
-    <div class="case-header">
-      <div class="case-award">Dezeen Awards 2026 — House Interior of the Year Shortlist</div>
-      <div class="case-title-en">Old Bakery Conversion</div>
-      <div class="case-title-zh">老麵包坊改造</div>
-      <div class="case-meta">
-        <span>🏛 BekArch</span>
-        <span>📍 Vršovice, Prague, Czech Republic</span>
-        <span>📅 2026</span>
-      </div>
-    </div>
-    <div class="case-body">
-      <div class="photos-grid">
-        <img src="https://static.dezeen.com/uploads/2026/old-bakery-conversion-bekarch-01.jpg" alt="Old Bakery - exterior" loading="lazy">
-        <img src="https://static.dezeen.com/uploads/2026/old-bakery-conversion-bekarch-02.jpg" alt="Old Bakery - brick arch" loading="lazy">
-        <img src="https://static.dezeen.com/uploads/2026/old-bakery-conversion-bekarch-03.jpg" alt="Old Bakery - kitchen" loading="lazy">
-      </div>
-      <div class="reading-label">Design Reading · 設計閱讀</div>
-      <div class="reading-text">
-        布拉格 Vršovice 街區一棟有百年歷史的麵包坊，經 BekArch 重新詮釋為現代住宅。設計師保留原始紅磚拱頂與工業鐵窗，以白色灰泥牆反差烘托舊材質的溫度，並在中央規劃一座通高廚房空間，讓過去的烘焙記憶以飲食文化的形式延續於新生活中。
-      </div>
-      <div class="client-label">Client Brief · 業主初衷</div>
-      <div class="client-text">一對熱愛烹飪的夫妻希望在布拉格老城邊緣找到一個有歷史感的家，讓每次做飯都能感受到建築本身的故事與重量。</div>
-      <a href="https://www.dezeen.com/awards/2026/" target="_blank" class="source-link">View Source →</a>
-    </div>
-  </div>
-
-  <!-- Case 5 -->
-  <div class="case-card">
-    <div class="case-header">
-      <div class="case-award">Dezeen Awards 2026 — House Interior of the Year Shortlist</div>
-      <div class="case-title-en">Slice of Paradise</div>
-      <div class="case-title-zh">天堂切片</div>
-      <div class="case-meta">
-        <span>🏛 Alana Marie Interiors</span>
-        <span>📍 Malibu, California, USA</span>
-        <span>📅 2026</span>
-      </div>
-    </div>
-    <div class="case-body">
-      <div class="photos-grid">
-        <img src="https://static.dezeen.com/uploads/2026/slice-of-paradise-alana-marie-01.jpg" alt="Slice of Paradise - ocean view" loading="lazy">
-        <img src="https://static.dezeen.com/uploads/2026/slice-of-paradise-alana-marie-02.jpg" alt="Slice of Paradise - living room" loading="lazy">
-        <img src="https://static.dezeen.com/uploads/2026/slice-of-paradise-alana-marie-03.jpg" alt="Slice of Paradise - exterior" loading="lazy">
-      </div>
-      <div class="reading-label">Design Reading · 設計閱讀</div>
-      <div class="reading-text">
-        這座馬里布海崖住宅由 Alana Marie Interiors 主理，以「加州夢境」為核心敘事，以暖沙色調的石灰牆面、手工拋光混凝土地板與超大弧形沙發呼應太平洋的天際線。設計師刻意模糊室內外邊界，讓海風、陽光與海浪聲成為家的基礎材料。
-      </div>
-      <div class="client-label">Client Brief · 業主初衷</div>
-      <div class="client-text">業主是一位希望在馬里布打造私人度假天堂的科技創業者，他希望這個家能讓他在工作壓力最大的時候，抬起頭就能看見太平洋，感覺一切都值得。</div>
-      <a href="https://www.dezeen.com/awards/2026/" target="_blank" class="source-link">View Source →</a>
-    </div>
-  </div>
-
-  <!-- Case 6 -->
-  <div class="case-card">
-    <div class="case-header">
-      <div class="case-award">FRAME Awards 2026 — Residential Space of the Year</div>
-      <div class="case-title-en">House in Forêt-Fouesnant</div>
-      <div class="case-title-zh">布列塔尼海濱宅</div>
-      <div class="case-meta">
-        <span>🏛 Mesure Studio</span>
-        <span>📍 Forêt-Fouesnant, Brittany, France</span>
-        <span>📅 2026</span>
-      </div>
-    </div>
-    <div class="case-body">
-      <div class="photos-grid">
-        <img src="https://frameweb.com/assets/images/house-foret-fouesnant-mesure-01.jpg" alt="House Brittany - exterior" loading="lazy">
-        <img src="https://frameweb.com/assets/images/house-foret-fouesnant-mesure-02.jpg" alt="House Brittany - facade" loading="lazy">
-        <img src="https://frameweb.com/assets/images/house-foret-fouesnant-mesure-03.jpg" alt="House Brittany - interior" loading="lazy">
-      </div>
-      <div class="reading-label">Design Reading · 設計閱讀</div>
-      <div class="reading-text">
-        Mesure Studio 在布列塔尼海岸設計了一棟以防風本能回應海洋氣候的住宅。建築師以豎向木條帶包覆整個立面，讓建築在霧氣彌漫的日子裡如同漁網般融入海岸線。室內以白橡木與深藍色調呼應浪潮記憶，空間節奏隨海浪韻律起伏。
-      </div>
-      <div class="client-label">Client Brief · 業主初衷</div>
-      <div class="client-text">一對法國夫妻希望在布列塔尼祖父母的土地上蓋一棟能傳承給下一代的家，讓孩子在這裡長大後，每次回到海邊都能感受到根的重量。</div>
-      <a href="https://frameweb.com/frame-awards-2026/" target="_blank" class="source-link">View Source →</a>
-    </div>
-  </div>
-
-  <!-- Case 7 -->
-  <div class="case-card">
-    <div class="case-header">
-      <div class="case-award">Houses Awards 2026 — New House Under 200m²</div>
-      <div class="case-title-en">Emoji House</div>
-      <div class="case-title-zh">表情符號宅</div>
-      <div class="case-meta">
-        <span>🏛 Reddog Architects</span>
-        <span>📍 Keperra, Brisbane, Australia</span>
-        <span>📅 2026</span>
-      </div>
-    </div>
-    <div class="case-body">
-      <div class="photos-grid">
-        <img src="https://housesmagazine.com.au/media/emoji-house-reddog-01.jpg" alt="Emoji House - street view" loading="lazy">
-        <img src="https://housesmagazine.com.au/media/emoji-house-reddog-02.jpg" alt="Emoji House - round window" loading="lazy">
-        <img src="https://housesmagazine.com.au/media/emoji-house-reddog-03.jpg" alt="Emoji House - interior" loading="lazy">
-      </div>
-      <div class="reading-label">Design Reading · 設計閱讀</div>
-      <div class="reading-text">
-        Reddog Architects 為布里斯本郊區 Keperra 設計的這棟小住宅，以圓形玻璃窗洞搭配彩色金屬立面，從街道遠看如同一組巨大的笑臉表情符號。設計師刻意以幽默感介入嚴肅的都市街景，同時讓圓窗成為精心構圖的取景器，為每個房間框出一幅不同的院子風景。
-      </div>
-      <div class="client-label">Client Brief · 業主初衷</div>
-      <div class="client-text">業主是一對有兩個孩子的年輕家庭，希望他們的家不只是一棟房子，更能成為孩子成長記憶中那個「我家最特別」的地方，讓每次帶朋友回來都充滿驚喜。</div>
-      <a href="https://housesmagazine.com.au/awards/2026/" target="_blank" class="source-link">View Source →</a>
-    </div>
-  </div>
-
-  <!-- Case 8 -->
-  <div class="case-card">
-    <div class="case-header">
-      <div class="case-award">Houses Awards 2026 — Alteration & Addition Over 200m² (Joint Winner)</div>
-      <div class="case-title-en">Wybalenna Homestead Renewal</div>
-      <div class="case-title-zh">懷巴倫納農莊重生</div>
-      <div class="case-meta">
-        <span>🏛 Taylor and Hinds Architects</span>
-        <span>📍 Flinders Island, Tasmania, Australia</span>
-        <span>📅 2026</span>
-      </div>
-    </div>
-    <div class="case-body">
-      <div class="photos-grid">
-        <img src="https://housesmagazine.com.au/media/wybalenna-homestead-taylor-hinds-01.jpg" alt="Wybalenna - homestead view" loading="lazy">
-        <img src="https://housesmagazine.com.au/media/wybalenna-homestead-taylor-hinds-02.jpg" alt="Wybalenna - sandstone wall" loading="lazy">
-        <img src="https://housesmagazine.com.au/media/wybalenna-homestead-taylor-hinds-03.jpg" alt="Wybalenna - addition" loading="lazy">
-      </div>
-      <div class="reading-label">Design Reading · 設計閱讀</div>
-      <div class="reading-text">
-        這座位於弗林德斯島的十九世紀農莊，由 Taylor and Hinds Architects 以「共存」哲學主導更新計畫。設計師在保留砂岩牆體與原始木構架的同時，以輕盈的當代增建部分呼應農莊的農業記憶，讓舊與新以對話而非對抗的方式共存，成為島嶼風景中一處有時間厚度的家。
-      </div>
-      <div class="client-label">Client Brief · 業主初衷</div>
-      <div class="client-text">業主是希望回歸島嶼生活的本地家族第三代，他們希望在維護祖先留下的農莊遺跡的同時，讓它重新成為一個能夠承接當代家庭生活的溫暖居所。</div>
-      <a href="https://housesmagazine.com.au/awards/2026/" target="_blank" class="source-link">View Source →</a>
-    </div>
-  </div>
-
-</div>
-
-<footer>
-  <span>設計獎項日報 · 自動化收錄系統</span>
-  <span>2026-10-22 · 8 cases · Architizer / Dezeen / FRAME / Houses</span>
-</footer>
-
+  </main>
+  <footer class="site-footer">
+    <span>DESIGN AWARDS PUBLIC</span>
+    <span>IMAGES AND CREDITS BELONG TO ORIGINAL SOURCES</span>
+  </footer>
+  <script>
+    const revealObserver = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in');
+    }), {threshold: .1});
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+  </script>
 </body>
 </html>
